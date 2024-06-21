@@ -25,11 +25,36 @@ import { Loader2 } from "lucide-react"
 import { SignOutWithSupabase } from '@/auth'
 import Link from 'next/link';
 import ShareChat from '../shareChat';
+import { downloadPDF } from '@/api/index'
 
 const Navbar: React.FC<any> = (props) => {
     const { videoMeta, loader, user, chats, extractedText } = props
     const [deleteAlert, setDeleteAlert] = useState<boolean>(false)
     const [deleteLoader, setDeleteloader] = useState<boolean>(false)
+    const Export = async () => {
+        const objectData = [];
+        for (let i = 1; i < chats.length; i += 2) {
+            const userMessage = chats[i];
+            const assistantMessage = chats[i + 1];
+
+            if (userMessage.role === 'user' && assistantMessage?.role === 'assistant') {
+                objectData.push({
+                    question: userMessage.content,
+                    answer: assistantMessage.content,
+                });
+            } else {
+                console.error('Chat array is not in the expected format at index:', i);
+            }
+        }
+        console.log(objectData)
+        const DataToBeSent = {
+            details:{
+                chats:objectData,
+                pdfTemplate:1
+            }
+        }
+        await downloadPDF(DataToBeSent)
+    }
     return (
         <div className='w-full py-4 px-12  flex justify-between items-center'>
             <div className='flex items-center justify-center gap-7'>
@@ -54,7 +79,7 @@ const Navbar: React.FC<any> = (props) => {
 
                 <ShareChat ChatHomeRow={false} videoMeta={videoMeta} loader={loader} user={user} chats={chats} extractedText={extractedText} />
 
-                <Button className='shadow-xl'>
+                <Button className='shadow-xl' onClick={Export}>
                     <Upload className="mr-2 h-4 w-4" /> Export
                 </Button>
                 <div className='flex items-center justify-center gap-4'>

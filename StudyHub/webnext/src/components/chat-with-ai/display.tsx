@@ -16,7 +16,7 @@ const Display: React.FC<any> = (props) => {
     8. What is the relationship between React and React Native? | 
     `
 
-    const arr = [1, 2, 2, 3, 3, 4, 1, 5]
+    const arr = [1, 2, 2, 3]
 
     useEffect(() => {
         if (extractedText.length !== 0) {
@@ -27,7 +27,7 @@ const Display: React.FC<any> = (props) => {
     const getQuestionsFromModel = async () => {
         const prompt = `
         Given the following text, please generate a list of questions that a user might ask based on the content: ${extractedText}
-        Please provide a set of 8 questions that cover various aspects of the text and are likely to be asked by someone seeking clarification or more information , and just provide the  questions without any additional texts and also after each question add a "|" symbol which will help me split the questions , and also this text is from youtube videos so give questions in this frame , What did the creator: ${videoMeta.channel} speak about xyz , how he/she covered xxx topics.
+        Please provide a set of 4 questions that cover various aspects of the text and are likely to be asked by someone seeking clarification or more information , and just provide the  questions without any additional texts and also after each question add a "|" symbol which will help me split the questions , and also this text is from youtube videos so give questions in this frame , What did the creator: ${videoMeta.channel} speak about xyz , how he/she covered xxx topics , finally dont use any prefix of question numbers.
         `
         const model = geminiModel()
         const result = await model.generateContent(prompt);
@@ -47,20 +47,26 @@ const Display: React.FC<any> = (props) => {
                         <p className='text-sm'>{FormatVideoViews(videoMeta.views)}</p>
                     </div>
                 </div>
-                <div className='flex flex-col gap-4'>
+                <div className='w-full flex flex-col gap-4'>
                     <h2 className='text-xl font-[550]'>Suggested Prompts</h2>
-                    <div className='flex flex-col px-2 gap-3'>
-                        {
-                            suggestedQuestion === null && arr.map((item, idxx: number) => (
-                                <Skeleton key={idxx} className="h-5 mb-1 w-[360px]" />
-                            ))
-                        }
-                        {suggestedQuestion !== null && suggestedQuestion.length !== 0 && suggestedQuestion.map((question: string, idx: number) => (
-                            <p onClick={(e) => {
-                                e.preventDefault()
-                                setMessage(question)
-                            }} key={idx} className='text-sm hover:text-white cursor-pointer transition duration-500 ease-in hover:scale-[1.02] text-muted-foreground'>{question}</p>
-                        ))}
+                    <div className='w-full  flex flex-col px-2 gap-4'>
+                        <div className="w-full  grid grid-cols-2 gap-8">
+                            {
+                                suggestedQuestion === null && arr.map((item, idxx: number) => (
+                                    <Skeleton key={idxx} className="h-20 mb-1 w-full" />
+                                ))
+                            }
+                            {suggestedQuestion !== null && suggestedQuestion.length !== 0 && suggestedQuestion.map((question: string, idx: number) => {
+                                if (question.length !== 0) {
+                                    return (
+                                        <p onClick={(e) => {
+                                            e.preventDefault()
+                                            setMessage(question)
+                                        }} key={idx} className='text-sm hover:text-white cursor-pointer transition duration-500 ease-in hover:scale-[1.02] text-muted-foreground bg-accent/40 p-5 rounded-xl'>{question}</p>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -76,10 +82,10 @@ const Display: React.FC<any> = (props) => {
                 </div>
                 <div className='flex flex-col gap-4'>
                     <Skeleton className="h-7 mb-1 w-[260px]" />
-                    <div className='flex flex-col px-2 gap-3'>
+                    <div className="grid grid-cols-2 gap-4">
                         {
-                            arr.map((item, idxx: number) => (
-                                <Skeleton key={idxx} className="h-6 mb-1 w-[360px]" />
+                            suggestedQuestion === null && arr.map((item, idxx: number) => (
+                                <Skeleton key={idxx} className="h-20 mb-1 w-full" />
                             ))
                         }
                     </div>

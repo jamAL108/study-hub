@@ -102,7 +102,7 @@ export const publishShareData = async (chatData: any) => {
         .from('chat_share')
         .select("*")
         .eq('video_id', chatData.video_id)
-        console.log(error)
+    console.log(error)
     if (error !== null) return { success: false }
     if (chat_share.length === 0) {
         const { data, error: IError }: any = await supabase
@@ -111,7 +111,7 @@ export const publishShareData = async (chatData: any) => {
                 { ...chatData },
             ])
             .select()
-            console.log(Error)
+        console.log(Error)
         if (IError !== null) return { success: false }
         return { success: true }
     } else {
@@ -120,7 +120,7 @@ export const publishShareData = async (chatData: any) => {
             .update({ chat: chatData.chat })
             .eq('video_id', chatData.video_id)
             .select()
-            console.log(AError)
+        console.log(AError)
         if (AError !== null) return { success: false }
         return { success: true }
     }
@@ -138,4 +138,31 @@ export const getAllchats = async (user_id: string) => {
     console.log(vidChat)
     if (error !== null) return { success: false }
     return { success: true, data: vidChat }
+}
+
+
+
+export const downloadPDF = async (details: any) => {
+    const URL = 'http://localhost:3000/api/download'
+    fetch(URL, {
+        method: "POST",
+        body: JSON.stringify(details),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((res) => res.blob())
+        .then((blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `chat.pdf`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            return { success: true }
+        })
+        .catch((error) => {
+            console.error("Error downloading:", error);
+            return { success: false, error: error }
+        });
 }

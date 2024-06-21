@@ -33,9 +33,6 @@ const RowComponent: React.FC<any> = (props) => {
                 <Badge variant="outline">Draft</Badge>
             </TableCell>
             <TableCell className="hidden md:table-cell">
-                $499.99
-            </TableCell>
-            <TableCell className="hidden md:table-cell">
                 25
             </TableCell>
             <TableCell className="hidden md:table-cell">

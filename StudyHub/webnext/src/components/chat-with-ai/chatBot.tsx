@@ -107,9 +107,9 @@ const ChatBot: React.FC<any> = (props) => {
                     <Progress value={progress} max={100} className="w-[60%]" />
                 </div>
             ) : (
-                <ScrollArea  className='w-full h-[calc(100%_-_140px)] overflow-y-auto px-5 py-4'>
+                <ScrollArea className='w-full h-[calc(100%_-_140px)] overflow-y-auto px-5 py-4'>
                     <section ref={chatContainerRef} className='w-full h-full flex flex-col gap-4 px-3 py-3'>
-                        {chats && chats.length!==0
+                        {chats && chats.length !== 0
                             ? chats.map((chat: any, index: number) => (
                                 <p key={index} className={`${chat.role === "user" ? "justify-end" : "justify-start"} w-full flex items-center`}>
                                     <span className={`${chat.role === "user" ? "bg-primary" : "bg-background"} text-sm max-w-[60%] px-3 py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.content}</span>
@@ -128,14 +128,15 @@ const ChatBot: React.FC<any> = (props) => {
                 <Label htmlFor="message" className="sr-only">
                     Message
                 </Label>
-                <Textarea
-                    id="message"
-                    value={message}
-                    placeholder="Type your message here..."
-                    className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
-                    autoComplete="off"
-                    onChange={(e) => setMessage(e.target.value)}
-                />
+                    <Textarea
+                        id="message"
+                        value={message}
+                        disabled={isTyping}
+                        placeholder="Type your message here..."
+                        className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+                        autoComplete="off"
+                        onChange={(e) => setMessage(e.target.value)}
+                    />
                 <div className="flex items-center p-3 pt-0">
                     <TooltipProvider>
                         <Tooltip>

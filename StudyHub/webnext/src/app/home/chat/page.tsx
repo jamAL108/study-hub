@@ -145,9 +145,6 @@ const Dashboard = () => {
                                         <TableHead>Name</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead className="hidden md:table-cell">
-                                            Price
-                                        </TableHead>
-                                        <TableHead className="hidden md:table-cell">
                                             Total Sales
                                         </TableHead>
                                         <TableHead className="hidden md:table-cell">
