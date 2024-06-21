@@ -1,0 +1,2 @@
+# StudyHub
+ My new project
