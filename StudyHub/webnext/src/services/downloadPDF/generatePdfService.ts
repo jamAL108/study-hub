@@ -58,7 +58,6 @@ export async function generatePdfService(req: NextRequest) {
         }
 
         if (!browser) {
-            console.log("MEOW")
             throw new Error("Failed to launch browser");
         }
 
@@ -90,7 +89,7 @@ export async function generatePdfService(req: NextRequest) {
         const response = new NextResponse(pdfBlob, {
             headers: {
                 "Content-Type": "application/pdf",
-                "Content-Disposition": "inline; filename=invoice.pdf",
+                "Content-Disposition": "inline; filename=chat.pdf",
             },
             status: 200,
         });

@@ -1,4 +1,5 @@
 import clientConnectionWithSupabase from '@/lib/supabase/client'
+import { NextResponse } from 'next/server';
 
 const URL = 'http://127.0.0.1:5000'
 // const URL = 'https://vidchatbackend.vercel.app'
@@ -142,27 +143,3 @@ export const getAllchats = async (user_id: string) => {
 
 
 
-export const downloadPDF = async (details: any) => {
-    const URL = 'http://localhost:3000/api/download'
-    fetch(URL, {
-        method: "POST",
-        body: JSON.stringify(details),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((res) => res.blob())
-        .then((blob) => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `chat.pdf`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-            return { success: true }
-        })
-        .catch((error) => {
-            console.error("Error downloading:", error);
-            return { success: false, error: error }
-        });
-}

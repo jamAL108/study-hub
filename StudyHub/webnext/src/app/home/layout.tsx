@@ -23,6 +23,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { FaRegUser } from "react-icons/fa";
 import { Trash2 } from 'lucide-react';
+import { MessageCircleQuestion } from 'lucide-react';
 import { FiLogOut } from "react-icons/fi";
 import { FaQuestion } from "react-icons/fa6";
 import {
@@ -84,11 +85,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                 Chat History
                             </Link>
                             <Link
-                                href="/home/documents"
-                                className={`flex items-center gap-3 ${pathname ? pathname.includes('documents') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                href="/home/docxAI"
+                                className={`flex items-center gap-3 ${pathname ? pathname.includes('docxAI') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
                             >
                                 <FileText className="h-4 w-4" />
-                                Documents{" "}
+                                DocsAI{" "}
+                            </Link>
+                            <Link
+                                href="/home/Quiz"
+                                className={`flex items-center gap-3 ${pathname ? pathname.includes('Quiz') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                            >
+                                <MessageCircleQuestion className="h-4 w-4" />
+                                Quiz
                             </Link>
                             <Link
                                 href="/explore"

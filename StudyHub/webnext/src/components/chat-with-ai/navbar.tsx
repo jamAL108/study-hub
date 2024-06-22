@@ -25,12 +25,15 @@ import { Loader2 } from "lucide-react"
 import { SignOutWithSupabase } from '@/auth'
 import Link from 'next/link';
 import ShareChat from '../shareChat';
-import { downloadPDF } from '@/api/index'
 
 const Navbar: React.FC<any> = (props) => {
     const { videoMeta, loader, user, chats, extractedText } = props
     const [deleteAlert, setDeleteAlert] = useState<boolean>(false)
     const [deleteLoader, setDeleteloader] = useState<boolean>(false)
+    const [exporting, setExporting] = useState<boolean>(false)
+
+
+
     const Export = async () => {
         const objectData = [];
         for (let i = 1; i < chats.length; i += 2) {
@@ -48,13 +51,46 @@ const Navbar: React.FC<any> = (props) => {
         }
         console.log(objectData)
         const DataToBeSent = {
-            details:{
-                chats:objectData,
-                pdfTemplate:1
+            details: {
+                chats: objectData,
+                pdfTemplate: 1
             }
         }
-        await downloadPDF(DataToBeSent)
+        const res:any =  await downloadPDF(DataToBeSent)
+        console.log(res)
+        // if(parsedData.success===true) setExporting(false)
     }
+
+
+    const downloadPDF = async (details: any) => {
+        setExporting(true)
+        const URL = 'http://localhost:3000/api/download'
+        fetch(URL, {
+            method: "POST",
+            body: JSON.stringify(details),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => res.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `chat.pdf`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                setExporting(false)
+            })
+            .catch((error) => {
+                console.error("Error downloading:", error);
+            });
+    }
+
+
+
+
+
     return (
         <div className='w-full py-4 px-12  flex justify-between items-center'>
             <div className='flex items-center justify-center gap-7'>
@@ -79,8 +115,12 @@ const Navbar: React.FC<any> = (props) => {
 
                 <ShareChat ChatHomeRow={false} videoMeta={videoMeta} loader={loader} user={user} chats={chats} extractedText={extractedText} />
 
-                <Button className='shadow-xl' onClick={Export}>
-                    <Upload className="mr-2 h-4 w-4" /> Export
+                <Button disabled={exporting} className='shadow-xl' onClick={Export}>
+                    {exporting === false ? (
+                        <Upload className="mr-2 h-4 w-4" />
+                    ) : (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )} Export
                 </Button>
                 <div className='flex items-center justify-center gap-4'>
                     {loader ? (
