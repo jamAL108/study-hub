@@ -40,9 +40,11 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { getAllchats } from '@/api'
+import { getAllDocuments, getAllchats } from '@/api'
 import { Skeleton } from '@/components/ui/skeleton'
 import RowComponent from './rowComponent'
+
+import DocuementRow from './documentRowComp'
 
 const Dashboard = () => {
     const router = useRouter()
@@ -50,6 +52,8 @@ const Dashboard = () => {
     const [sessionNotFound, setSessionNotFound] = useState<boolean>(false)
     const [user, setUser] = useState<any>(null)
     const [chats, setChats] = useState<any>([])
+
+    const [documents, setDocuments] = useState<any>([])
 
     useEffect(() => {
         getAllInvoicefunciton()
@@ -74,6 +78,9 @@ const Dashboard = () => {
             setChats(result.data)
             console.log(result.data)
             setUser(res.data.session.user)
+
+            const ress: any = await getAllDocuments(userData.id)
+            setDocuments(ress.data)
             setLoader(false)
         } else {
             setUser(res.data.session.user)
@@ -226,6 +233,9 @@ const Dashboard = () => {
                                         <TableHead className="hidden md:table-cell">
                                             Created at
                                         </TableHead>
+                                        <TableHead className="table-cell">
+                                            File size
+                                        </TableHead>
                                         <TableHead>
                                             <span className="sr-only">Actions</span>
                                         </TableHead>
@@ -276,15 +286,15 @@ const Dashboard = () => {
                                         ))
                                     )}
                                     {
-                                        loader === false && chats.map((chatData: any, idx: number) => (
-                                            <RowComponent key={idx} user={user} extractedText={chatData.extractedText} chats={chatData.chat} videoMeta={chatData} />
+                                        loader === false && documents.map((chatData: any, idx: number) => (
+                                            <DocuementRow key={idx} user={user} Document={chatData} />
                                         ))}
                                 </TableBody>
                             </Table>
                         </CardContent>
                         <CardFooter>
                             <div className="text-xs text-muted-foreground">
-                                Showing <strong>1-{chats.length}</strong> of <strong>{chats.length}</strong>{" "}
+                                Showing <strong>1-{documents.length}</strong> of <strong>{documents.length}</strong>{" "}
                                 Chats
                             </div>
                         </CardFooter>

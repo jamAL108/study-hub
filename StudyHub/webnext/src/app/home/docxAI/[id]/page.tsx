@@ -123,17 +123,17 @@ const Page = ({ params }: {
             const formData = new FormData();
             formData.append('pdf_file', file);
             try {
-                // const response = await fetch('http://localhost:8000/getpdf', {
-                //     method: 'POST',
-                //     body: formData,
-                // });
-                // if (response.ok) {
-                //     console.log('PDF successfully sent to server');
-                // } else {
-                //     console.error('Failed to send PDF to server');
-                // }
-                // const success = response.ok;
-                // console.log(success)
+                const response = await fetch('http://localhost:8000/getpdf', {
+                    method: 'POST',
+                    body: formData,
+                });
+                if (response.ok) {
+                    console.log('PDF successfully sent to server');
+                } else {
+                    console.error('Failed to send PDF to server');
+                }
+                const success = response.ok;
+                console.log(success)
                 setLoader(false);
             } catch (error) {
                 console.error('Error sending PDF to server:', error);

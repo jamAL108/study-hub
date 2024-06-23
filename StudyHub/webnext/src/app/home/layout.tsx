@@ -110,11 +110,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                     <div className='flex flex-col absolute bottom-6 justify-center w-full  gap-6'>
                         <Link
-                            href="/home/query-image"
-                            className={`flex items-center gap-3 ${pathname ? pathname.includes('query') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg mx-4 px-3 py-2.5  transition-all hover:text-primary text-sm font-medium `}
+                            href="/home/image-textify"
+                            className={`flex items-center gap-3 ${pathname ? pathname.includes('image-textify') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg mx-4 px-3 py-2.5  transition-all hover:text-primary text-sm font-medium `}
                         >
                             <Fullscreen className="h-4 w-4" />
-                            Query Image
+                            Image Textify
                         </Link>
                         {loader ? (
                             <div className="flex items-center space-x-4 px-6 ">

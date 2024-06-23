@@ -143,14 +143,14 @@ export const getAllchats = async (user_id: string) => {
 
 export const getAllDocuments = async (user_id: string) => {
     const supabase = clientConnectionWithSupabase()
-    let { data: vidChat, error } = await supabase
-        .from('vidChat-Chats')
+    let { data: DocxChats, error } = await supabase
+        .from('studyHubPDF')
         .select("*")
         .eq('user_id', user_id)
     console.log(error)
-    console.log(vidChat)
+    console.log(DocxChats)
     if (error !== null) return { success: false }
-    return { success: true, data: vidChat }
+    return { success: true, data: DocxChats }
 }
 
 
