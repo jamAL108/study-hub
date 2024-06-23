@@ -37,13 +37,12 @@ const Navbar: React.FC<any> = (props) => {
         <div className='w-full flex justify-center'>
             <div className='w-[min(90vw,1400px)] py-3  flex justify-between items-center'>
                 <div className='flex items-center gap-16'>
-                    <Image src='/images/vidchat.png' alt='qwerty' width={160} height={32} className='select-none' />
+                    <Image src='/images/vidchat1.png' alt='qwerty' width={160} height={32} className='select-none' />
                     {loader ? (
                         <div className='flex justify-center text-sm items-center gap-10 font-[450]'>
                             <Skeleton className="h-4 w-[90px]" />
                             <Skeleton className="h-4 w-[85px]" />
                             <Skeleton className="h-4 w-[85px]" />
-
                         </div>
                     ) : (
                         <div className='flex justify-center text-[0.77rem] items-center gap-10 font-[450]'>
@@ -67,7 +66,7 @@ const Navbar: React.FC<any> = (props) => {
                                     <div className='userIcon w-8 h-8 flex justify-center items-center'>
                                         J
                                     </div>
-                                    <p className='tracking-wider'>{user ? ShrinkTitle(user.email,21) : ''}</p>
+                                    <p className='tracking-wider'>{user ? ShrinkTitle(user.email, 21) : ''}</p>
                                 </div>
                                 <AlertDialog open={deleteAlert} onOpenChange={setDeleteAlert}>
                                     <AlertDialogTrigger asChild>

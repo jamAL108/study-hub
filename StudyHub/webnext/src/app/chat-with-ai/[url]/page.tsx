@@ -16,7 +16,7 @@ const Page = () => {
     const [videoMeta, setVideoMeta] = useState<any>(null)
     const [NoDataFound, setNoDataFound] = useState<boolean>(false)
     const params = useParams<{ url: string; }>()
-
+    const [transcript, setTranscript] = useState("");
 
     const [suggestedQuestion, setSuggestedQuestions] = useState<any>(null)
     const [message, setMessage] = useState<string>('')

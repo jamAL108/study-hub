@@ -29,12 +29,6 @@ const RowComponent: React.FC<any> = (props) => {
             <TableCell className="font-medium">
                 {videoMeta.title}
             </TableCell>
-            <TableCell>
-                <Badge variant="outline">Draft</Badge>
-            </TableCell>
-            <TableCell className="hidden md:table-cell">
-                25
-            </TableCell>
             <TableCell className="hidden md:table-cell">
                 2023-07-12 10:42 AM
             </TableCell>

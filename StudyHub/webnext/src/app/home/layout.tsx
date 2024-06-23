@@ -38,6 +38,7 @@ import {
 import { Loader2 } from "lucide-react"
 import { SignOutWithSupabase } from '@/auth'
 import { ShrinkTitle } from '@/utils'
+import { Fullscreen } from 'lucide-react';
 
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -72,7 +73,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <div className="flex h-full max-h-screen flex-col gap-2 relative">
                     <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                         <Link href="/" className="flex items-center gap-2 font-semibold">
-                            <Image src='/images/vidchat.png' alt='qwerty' width={150} height={25} className='select-none ml-[-10px]' />
+                            <Image src='/images/vidchat1.png' alt='qwerty' width={150} height={25} className='select-none ml-[-10px]' />
                         </Link>
                     </div>
                     <div className="flex-1">
@@ -107,9 +108,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                             </Link>
                         </nav>
                     </div>
-                    <div className='flex absolute bottom-0 h-24 items-center w-full justify-center gap-4'>
+                    <div className='flex flex-col absolute bottom-6 justify-center w-full  gap-6'>
+                        <Link
+                            href="/home/query-image"
+                            className={`flex items-center gap-3 ${pathname ? pathname.includes('query') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg mx-4 px-3 py-2.5  transition-all hover:text-primary text-sm font-medium `}
+                        >
+                            <Fullscreen className="h-4 w-4" />
+                            Query Image
+                        </Link>
                         {loader ? (
-                            <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-4 px-6 ">
                                 <Skeleton className="h-10 w-10 rounded-full" />
                                 <div className="space-y-2">
                                     <Skeleton className="h-4 w-[120px]" />
@@ -119,13 +127,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         ) : (
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <div className='w-full cursor-pointer rounded-lg mx-6 flex gap-3 items-center'>
+                                    <div className='w-full cursor-pointer rounded-lg px-6 flex gap-3 items-center'>
                                         <div className='px-3 py-3 rounded-full bg-[#43A8EE] flex justify-center items-center text-md text-white'>
                                             <FaRegUser className='h-4 w-4' />
                                         </div>
                                         <div className='flex flex-col text-sm justify-center'>
                                             <p className='text-xs text-muted-foreground'>Your Account</p>
-                                            <p className='text-[0.75rem] tracking-wider'>{user ? ShrinkTitle(user.email,23) : ''}</p>
+                                            <p className='text-[0.75rem] tracking-wider'>{user ? ShrinkTitle(user.email, 23) : ''}</p>
                                         </div>
                                     </div>
                                 </PopoverTrigger>
@@ -134,7 +142,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                         <div className='userIcon w-8 h-8 flex justify-center items-center'>
                                             {user.email[0]}
                                         </div>
-                                        <p className='tracking-wider'>{user ? ShrinkTitle(user.email,18) : ''}</p>
+                                        <p className='tracking-wider'>{user ? ShrinkTitle(user.email, 18) : ''}</p>
                                     </div>
                                     <AlertDialog open={deleteAlert} onOpenChange={setDeleteAlert}>
                                         <AlertDialogTrigger asChild>

@@ -1,73 +1,96 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { cn } from "@/lib/utils";
-
-import { useSearchParams } from 'next/navigation'
-import { Skeleton } from "@/components/ui/skeleton";
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation';
-
+import React, { useState, useEffect, useRef } from 'react'
+import { Button } from "@/components/ui/button"
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import Image from 'next/image'
+import checkUserAuthClient from '@/auth/getUserSession'
+import { useRouter } from 'next/navigation'
+import SessionNotFoundComp from '@/components/sessionNotFound'
+import { GetVideoFromSupabase } from '@/api/index'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from "@/lib/utils";
+import { CornerDownLeft, Mic, Paperclip } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+    TooltipProvider
+} from "@/components/ui/tooltip"
+import { FormatVideoViews, geminiModel, extractEmailInputPrefix } from '@/utils'
+import { Progress } from "@/components/ui/progress"
+import { UpdateTheVideoChatContent } from '@/api'
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { updatePDFChat } from '@/api'
+import { Input } from "@/components/ui/input"
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-const Page = () => {
+const Quiz:React.FC<any> = (props :any) => {
+    const {topicReceived, topic , Totalquestions , setCurrArea } = props
     const router = useRouter()
-    const searchParams = useSearchParams()
     const [QuizLoad, setLoading] = useState<boolean>(true)
     const [MCQs, setMCQs] = useState<any>([])
     const [answer, setAnswer] = useState<string>("");
     const [score, setScore] = useState<any>(0)
-    const topic: any = searchParams.get('topic')
-    const Totalquestions: any = searchParams.get('questions')
     const [quizStarted, setQuizStarted] = useState<boolean>(false)
-
     const [quizEnded, setQuizEnded] = useState<boolean>(false)
-
     useEffect(() => {
         const getQuestions = async () => {
-            const formData = new FormData();
-            formData.append("topic", topic); // Assuming `config.category.name` is your topic
-            formData.append("number", Totalquestions);
+            if (MCQs.length === 0) {
+                const formData = new FormData();
+                formData.append("topic", topic); // Assuming `config.category.name` is your topic
+                formData.append("number", Totalquestions.toString());
 
-            try {
-                const response = await fetch("http://127.0.0.1:5000/getmcq/", {
-                    method: "POST",
-                    body: formData,
-                });
-                const data: any = await response.json();
-
-                if (response.ok) {
-                    let formattedResults = data.mcqs.map((e: any) => ({
-                        ...e,
-                        answers: [...e.options, e.answer]
-                            .map((value) => ({ value, sort: Math.random() }))
-                            .sort((a, b) => a.sort - b.sort)
-                            .map(({ value }) => value),
-                        correct_answer: e.answer, // Ensure the key names match your frontend expectations
-                    }));
-                    localStorage.setItem('McqQuiz', JSON.stringify(formattedResults))
-                    setMCQs(formattedResults);
-                } else {
-                    throw new Error(data.message || "Failed to fetch questions");
+                try {
+                    const response = await fetch("http://localhost:8000/getmcq/", {
+                        method: "POST",
+                        body: formData,
+                    });
+                    const data: any = await response.json();
+                    console.log(data)
+                    if (response.ok) {
+                        let formattedResults = data.map((e: any) => ({
+                            ...e,
+                            answers: [...e.options, e.answer]
+                                .map((value) => ({ value, sort: Math.random() }))
+                                .sort((a, b) => a.sort - b.sort)
+                                .map(({ value }) => value),
+                            correct_answer: e.answer, // Ensure the key names match your frontend expectations
+                        }));
+                        // localStorage.setItem('McqQuiz-PDF', JSON.stringify(formattedResults))
+                        console.log(formattedResults)
+                        setMCQs(formattedResults);
+                    } else {
+                        throw new Error(data.message || "Failed to fetch questions");
+                    }
+                } catch (error) {
+                    console.error("Error fetching questions:", error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error("Error fetching questions:", error);
-            } finally {
-                setLoading(false);
             }
         }
-        let existingData: any = localStorage.getItem('McqQuiz')
-        const parsedData: any = JSON.parse(existingData)
-        if (parsedData !== null) setMCQs(parsedData)
-        else if (topic !== null) getQuestions()
+        // let existingData: any = localStorage.getItem('McqQuiz-PDF')
+        // const parsedData: any = JSON.parse(existingData)
+        // if (parsedData !== null) setMCQs(parsedData.mcq)
+        if (topic.length !== 0) getQuestions()
     }, [topic, Totalquestions])
 
     const answerCheck = (ans: string) => {
@@ -76,6 +99,7 @@ const Page = () => {
         }
         setAnswer(ans);
     };
+
     const handleNext = () => {
         setAnswer("");
         let remainingQuestions = [...MCQs];
@@ -83,27 +107,8 @@ const Page = () => {
         if (remainingQuestions.length === 0) setQuizEnded(true)
         setMCQs([...remainingQuestions]);
     };
-
     return (
-        <section className="flex relative flex-col justify-center  p-20 ">
-            <Breadcrumb className='absolute top-5 left-8'>
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/home/Quiz">Quiz</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        {quizEnded === true ? (
-                            <BreadcrumbPage>Final Score</BreadcrumbPage>
-                        ) : quizStarted === false ? (
-                            <BreadcrumbPage>{topic} Quiz</BreadcrumbPage>
-                        ) : (
-                            <BreadcrumbPage>{`Question #${Totalquestions != null && Number(Totalquestions) - MCQs.length + 1}`}</BreadcrumbPage>
-                        )}
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
-
+        <section className="flex relative flex-col justify-center  p-10 ">
             {MCQs?.length && quizStarted === true ? (
                 <div className='w-full flex items-center gap-2'>
                     <h1 className="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl">
@@ -120,17 +125,17 @@ const Page = () => {
                 </div>
             ) : null}
 
-            {!QuizLoad && !!MCQs?.length && (
+            {/* {!QuizLoad && !!MCQs?.length && (
                 <p className="text-2xl ">Score: {score}</p>
-            )}
+            )} */}
 
             {quizStarted === false && (
                 <div className="flex w-full flex-col justify-center items-center gap-5">
-                    <h1 className="mt-10 w-[60%] text-center font-bold text-2xl">
+                    <h1 className="mt-10 w-[85%] text-center font-bold text-2xl">
                         Engage your mind with interactive quizzes. Fun, learning, and challenges await!
                     </h1>
                     <h1 className='text-xl'>{topic} Quiz Challenge | {Totalquestions} MCQs</h1>
-                    <button
+                    <button hidden={MCQs.length==0}
                         onClick={(e) => {
                             setQuizStarted(true)
                         }}
@@ -147,8 +152,9 @@ const Page = () => {
             )}
 
             {!MCQs && <p>loading...</p>}
-            {MCQs && MCQs?.length !== 0 && quizStarted === true && (
-                <section className="my-10 pb-10 w-[90%] rounded-lg flex flex-col justify-center">
+
+            {MCQs && MCQs.length !== 0 && quizStarted === true && (
+                <section className="my-10 pb-10 w-[100%] rounded-lg flex flex-col justify-center">
                     <h4 className="mb-4 text-xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-3xl ">
                         {MCQs[0].question}
                     </h4>
@@ -160,7 +166,7 @@ const Page = () => {
                             {MCQs[0].answers.map((e: string, idx: number) => {
                                 return (
                                     <div className={cn(
-                                        "w-[40%] my-2 cursor-pointer  text-gray-800 font-semibold py-3 px-4   rounded-lg flex items-center space-x-2",
+                                        "w-[80%] my-2 cursor-pointer  text-gray-800 font-semibold py-3 px-4   rounded-lg flex items-center space-x-2",
                                         {
                                             "!bg-blue-600": answer && e === MCQs[0].correct_answer,
                                             "!bg-red-600": answer && e !== MCQs[0].correct_answer,
@@ -191,11 +197,11 @@ const Page = () => {
             {quizEnded === true && (
                 <div className='w-full flex flex-col gap-4'>
                     <h1>Your Score: {score}/{Totalquestions}</h1>
-                    <Button onClick={(e => router.push('/home/Quiz'))} className="bg-white mt-5 hover:bg-gray-100 text-gray-800 font-semibold py-2 px-10 border border-gray-400 rounded shadow max-w-[200px]">Go to Main Page</Button>
+                    <Button onClick={(e )=> setCurrArea(-1) } className="bg-white mt-5 hover:bg-gray-100 text-gray-800 font-semibold py-2 px-10 border border-gray-400 rounded shadow max-w-[200px]">Close it</Button>
                 </div>
             )}
         </section>
     )
 }
 
-export default Page
+export default Quiz

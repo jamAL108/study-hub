@@ -141,5 +141,66 @@ export const getAllchats = async (user_id: string) => {
     return { success: true, data: vidChat }
 }
 
+export const getAllDocuments = async (user_id: string) => {
+    const supabase = clientConnectionWithSupabase()
+    let { data: vidChat, error } = await supabase
+        .from('vidChat-Chats')
+        .select("*")
+        .eq('user_id', user_id)
+    console.log(error)
+    console.log(vidChat)
+    if (error !== null) return { success: false }
+    return { success: true, data: vidChat }
+}
 
 
+
+export const AddVideoInSupabase = async (uuid: any, selectedFile: any, userId: any) => {
+    const supabase = clientConnectionWithSupabase()
+    const result: any = await supabase.storage.from('StudyHub_videos').upload(`${userId}/${uuid}.pdf`, selectedFile);
+    console.log(result)
+    if (result?.error !== null) {
+        return { success: false, error: result.error.message }
+    } else {
+        const { data, error } = await supabase
+            .from('studyHubPDF')
+            .insert([
+                { name: selectedFile.name, id: uuid, user_id: userId },
+            ])
+            .select()
+        console.log(error)
+        console.log(data)
+        if (error === null) return { success: false }
+        return { success: true }
+    }
+}
+
+
+export const GetVideoFromSupabase = async (uuid: any, userId: any) => {
+    const supabase = clientConnectionWithSupabase()
+    let { data: chat_share, error }: any = await supabase
+        .from('studyHubPDF')
+        .select("*")
+        .eq('user_id', userId)
+        .eq('id', uuid)
+    console.log(chat_share)
+    if (error !== null) return { success: false, error: error.message }
+    else return { success: true, data: chat_share[0] }
+}
+
+
+
+export const updatePDFChat = async (chats: any, id: any) => {
+    const supabase = clientConnectionWithSupabase()
+    console.log(chats)
+    console.log(id)
+    const { data: updateData, error: updateError }: any = await supabase
+        .from('studyHubPDF')
+        .update({ chats: chats })
+        .eq('id', id)
+        .select()
+    console.log(updateData)
+    console.log(updateError)
+    if (updateError !== null) return { success: false, error: updateError.message }
+    return { success: true }
+}

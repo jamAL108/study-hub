@@ -31,6 +31,10 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import SessionNotFoundComp from '@/components/sessionNotFound'
+import { Loader2 } from "lucide-react"
+import { v4 as uuidv4 } from 'uuid';
+import { AddVideoInSupabase } from '@/api'
+
 
 type FileState = Blob | null;
 
@@ -180,23 +184,6 @@ const Translate = () => {
     };
 
 
-    // const timery = debounce(() => {
-    //     API();
-    // }, 800);
-
-    // const handlesubmit = async () => {
-
-    // };
-
-    function debounce(func: () => void, delay: number): () => void {
-        let timer: NodeJS.Timeout | null = null;
-
-        return function (): void {
-            if (timer) clearTimeout(timer);
-            timer = setTimeout(func, delay);
-        };
-    }
-
     const API = async () => {
         setrequest(true);
         if (selectedFile) {
@@ -215,14 +202,42 @@ const Translate = () => {
                 }
                 const success = response.ok;
                 console.log(success)
+                setrequest(false);
+                storeBlobInSessionStorage()
                 // onUploadSuccess(success); // Notify parent component about the upload success status
             } catch (error) {
                 console.error('Error sending PDF to server:', error);
+                setrequest(false);
                 // onUploadSuccess(false); // Assume failure on catch
             }
         }
     };
 
+
+    const storeBlobInSessionStorage = () => {
+        if (selectedFile) {
+            const reader = new FileReader();
+            reader.onload = (event: ProgressEvent<FileReader>) => {
+                if (event.target?.result) {
+                    const base64String = (event.target.result as string).split(",")[1];
+                    localStorage.setItem("StudyHubPDF", base64String);
+                    const uuid = generateUUID()
+                    AddVideoInSupabase(uuid, selectedFile , user.id)
+                    router.push(`/home/docxAI/${uuid}`)
+                }
+            };
+            reader.readAsDataURL(selectedFile);
+        } else {
+            console.error("No Blob data available to store.");
+        }
+    };
+
+
+    const generateUUID = () => {
+        const newUUID = uuidv4();
+        console.log('Generated UUID:', newUUID);
+        return newUUID;
+    };
 
     function truncateString(str: string, maxLength = 19) {
         if (str.length > maxLength) {
@@ -426,7 +441,9 @@ const Translate = () => {
                                         e.stopPropagation();
                                     }}
                                 >
-                                    <Button onClick={API} className="w-full mx-7 hover:bg-white/70  bg-white text-black">Upload Video</Button>
+                                    <Button disabled={request} onClick={API} className="w-full mx-7 hover:bg-white/70  bg-white text-black">
+                                        {request === true && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        Upload Video</Button>
                                 </motion.div>
                             </>
                         )}
