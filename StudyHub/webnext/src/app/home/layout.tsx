@@ -73,7 +73,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <div className="flex h-full max-h-screen flex-col gap-2 relative">
                     <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                         <Link href="/" className="flex items-center gap-2 font-semibold">
-                            <Image src='/images/vidchat1.png' alt='qwerty' width={150} height={25} className='select-none ml-[-10px]' />
+                            <Image src='/images/logoStud.png' alt='qwerty' width={150} height={25} className='select-none' />
                         </Link>
                     </div>
                     <div className="flex-1">

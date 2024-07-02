@@ -113,6 +113,8 @@ const Page = ({ params }: {
 
     const API = async (url: string) => {
         if (url) {
+            const resp = await fetch('http://localhost:8000/resetpinecone')
+            console.log(await resp.json());
             const response = await fetch(url);
             console.log(url)
             const blob = await response.blob();

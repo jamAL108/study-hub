@@ -37,7 +37,7 @@ const Navbar: React.FC<any> = (props) => {
         <div className='w-full flex justify-center'>
             <div className='w-[min(90vw,1400px)] py-3  flex justify-between items-center'>
                 <div className='flex items-center gap-16'>
-                    <Image src='/images/vidchat1.png' alt='qwerty' width={160} height={32} className='select-none' />
+                    <Image src='/images/logoStud.png' alt='qwerty' width={160} height={32} className='select-none px-10' />
                     {loader ? (
                         <div className='flex justify-center text-sm items-center gap-10 font-[450]'>
                             <Skeleton className="h-4 w-[90px]" />

@@ -9,7 +9,6 @@ import SessionNotFoundComp from '@/components/sessionNotFound'
 import checkUserAuthClient from '@/auth/getUserSession'
 import { useRouter } from 'next/navigation';
 const Page = () => {
-
     const { toast } = useToast()
     const router = useRouter()
     const [extractedText, setExtractedText] = useState<string>('')

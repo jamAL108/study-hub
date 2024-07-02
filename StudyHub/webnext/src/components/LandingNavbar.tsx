@@ -10,7 +10,7 @@ const Navbar = () => {
     return (
         <div className='w-full flex justify-center'>
             <div className='w-[min(90vw,1400px)] py-2 flex justify-between items-center'>
-                <Image src='/images/vidchat1.png' alt='qwerty' width={160} height={32} className='select-none' />
+                <Image src='/images/logoStud.png' alt='qwerty' width={160} height={32} className='select-none' />
                 <div className='flex justify-center pl-[100px] text-sm items-center gap-10 font-[450]'>
                     <h2>Product</h2>
                     <h2>About</h2>

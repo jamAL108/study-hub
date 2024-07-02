@@ -414,7 +414,7 @@ export function GlobeDemo() {
           <h2 className="text-center text-xl md:text-4xl font-bold">
             Connecting....
           </h2>
-          <p className="text-center text-base md:text-lg font-normal text-neutral-700 max-w-md mt-2 mx-auto">
+          <p className="text-center text-base md:text-lg font-normal text-muted-foreground max-w-md mt-2 mx-auto">
             Connecting students with cutting edge educational resources and mentors for ease of education access
           </p>
         </motion.div>

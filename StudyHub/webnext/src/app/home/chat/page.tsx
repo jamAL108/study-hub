@@ -43,7 +43,7 @@ import {
 import { getAllDocuments, getAllchats } from '@/api'
 import { Skeleton } from '@/components/ui/skeleton'
 import RowComponent from './rowComponent'
-
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import DocuementRow from './documentRowComp'
 
 const Dashboard = () => {
@@ -92,6 +92,16 @@ const Dashboard = () => {
         return <SessionNotFoundComp />
     }
 
+    const geminiTesting = async () => {
+        const genAI = new GoogleGenerativeAI("AIzaSyBgxIGmdZehdOaaZL4lZn-jNx5WBF4Wdhw");
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { responseMimeType: 'application/json' } })
+
+        const prompt = 'List 5 office supplies for my e-commerce website, with this schema: { "Title": str, "Description": str, "Category": str, "Subcategory": str, "EstimatedPrice": str}'
+
+        const response: any = await model.generateContent(prompt)
+        console.log(response)
+    }
+
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 h-full">
             <Tabs defaultValue="Youtube">
@@ -125,7 +135,7 @@ const Dashboard = () => {
                                 </DropdownMenuCheckboxItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button onClick={(e) => router.push('/explore')} size="sm" className="h-8 gap-1">
+                        <Button onClick={(e) => geminiTesting()} size="sm" className="h-8 gap-1">
                             <PlusCircle className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                                 New chat
