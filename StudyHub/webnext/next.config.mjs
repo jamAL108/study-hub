@@ -3,7 +3,10 @@ const nextConfig = {
   images: {
     domains: ["i.ytimg.com"],
   },
-  reactStrictMode: false
+  reactStrictMode: false,
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 export default nextConfig;

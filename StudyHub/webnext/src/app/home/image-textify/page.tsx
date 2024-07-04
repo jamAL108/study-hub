@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react'
 import { CopyBlock, dracula, far, arta, atomOneDark } from "react-code-blocks";
 import "./styles.css";
 import Link from 'next/link';
+import { Badge } from "@/components/ui/badge"
 
 const Page = () => {
 
@@ -89,14 +90,14 @@ const Page = () => {
       setLoader(false)
       return;
     }
-    const local: any = localStorage.getItem('TPP')
-    const parsed: any = JSON.parse(local)
-    if (parsed !== null) {
-      console.log(parsed)
-      setLoader(false)
-      setData(parsed)
-      return;
-    }
+    // const local: any = localStorage.getItem('TPP')
+    // const parsed: any = JSON.parse(local)
+    // if (parsed !== null) {
+    //   console.log(parsed)
+    //   setLoader(false)
+    //   setData(parsed)
+    //   return;
+    // }
     try {
       const formData = new FormData();
       formData.append('image', image);
@@ -136,14 +137,14 @@ const Page = () => {
 
   return (
     <div className="w-[min(90vw,1100px)] h-auto min-h-[100px] flex flex-col justify-start items-center mb-[8rem] transDiv">
-      <div className="font-pop w-[80%] mt-8 flex justify-center py-4 flex-col gap-4">
-        <h1 className="text-[1.37rem] font-[500]">ImageTextify - Turn Your Images into Text Instantly!</h1>
+      <div className="font-pop base:w-full bl:w-[80%] mt-8 flex justify-center base:items-center bl:items-start py-4 flex-col gap-4">
+        <h1 className="text-[1.37rem] font-[500] base:w-[85%] bl:auto">ImageTextify - Turn Your Images into Text Instantly!</h1>
         <p className="text-[0.8rem] w-[85%] text-muted-foreground">
-          Transform your images into text effortlessly with ImageTextify. Our service allows you to upload an image and quickly receive the text content extracted from it, making it easy to digitize and utilize information from photos and scanned documents. Perfect for students, professionals, and anyone needing quick text extraction from images..
+        Effortlessly convert images to text with ImageTextify. Upload your image and get the text instantly. Perfect for quick text extraction from photos and documents.
         </p>
       </div>
-      <div className='w-full flex gap-10 py-10 px-28'>
-        <div className='w-[50%] flex flex-col gap-5'>
+      <div className='w-full flex base:flex-col bl:flex-row gap-10 py-10 base:px-5 bl:px-28'>
+        <div className='base:w-full bl:w-[50%] flex flex-col gap-5'>
           <div className="flex flex-col gap-3 ">
             <Label htmlFor="topic">Upload Image</Label>
             <div className='border-2 border-dashed w-[280px] rounded-lg h-[200px] relative flex justify-center items-center px-8' >
@@ -225,16 +226,18 @@ const Page = () => {
         </div>
         {
           Data !== null && (
-            <div className='w-[500px] flex flex-col gap-4 items-center '>
+            <div className='base:w-full bl:w-[500px] flex flex-col gap-4 items-center base:mt-10 bl:mt-0'>
+              <div className='w-full flex items-center'>
+              <Badge>RESULT</Badge>
+              </div>
               <h2>{Data.description}</h2>
               {Data.code.length !== 0 && (
-                <div className='px-5 py-5 demo'>
+                <div className='py-5 w-full demo'>
                   <CopyBlock
                     language={Data.codelanguage}
                     text={Data.code}
                     showLineNumbers={true}
                     theme={arta}
-                    wrapLines={true}
                     codeBlock
                   />
                 </div>

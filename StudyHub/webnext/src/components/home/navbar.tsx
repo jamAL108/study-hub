@@ -1,27 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from "next/link"
 import {
-    Bell,
     CircleUser,
-    Home,
-    LineChart,
     Menu,
-    Package,
-    Package2,
-    Search,
-    ShoppingCart,
-    Users,
+    Fullscreen
 } from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -30,15 +14,26 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { usePathname } from 'next/navigation'
+import {
+    MessagesSquare,
+    FileText
+} from "lucide-react"
+import { MdOutlineExplore } from "react-icons/md";
+import { MessageCircleQuestion } from 'lucide-react';
+import Image from 'next/image'
 
 const Navbar = () => {
+    const pathname = usePathname()
+    const [sheetOpen, setSheetOpen] = useState<boolean>(false)
+
     return (
-        <header className="base:flex bl:hidden h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-            <Sheet>
+        <header className="base:flex bl:hidden h-14 py-6 pt-7 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen} >
                 <SheetTrigger asChild>
                     <Button
+                        onClick={(e) => setSheetOpen(true)}
                         variant="outline"
                         size="icon"
                         className="shrink-0 md:hidden"
@@ -47,52 +42,52 @@ const Navbar = () => {
                         <span className="sr-only">Toggle navigation menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="flex flex-col">
-                    <nav className="grid gap-2 text-lg font-medium">
+                <SheetContent side="left" className="flex flex-col py-8">
+                    <div className="flex h-14 items-center border-b lg:h-[60px] lg:px-6">
+                        <Link href="/" className="flex items-center gap-2 font-semibold">
+                            <Image src='/images/logoStud.png' alt='qwerty' width={140} height={22} className='select-none' />
+                        </Link>
+                    </div>
+                    <nav className="grid items-start text-sm font-medium gap-1">
                         <Link
-                            href="#"
-                            className="flex items-center gap-2 text-lg font-semibold"
+                            onClick={(e) => setSheetOpen(false)}
+                            href="/home/chat"
+                            className={`flex items-center gap-3 ${pathname ? pathname.includes('chat') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
                         >
-                            <Package2 className="h-6 w-6" />
-                            <span className="sr-only">Acme Inc</span>
+                            <MessagesSquare className="h-4 w-4" />
+                            Chat History
                         </Link>
                         <Link
-                            href="#"
-                            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                            onClick={(e) => setSheetOpen(false)}
+                            href="/home/docxAI"
+                            className={`flex items-center gap-3 ${pathname ? pathname.includes('docxAI') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
                         >
-                            <Home className="h-5 w-5" />
-                            Dashboard
+                            <FileText className="h-4 w-4" />
+                            DocsAI{" "}
                         </Link>
                         <Link
-                            href="#"
-                            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
+                            onClick={(e) => setSheetOpen(false)}
+                            href="/home/Quiz"
+                            className={`flex items-center gap-3 ${pathname ? pathname.includes('Quiz') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
                         >
-                            <ShoppingCart className="h-5 w-5" />
-                            Orders
-                            <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                                6
-                            </Badge>
+                            <MessageCircleQuestion className="h-4 w-4" />
+                            Quiz
                         </Link>
                         <Link
-                            href="#"
-                            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                            onClick={(e) => setSheetOpen(false)}
+                            href="/explore"
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                         >
-                            <Package className="h-5 w-5" />
-                            Products
+                            <MdOutlineExplore className="h-4 w-4" />
+                            Explore
                         </Link>
                         <Link
-                            href="#"
-                            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                            onClick={(e) => setSheetOpen(false)}
+                            href="/home/image-textify"
+                            className={`flex items-center gap-3 ${pathname ? pathname.includes('image-textify') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2.5  transition-all hover:text-primary text-sm font-medium `}
                         >
-                            <Users className="h-5 w-5" />
-                            Customers
-                        </Link>
-                        <Link
-                            href="#"
-                            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                        >
-                            <LineChart className="h-5 w-5" />
-                            Analytics
+                            <Fullscreen className="h-4 w-4" />
+                            Image Textify
                         </Link>
                     </nav>
                 </SheetContent>

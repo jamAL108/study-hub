@@ -59,20 +59,20 @@ const Dashboard = () => {
     }
 
     return (
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className="flex flex-1 flex-col gap-4 p-4 items-center lg:gap-6 lg:p-6">
             <div className="flex items-center">
             </div>
             <div
-                className="flex flex-1 items-start mt-20 justify-center rounded-lg shadow-sm" x-chunk="dashboard-02-chunk-1"
+                className="base:w-[100%] bl:w-[70%] flex flex-1 items-start mt-20 justify-center rounded-lg shadow-sm" x-chunk="dashboard-02-chunk-1"
             >
-                <Card className="border-none">
+                <Card className="border-none base:w-[100%] bl:auto">
                     <CardHeader>
                         <CardTitle>Knowledge Card</CardTitle>
-                        <CardDescription className='w-[70%]'>Challenge yourself with quick, engaging MCQs. Tap to check your answers instantly.</CardDescription>
+                        <CardDescription className='bl:w-[70%]'>Challenge yourself with quick, engaging MCQs. Tap to check your answers instantly.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form>
-                            <div className="flex w-full items-center gap-8">
+                            <div className="flex base:flex-col bl:flex-row w-full bl:items-center gap-8">
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="topic">Topic</Label>
                                     <Input id="name" value={topic} onChange={(e) => {

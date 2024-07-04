@@ -1,14 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { cn } from "@/lib/utils";
-
 import { useSearchParams } from 'next/navigation'
 import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation';
-
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -33,20 +31,24 @@ const Page = () => {
 
     useEffect(() => {
         const getQuestions = async () => {
-            const formData = new FormData();
-            formData.append("topic", topic); // Assuming `config.category.name` is your topic
-            formData.append("number", Totalquestions);
-
+            const obj = {
+                topic,
+                number: Totalquestions
+            }
+            console.log(obj)
             try {
-                const response = await fetch("http://127.0.0.1:5000/getmcq/", {
+                const response = await fetch("http://localhost:3000/api/getQuiz", {
                     method: "POST",
-                    body: formData,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(obj),
                 });
                 const data: any = await response.json();
 
                 if (response.ok) {
                     let formattedResults = data.mcqs.map((e: any) => ({
-                        ...e,
+                        question: e.question,
                         answers: [...e.options, e.answer]
                             .map((value) => ({ value, sort: Math.random() }))
                             .sort((a, b) => a.sort - b.sort)
@@ -55,6 +57,7 @@ const Page = () => {
                     }));
                     localStorage.setItem('McqQuiz', JSON.stringify(formattedResults))
                     setMCQs(formattedResults);
+                    console.log(formattedResults)
                 } else {
                     throw new Error(data.message || "Failed to fetch questions");
                 }
@@ -64,10 +67,11 @@ const Page = () => {
                 setLoading(false);
             }
         }
-        let existingData: any = localStorage.getItem('McqQuiz')
-        const parsedData: any = JSON.parse(existingData)
-        if (parsedData !== null) setMCQs(parsedData)
-        else if (topic !== null) getQuestions()
+        // let existingData: any = localStorage.getItem('McqQuiz')
+        // const parsedData: any = JSON.parse(existingData)
+        // if (parsedData !== null) setMCQs(parsedData)
+        // else if (topic !== null) 
+        getQuestions()
     }, [topic, Totalquestions])
 
     const answerCheck = (ans: string) => {
@@ -85,7 +89,7 @@ const Page = () => {
     };
 
     return (
-        <section className="flex relative flex-col justify-center  p-20 ">
+        <section className="flex relative flex-col bl:justify-center base:p-8 base:pt-14 bl:p-20 ">
             <Breadcrumb className='absolute top-5 left-8'>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -104,9 +108,9 @@ const Page = () => {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            {MCQs?.length && quizStarted === true ? (
-                <div className='w-full flex items-center gap-2'>
-                    <h1 className="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl">
+            {MCQs?.length !== 0 && quizStarted === true ? (
+                <div className='w-full flex items-center gap-2 base:mt-10 bl:mt-0'>
+                    <h1 className="mb-4 text-xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl">
                         {`${topic} Quiz`}
                     </h1>
                     <h1 className='text-white mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl'>|</h1>
@@ -120,25 +124,27 @@ const Page = () => {
                 </div>
             ) : null}
 
-            {!QuizLoad && !!MCQs?.length && (
+            {MCQs?.length && quizStarted === true && (
                 <p className="text-2xl ">Score: {score}</p>
             )}
 
             {quizStarted === false && (
-                <div className="flex w-full flex-col justify-center items-center gap-5">
-                    <h1 className="mt-10 w-[60%] text-center font-bold text-2xl">
+                <div className="flex w-full flex-col base:mt-10 bl:mt-0 bl:justify-center items-center gap-5">
+                    <h1 className="mt-10 base:hidden bl:flex w-[60%] text-center font-bold text-2xl">
                         Engage your mind with interactive quizzes. Fun, learning, and challenges await!
                     </h1>
                     <h1 className='text-xl'>{topic} Quiz Challenge | {Totalquestions} MCQs</h1>
-                    <button
-                        onClick={(e) => {
-                            setQuizStarted(true)
-                        }}
-                        className="bg-white hover:bg-gray-100  text-gray-800 font-semibold py-2 px-10 border border-gray-400 rounded shadow"
-                    >
-                        Let&apos;s begin
-                    </button>
-                    <div className='pt-16 flex flex-col w-[400px] gap-5 items-center justify-center'>
+                    {QuizLoad === false && (
+                        <button
+                            onClick={(e) => {
+                                setQuizStarted(true)
+                            }}
+                            className="bg-white hover:bg-gray-100  text-gray-800 font-semibold py-2 px-10 border border-gray-400 rounded shadow"
+                        >
+                            Let&apos;s begin
+                        </button>
+                    )}
+                    <div className='pt-16 flex flex-col base:w-full bl:w-[400px] gap-5 items-center justify-center'>
                         {[0, 0, 0, 0].map((item, keey) => (
                             <Skeleton key={keey} className='h-[30px] w-full' />
                         ))}
@@ -148,8 +154,8 @@ const Page = () => {
 
             {!MCQs && <p>loading...</p>}
             {MCQs && MCQs?.length !== 0 && quizStarted === true && (
-                <section className="my-10 pb-10 w-[90%] rounded-lg flex flex-col justify-center">
-                    <h4 className="mb-4 text-xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-3xl ">
+                <section className="my-10  pb-10 baseLw-full bl:w-[90%] rounded-lg flex flex-col justify-center">
+                    <h4 className="mb-4 text-xl base:font-bold bl:font-extrabold leading-none tracking-tight md:text-2xl lg:text-3xl ">
                         {MCQs[0].question}
                     </h4>
                     <div className="flex flex-col w-full px-4 gap-3">
@@ -160,7 +166,7 @@ const Page = () => {
                             {MCQs[0].answers.map((e: string, idx: number) => {
                                 return (
                                     <div className={cn(
-                                        "w-[40%] my-2 cursor-pointer  text-gray-800 font-semibold py-3 px-4   rounded-lg flex items-center space-x-2",
+                                        "base:w-full bl:w-[40%] my-2 cursor-pointer  text-gray-800 font-semibold py-3 px-4   rounded-lg flex items-center space-x-2",
                                         {
                                             "!bg-blue-600": answer && e === MCQs[0].correct_answer,
                                             "!bg-red-600": answer && e !== MCQs[0].correct_answer,

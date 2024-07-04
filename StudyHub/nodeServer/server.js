@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import multer from "multer";
 import cors from "cors";
 import { marked } from "marked";
-import { sleep } from "openai/core.mjs";
 
 dotenv.config();
 
@@ -57,15 +56,11 @@ app.post("/generate", upload.single("image"), async (req, res) => {
         },
       },
     ];
-
     const result = await geminiModel.generateContent({
       contents: [{ role: "user", parts: promptConfig }],
     });
-
     const response = await result.response;
     const responseText = await response.text();
-
-    sleep(1000)
     console.log(responseText);
     return res.json({
       jsonData: responseText,
