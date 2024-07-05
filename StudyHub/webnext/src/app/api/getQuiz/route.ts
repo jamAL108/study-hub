@@ -10,6 +10,11 @@ const geminiModel = genAI.getGenerativeModel({
 });
 
 export async function POST(req: NextRequest) {
+    // Response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    // Response.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    // Response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    // Response.setHeader('Access-Control-Allow-Credentials', true);
+
     const data = await req.json();
     const prompt = `Always follow this format (question : Question generated, answer : correct answer, option1: wrong option , option2 : wrong option, option3: wrong options), ${data.topic}\n Generate ${data.number} MCQ questions from the above context. Don't repeat these questions. Keep in mind that the generated options should not be more than 15 words. The difficulty of questions should be moderate and give response inside []`;
 

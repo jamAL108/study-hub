@@ -11,6 +11,7 @@ import { CopyBlock, dracula, far, arta, atomOneDark } from "react-code-blocks";
 import "./styles.css";
 import Link from 'next/link';
 import { Badge } from "@/components/ui/badge"
+import { RotateCcw } from 'lucide-react';
 
 const Page = () => {
 
@@ -22,6 +23,7 @@ const Page = () => {
 
 
   const handleFileChange = (e: any): void => {
+    setData(null)
     // const file = e.target.files ? e.target.files[0] : null;
     const file: File | null = e.target.files ? e.target.files[0] : null;
     if (file) {
@@ -67,6 +69,7 @@ const Page = () => {
   };
 
   const handleFiles = (files: FileList): void => {
+    setData(null)
     const file = files[0];
     if (file) {
       setimage(file)
@@ -85,6 +88,7 @@ const Page = () => {
 
 
   const handleSubmit = async () => {
+    setData(null)
     setLoader(true)
     if (!selectedFile) {
       setLoader(false)
@@ -101,7 +105,7 @@ const Page = () => {
     try {
       const formData = new FormData();
       formData.append('image', image);
-      fetch('http://localhost:4000/generate', {
+      fetch('https://studyhub-backend-server.vercel.app/generate', {
         method: 'POST',
         body: formData,
         headers: {
@@ -140,7 +144,7 @@ const Page = () => {
       <div className="font-pop base:w-full bl:w-[80%] mt-8 flex justify-center base:items-center bl:items-start py-4 flex-col gap-4">
         <h1 className="text-[1.37rem] font-[500] base:w-[85%] bl:auto">ImageTextify - Turn Your Images into Text Instantly!</h1>
         <p className="text-[0.8rem] w-[85%] text-muted-foreground">
-        Effortlessly convert images to text with ImageTextify. Upload your image and get the text instantly. Perfect for quick text extraction from photos and documents.
+          Effortlessly convert images to text with ImageTextify. Upload your image and get the text instantly. Perfect for quick text extraction from photos and documents.
         </p>
       </div>
       <div className='w-full flex base:flex-col bl:flex-row gap-10 py-10 base:px-5 bl:px-28'>
@@ -217,9 +221,16 @@ const Page = () => {
                 }} className='px-4 py-2' variant='outline' >
                   Change Image
                 </Button>
-                <Button disabled={loader} onClick={handleSubmit} className='px-8 py-2'>
-                  Upload
-                </Button>
+                {Data === null ? (
+                  <Button disabled={loader} onClick={handleSubmit} className='px-8 py-2'>
+                    Upload
+                  </Button>
+                ) : (
+                  <Button disabled={loader} onClick={handleSubmit} className='px-8 py-2'>
+                    <RotateCcw className='mr-2 h-4 w-4' />
+                    Retry
+                  </Button>
+                )}
               </div>
             )
           }
@@ -228,7 +239,7 @@ const Page = () => {
           Data !== null && (
             <div className='base:w-full bl:w-[500px] flex flex-col gap-4 items-center base:mt-10 bl:mt-0'>
               <div className='w-full flex items-center'>
-              <Badge>RESULT</Badge>
+                <Badge>RESULT</Badge>
               </div>
               <h2>{Data.description}</h2>
               {Data.code.length !== 0 && (

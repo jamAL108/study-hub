@@ -37,7 +37,7 @@ const Page = () => {
             }
             console.log(obj)
             try {
-                const response = await fetch("http://localhost:3000/api/getQuiz", {
+                const response = await fetch("https://study-hub-frontend.vercel.app/api/getQuiz", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
