@@ -39,7 +39,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Skeleton } from '@/components/ui/skeleton'
 import QuizSession from './quiz'
@@ -50,6 +51,12 @@ const Page = ({ params }: {
     }
 }) => {
     const router = useRouter()
+
+    const { toast } = useToast()
+
+
+
+
     const { id } = params
     const [pdfFile, setPdfFile] = useState<any>(null)
     const [PdfLink, setPdfLink] = useState<string>("")
@@ -102,10 +109,17 @@ const Page = ({ params }: {
         setPdfLink(`https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
         const ress: any = await GetVideoFromSupabase(id, userData.id)
         console.log(ress)
-        if (ress.success === true && Details !== null) {
+        if (ress.success === true && res.data !== null && Details !== null) {
             console.log(ress.data)
             setDetails(ress.data)
             setChats(ress.data.chats)
+        } else {
+            toast({
+                title: "Some Error in Server",
+                description: "Error in server , try again later",
+                variant: 'destructive'
+            })
+            return
         }
         API(`https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
         setUser(res.data.session.user)
@@ -115,6 +129,14 @@ const Page = ({ params }: {
         if (url) {
             const resp = await fetch('http://localhost:8000/resetpinecone')
             console.log(await resp.json());
+            if (!resp.ok) {
+                toast({
+                    title: "Some Error in Server",
+                    description: "Error in server , try again later",
+                    variant: 'destructive'
+                })
+                return
+            }
             const response = await fetch(url);
             console.log(url)
             const blob = await response.blob();

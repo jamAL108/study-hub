@@ -107,7 +107,6 @@ const Page = () => {
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-
             {MCQs?.length !== 0 && quizStarted === true ? (
                 <div className='w-full flex items-center gap-2 base:mt-10 bl:mt-0'>
                     <h1 className="mb-4 text-xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl">
@@ -145,7 +144,7 @@ const Page = () => {
                         </button>
                     )}
                     <div className='pt-16 flex flex-col base:w-full bl:w-[400px] gap-5 items-center justify-center'>
-                        {[0, 0, 0, 0].map((item, keey) => (
+                        {[1, 2, 4, 7].map((item, keey) => (
                             <Skeleton key={keey} className='h-[30px] w-full' />
                         ))}
                     </div>
