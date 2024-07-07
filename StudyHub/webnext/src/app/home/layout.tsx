@@ -140,7 +140,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                 <PopoverContent className='w-[100%] mr-[40px] mb-[10px] px-0 pb-0  border-[2px] flex flex-col  rounded-xl '>
                                     <div className='w-full px-4 flex gap-3 pb-4 border-b-[2px] items-center'>
                                         <div className='userIcon w-8 h-8 flex justify-center items-center'>
-                                            {user.email[0]}
+                                            {user ? user.email[0] : 'U'}
                                         </div>
                                         <p className='tracking-wider'>{user ? ShrinkTitle(user.email, 18) : ''}</p>
                                     </div>
@@ -190,7 +190,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 </div>
             </div>
             <div className="flex flex-col overflow-y-auto h-[100vh]">
-                <Navbar />
+                <Navbar user={user} loader={loader} />
                 {children}
             </div>
         </div>

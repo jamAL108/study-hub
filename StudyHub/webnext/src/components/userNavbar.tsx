@@ -28,6 +28,20 @@ import { Loader2 } from "lucide-react"
 import { SignOutWithSupabase } from '@/auth'
 import Link from 'next/link';
 import { ShrinkTitle } from '@/utils'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
+
+
+
 const Navbar: React.FC<any> = (props) => {
     const { loader, user } = props
     const router = useRouter()
@@ -35,7 +49,7 @@ const Navbar: React.FC<any> = (props) => {
     const [deleteLoader, setDeleteloader] = useState<boolean>(false)
     return (
         <div className='w-full flex justify-center'>
-            <div className='w-[min(90vw,1400px)] py-3  flex justify-between items-center'>
+            <div className='w-[min(90vw,1400px)] base:py-8 bl:py-3  flex justify-between items-center'>
                 <div className='flex items-center gap-16'>
                     <Image src='/images/logoStud.png' alt='qwerty' width={160} height={32} className='select-none px-10' />
                     {loader ? (
@@ -64,7 +78,7 @@ const Navbar: React.FC<any> = (props) => {
                             <PopoverContent className='absolute px-0 pb-0 right-[-30px] border-[2px] flex flex-col  rounded-xl top-1'>
                                 <div className='w-full px-4 flex gap-3 pb-4 border-b-[2px] items-center'>
                                     <div className='userIcon w-8 h-8 flex justify-center items-center'>
-                                        J
+                                        {user ? user.email[0] : 'U'}
                                     </div>
                                     <p className='tracking-wider'>{user ? ShrinkTitle(user.email, 21) : ''}</p>
                                 </div>

@@ -222,7 +222,7 @@ const Translate = () => {
                     const base64String = (event.target.result as string).split(",")[1];
                     localStorage.setItem("StudyHubPDF", base64String);
                     const uuid = generateUUID()
-                    AddVideoInSupabase(uuid, selectedFile , user.id)
+                    AddVideoInSupabase(uuid, selectedFile, user.id)
                     router.push(`/home/docxAI/${uuid}`)
                 }
             };
@@ -281,18 +281,21 @@ const Translate = () => {
             </AlertDialog>
             <div className="font-pop w-[80%] mt-8 flex justify-center py-4 flex-col gap-4">
                 <h1 className="text-[1.37rem] font-[500]">DocxAI - Unlock Insights from Your Documents</h1>
-                <p className="text-[0.8rem] w-[85%] text-muted-foreground">
+                <p className="base:hidden bl:flex text-[0.8rem] w-[85%] text-muted-foreground">
                     Our app allows you to upload documents for a variety of purposes including summarization, multiple-choice question and answer (MCQA) generation, insights extraction, and referencing Udemy courses.
                     <br />
                     We recommend using DOCX and PPTX formats to ensure the best results. Other file formats may cause formatting issues.
                 </p>
+                <p className="base:flex bl:hidden text-[0.8rem] w-full text-muted-foreground">
+                    Upload documents for summarization, MCQA generation, insights extraction, and Udemy course referencing. Use DOCX and PPTX for optimal results; other formats may have formatting issues.
+                </p>
             </div>
 
             <div
-                className="w-full h-auto flex items-center justify-center base:flex-col md:flex-row 
-      base:gap-20 md:gap-30 mt-20"
+                className="base:w-[300px] bl:w-full h-auto flex items-center justify-center base:flex-col md:flex-row 
+      base:gap-20 md:gap-30 base:mt-10 bl:mt-20"
             >
-                <div className="dark:bg-[transparent] border-dashed border-[2px] border-[ #c9cbe5] flex items-center rounded-md justify-start flex-col dark:border-[rgba(252,252,252,0.2)]  max-w-[480px] h-[300px] roundebox">
+                <div className="dark:bg-[transparent] border-dashed border-[2px] border-[ #c9cbe5] flex items-center rounded-md justify-start flex-col dark:border-[rgba(252,252,252,0.2)] base:mb-10 bl:mb-0 base:w-[300px] bl:w-[330px] max-w-[480px] bl:h-[300px] roundebox">
                     <input
                         type="file"
                         hidden
@@ -313,7 +316,7 @@ const Translate = () => {
                             }
                         }}
                     >
-                        <h1 className="z-1 py-5 w-[96%] text-center text-[#0082C8] font-[640] text-[0.82rem] tracking-wider leading-6">
+                        <h1 className={`${selectedFile===null ? 'inline-block' : 'hidden' }  z-1 py-5 w-[96%] text-center text-[#0082C8] font-[640] text-[0.82rem] tracking-wider leading-6`}>
                             Drop and Drop file PDF/DOCX (recommended) <br /> or <br />
                             Enter the{" "}
                             <span
@@ -371,7 +374,7 @@ const Translate = () => {
 
                         {selectedFile === null && (
                             <Image
-                                className="uploadicon"
+                                className="uploadicon base:mb-5 bl:mb-0"
                                 style={{ transition: "0.5s ease-in-out" }}
                                 width={90}
                                 height={60}
