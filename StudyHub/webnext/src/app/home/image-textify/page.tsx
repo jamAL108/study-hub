@@ -147,7 +147,7 @@ const Page = () => {
           Effortlessly convert images to text with ImageTextify. Upload your image and get the text instantly. Perfect for quick text extraction from photos and documents.
         </p>
       </div>
-      <div className='w-full border border-red-500 flex base:flex-col bl:flex-row gap-10 py-10 base:px-5 bl:px-28'>
+      <div className='w-full flex base:flex-col bl:flex-row gap-10 py-10 base:px-5 bl:px-28'>
         <div className='base:w-full bl:w-[50%] flex flex-col gap-5'>
           <div className="flex flex-col gap-3 ">
             <Label htmlFor="topic">Upload Image</Label>
