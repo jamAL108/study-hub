@@ -140,14 +140,14 @@ const Page = () => {
 
 
   return (
-    <div className="w-[min(90vw,1100px)] h-auto min-h-[100px] flex flex-col justify-start items-center mb-[8rem] transDiv">
+    <div className="base:w-full bl:w-[min(90vw,1100px)] h-auto min-h-[100px] flex flex-col justify-start items-center mb-[8rem] transDiv">
       <div className="font-pop base:w-full bl:w-[80%] mt-8 flex justify-center base:items-center bl:items-start py-4 flex-col gap-4">
         <h1 className="text-[1.37rem] font-[500] base:w-[85%] bl:auto">ImageTextify - Turn Your Images into Text Instantly!</h1>
         <p className="text-[0.8rem] w-[85%] text-muted-foreground">
           Effortlessly convert images to text with ImageTextify. Upload your image and get the text instantly. Perfect for quick text extraction from photos and documents.
         </p>
       </div>
-      <div className='w-full flex base:flex-col bl:flex-row gap-10 py-10 base:px-5 bl:px-28'>
+      <div className='w-full border border-red-500 flex base:flex-col bl:flex-row gap-10 py-10 base:px-5 bl:px-28'>
         <div className='base:w-full bl:w-[50%] flex flex-col gap-5'>
           <div className="flex flex-col gap-3 ">
             <Label htmlFor="topic">Upload Image</Label>
