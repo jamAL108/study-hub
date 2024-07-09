@@ -10,20 +10,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 export const metadata: Metadata = {
   title: "study-hub",
   description: "AI-powered space for enhanced learning",
-  icons: {
-    icon: [
-      {
-        media: '(prefers-color-scheme: light)',
-        url: 'https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/qwertymno/logoStud.png',
-        href: 'https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/qwertymno/logoStud.png',
-      },
-      {
-        media: '(prefers-color-scheme: dark)',
-        url: 'https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/qwertymno/logoStud.png',
-        href: 'https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/qwertymno/logoStud.png',
-      },
-    ],
-  },
 };
 
 export default function RootLayout({
