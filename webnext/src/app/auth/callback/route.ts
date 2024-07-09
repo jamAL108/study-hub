@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const next = searchParams.get('next') ?? '/'
 
   // const origin ='https://thevotum.com'
-  const origin = 'https://vidchat-ai.vercel.app'
+  const origin = 'https://www.study-hub.xyz'
   console.log(origin)
 
   if (code) {
