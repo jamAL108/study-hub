@@ -61,7 +61,6 @@ app.post("/generate", upload.single("image"), async (req, res) => {
     });
     const response = await result.response;
     const responseText = await response.text();
-    console.log(responseText);
     return res.json({
       jsonData: responseText,
     });

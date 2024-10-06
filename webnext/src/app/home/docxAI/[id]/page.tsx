@@ -105,8 +105,7 @@ const Page = ({ params }: {
             return
         }
         const userData: any = res.data.session.user
-        console.log(userData.id)
-        setPdfLink(`https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
+        setPdfLink(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
         const ress: any = await GetVideoFromSupabase(id, userData.id)
         console.log(ress)
         if (ress.success === true && res.data !== null && Details !== null) {

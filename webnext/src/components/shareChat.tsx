@@ -28,7 +28,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 const ShareChat: React.FC<any> = (props) => {
     const { videoMeta, loader, user, chats, extractedText, ChatHomeRow } = props
-    console.log(videoMeta)
     const [shareOpen, setShareOpen] = useState<boolean>(false)
     const [load, setload] = useState<boolean>(false)
     const [alertError, setAlertError] = useState<boolean>(false)
@@ -54,9 +53,7 @@ const ShareChat: React.FC<any> = (props) => {
             chat: chats,
             Date: videoMeta.created_at,
         }
-        console.log(videoMeta)
         const result: any = await publishShareData(objectForProcess)
-        console.log(result);
         if (result.success === true) {
             setload(false)
         } else {

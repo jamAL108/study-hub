@@ -35,7 +35,6 @@ const Page = () => {
                 topic,
                 number: Totalquestions
             }
-            console.log(obj)
             try {
                 const response = await fetch("https://study-hub-frontend.vercel.app/api/getQuiz", {
                     method: "POST",
@@ -57,7 +56,6 @@ const Page = () => {
                     }));
                     localStorage.setItem('McqQuiz', JSON.stringify(formattedResults))
                     setMCQs(formattedResults);
-                    console.log(formattedResults)
                 } else {
                     throw new Error(data.message || "Failed to fetch questions");
                 }

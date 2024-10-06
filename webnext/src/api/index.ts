@@ -8,7 +8,6 @@ export const getVideosBasedOnQuery = async (query: string) => {
         const response = await fetch(`${URL}/searchvideo?q=${query}`)
         const data = await response.json()
         const dat = JSON.parse(data)
-        console.log(dat)
         return { success: true, data: dat.videos }
     } catch (error) {
         console.error('Error:', error)
@@ -21,7 +20,6 @@ export const getVideosBasedOnURL = async (query: string) => {
         const response = await fetch(`${URL}/searchdirecturl?q=${query}`)
         const data = await response.json()
         const dat = JSON.parse(data)
-        console.log(dat)
         return { success: true, data: dat.videos }
     } catch (error) {
         console.error('Error:', error)
@@ -78,7 +76,6 @@ export const GetVideoIntoText = async (videoID: string) => {
         if (response.status === 500) {
             return { success: false, error: "Some Issue With Server" }
         }
-        console.log(data.text)
         return { success: true, text: data.text }
     } catch (error) {
         console.error('Error:', error)
@@ -136,7 +133,6 @@ export const getAllchats = async (user_id: string) => {
         .select("*")
         .eq('user_id', user_id)
     console.log(error)
-    console.log(vidChat)
     if (error !== null) return { success: false }
     return { success: true, data: vidChat }
 }
@@ -148,7 +144,6 @@ export const getAllDocuments = async (user_id: string) => {
         .select("*")
         .eq('user_id', user_id)
     console.log(error)
-    console.log(DocxChats)
     if (error !== null) return { success: false }
     return { success: true, data: DocxChats }
 }
@@ -158,7 +153,6 @@ export const getAllDocuments = async (user_id: string) => {
 export const AddVideoInSupabase = async (uuid: any, selectedFile: any, userId: any) => {
     const supabase = clientConnectionWithSupabase()
     const result: any = await supabase.storage.from('StudyHub_videos').upload(`${userId}/${uuid}.pdf`, selectedFile);
-    console.log(result)
     if (result?.error !== null) {
         return { success: false, error: result.error.message }
     } else {
@@ -169,7 +163,6 @@ export const AddVideoInSupabase = async (uuid: any, selectedFile: any, userId: a
             ])
             .select()
         console.log(error)
-        console.log(data)
         if (error === null) return { success: false }
         return { success: true }
     }
@@ -183,7 +176,6 @@ export const GetVideoFromSupabase = async (uuid: any, userId: any) => {
         .select("*")
         .eq('user_id', userId)
         .eq('id', uuid)
-    console.log(chat_share)
     if (error !== null) return { success: false, error: error.message }
     else return { success: true, data: chat_share[0] }
 }
@@ -192,14 +184,11 @@ export const GetVideoFromSupabase = async (uuid: any, userId: any) => {
 
 export const updatePDFChat = async (chats: any, id: any) => {
     const supabase = clientConnectionWithSupabase()
-    console.log(chats)
-    console.log(id)
     const { data: updateData, error: updateError }: any = await supabase
         .from('studyHubPDF')
         .update({ chats: chats })
         .eq('id', id)
         .select()
-    console.log(updateData)
     console.log(updateError)
     if (updateError !== null) return { success: false, error: updateError.message }
     return { success: true }

@@ -15,9 +15,7 @@ const signupWithEmailPassword = async (formdata: any) => {
         },
     })
     const User = result.data;
-    // console.log(User)
     if (result.data.user !== null) {
-        console.log(result.data.user.id);
         const { data, error } = await supabase
             .from('vidchatUser')
             .insert([

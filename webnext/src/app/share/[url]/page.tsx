@@ -29,7 +29,6 @@ const SharedView = () => {
                 setLoader(false)
                 setData(result.data[0])
                 const temp = result.data[0].chat
-                console.log(temp[0])
                 setChats(result.data[0].chat)
             } else {
                 setLoader(false)
