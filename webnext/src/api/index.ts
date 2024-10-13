@@ -243,20 +243,15 @@ export const getSummarizedData = async(topic:string)=>{
 }
 
 export const getQuiz = async (topic:string , Totalquestions:any) =>{
-    // const formData = new FormData();
-    // formData.append("topic", topic); // Assuming `config.category.name` is your topic
-    // formData.append("question", Totalquestions.toString());
-    // const response = await fetch(`${URL}/docxchat/getQuiz`, {
-    //     method: "POST",
-    //     body: formData,
-    // });
-    // const res = await response.json();
-    const quizdata:any = localStorage.getItem('quiz')
-    const parsedData:any = JSON.parse(quizdata)
-    const parsedD:any =  JSON.parse(parsedData.data)
-    console.log(parsedD)
-    return { success:true , data:parsedD}
-    // return res
+    const formData = new FormData();
+    formData.append("topic", topic); // Assuming `config.category.name` is your topic
+    formData.append("question", Totalquestions.toString());
+    const response = await fetch(`${URL}/docxchat/getQuiz`, {
+        method: "POST",
+        body: formData,
+    });
+    const res = await response.json();
+    return res
 }
 
 export const getChatResponse = async (message:string , language:string ,recentChats:any )=>{
