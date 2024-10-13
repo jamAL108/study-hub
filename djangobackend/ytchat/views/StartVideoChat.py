@@ -8,6 +8,7 @@ from ytchat.serializers.StartVideoChat import StartVideoChatSerializers
 FolderName = os.path.dirname(os.path.abspath(__file__))
 
 class StartVideoChat(APIView):
+    serializer_class = StartVideoChatSerializers
     def get(self,request):
         """
         Handle GET requests.
@@ -16,7 +17,7 @@ class StartVideoChat(APIView):
         audio_path=''
         try:
             data = {"videoid":request.GET.get('videoid')}
-            serializer = StartVideoChatSerializers(data=data)
+            serializer = self.serializer_class(data=data)
             if not serializer.is_valid():
                 error_messages = [str(error) for error in serializer.errors['videoid']]
                 return JsonResponse({'Error':  error_messages[0]}, status=404)

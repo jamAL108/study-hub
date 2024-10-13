@@ -30,6 +30,12 @@ SECRET_KEY = 'django-insecure-fpvib*7=b5w-7xo&y6auyla%3xifq%9hlr(zack(^vvfovcx4g
 DEBUG = config('DEBUG', default=False, cast=bool)
 # env var
 ASSEMBLY_AI_KEY = config('ASSEMBLY_AI_KEY')
+PINECONE_API_KEY = config('PINECONE_API_KEY')
+GEMINI_API_KEY = config('GEMINI_API_KEY')
+DIMENSIONS=config('DIMENSIONS')
+METRIC=config('METRIC')
+CLOUD=config('CLOUD')
+REGION=config('REGION')
 
 
 REST_FRAMEWORK = {

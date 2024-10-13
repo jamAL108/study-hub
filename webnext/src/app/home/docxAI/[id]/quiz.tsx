@@ -29,7 +29,7 @@ import { FormatVideoViews, geminiModel, extractEmailInputPrefix } from '@/utils'
 import { Progress } from "@/components/ui/progress"
 import { UpdateTheVideoChatContent } from '@/api'
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { updatePDFChat } from '@/api'
+import { updatePDFChat , getQuiz } from '@/api'
 import { Input } from "@/components/ui/input"
 import {
     Select,
@@ -41,9 +41,14 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { useToast } from "@/components/ui/use-toast"
 
 const Quiz:React.FC<any> = (props :any) => {
-    const {topicReceived, topic , Totalquestions , setCurrArea } = props
+    const {topicReceived, topic , Totalquestions , setCurrArea,setTopicReceived ,setTopic , setTotalquestions} = props
+    // const [topicReceived, setTopicReceived] = useState<boolean>(false)
+    // const [topic, setTopic] = useState<string>("")
+    // const [Totalquestions, setTotalquestions] = useState<number>(5)
+    const { toast } = useToast()
     const router = useRouter()
     const [QuizLoad, setLoading] = useState<boolean>(true)
     const [MCQs, setMCQs] = useState<any>([])
@@ -54,21 +59,13 @@ const Quiz:React.FC<any> = (props :any) => {
     useEffect(() => {
         const getQuestions = async () => {
             if (MCQs.length === 0) {
-                const formData = new FormData();
-                formData.append("topic", topic); // Assuming `config.category.name` is your topic
-                formData.append("number", Totalquestions.toString());
-
                 try {
-                    const response = await fetch("http://localhost:8000/getmcq/", {
-                        method: "POST",
-                        body: formData,
-                    });
-                    const data: any = await response.json();
-                    console.log(data)
-                    if (response.ok) {
-                        let formattedResults = data.map((e: any) => ({
+                    const response:any = await getQuiz(topic,Totalquestions);
+                    console.log(response)
+                    if (response.success===true) {
+                        let formattedResults = response.data.map((e: any) => ({
                             ...e,
-                            answers: [...e.options, e.answer]
+                            answers: [e.option1, e.answer,e.option2,e.option3]
                                 .map((value) => ({ value, sort: Math.random() }))
                                 .sort((a, b) => a.sort - b.sort)
                                 .map(({ value }) => value),
@@ -78,9 +75,14 @@ const Quiz:React.FC<any> = (props :any) => {
                         console.log(formattedResults)
                         setMCQs(formattedResults);
                     } else {
-                        throw new Error(data.message || "Failed to fetch questions");
+                        throw new Error("Failed to fetch questions");
                     }
                 } catch (error) {
+                    toast({
+                        variant: "destructive",
+                        title: "Some issue with the Request",
+                        description: "There was a problem with your request.",
+                    })
                     console.error("Error fetching questions:", error);
                 } finally {
                     setLoading(false);
@@ -111,11 +113,11 @@ const Quiz:React.FC<any> = (props :any) => {
         <section className="flex relative flex-col justify-center  p-10 ">
             {MCQs?.length && quizStarted === true ? (
                 <div className='w-full flex items-center gap-2'>
-                    <h1 className="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl">
+                    <h1 className="mb-4 text-lg font-normal leading-none tracking-tight md:text-lg text-lg">
                         {`${topic} Quiz`}
                     </h1>
-                    <h1 className='text-white mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl'>|</h1>
-                    <h1 className="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-2xl">
+                    <h1 className='text-white mb-4 text-lg font-normal leading-none tracking-tight md:text-lg lg:text-xl'>|</h1>
+                    <h1 className="mb-4 text-lg font-normal leading-none tracking-tight md:text-lg lg:text-lg">
                         Question No{" "}
                         <span className="text-primary">
                             #{Totalquestions != null && Number(Totalquestions) - MCQs.length + 1}
@@ -131,10 +133,10 @@ const Quiz:React.FC<any> = (props :any) => {
 
             {quizStarted === false && (
                 <div className="flex w-full flex-col justify-center items-center gap-5">
-                    <h1 className="mt-10 w-[85%] text-center font-bold text-2xl">
+                    <h1 className="mt-10 w-[85%] text-center font-bold text-xl">
                         Engage your mind with interactive quizzes. Fun, learning, and challenges await!
                     </h1>
-                    <h1 className='text-xl'>{topic} Quiz Challenge | {Totalquestions} MCQs</h1>
+                    <h2 className='text-md'>{topic} Quiz Challenge | {Totalquestions} MCQs</h2>
                     <button hidden={MCQs.length==0}
                         onClick={(e) => {
                             setQuizStarted(true)
@@ -143,11 +145,11 @@ const Quiz:React.FC<any> = (props :any) => {
                     >
                         Let&apos;s begin
                     </button>
-                    <div className='pt-16 flex flex-col w-[400px] gap-5 items-center justify-center'>
+                    {/* <div className='pt-16 flex flex-col w-[400px] gap-5 items-center justify-center'>
                         {[0, 0, 0, 0].map((item, keey) => (
                             <Skeleton key={keey} className='h-[30px] w-full' />
                         ))}
-                    </div>
+                    </div> */}
                 </div>
             )}
 
@@ -155,8 +157,8 @@ const Quiz:React.FC<any> = (props :any) => {
 
             {MCQs && MCQs.length !== 0 && quizStarted === true && (
                 <section className="my-10 pb-10 w-[100%] rounded-lg flex flex-col justify-center">
-                    <h4 className="mb-4 text-xl font-extrabold leading-none tracking-tight md:text-2xl lg:text-3xl ">
-                        {MCQs[0].question}
+                    <h4 className="mb-4 text-md font-extrabold leading-none tracking-tight md:text-2xl lg:text-lg ">
+                        {MCQs[0].questions}
                     </h4>
                     <div className="flex flex-col w-full px-4 gap-3">
                         <RadioGroup onValueChange={(e) => {
@@ -173,7 +175,7 @@ const Quiz:React.FC<any> = (props :any) => {
                                         }
                                     )} key={idx}>
                                         <RadioGroupItem value={e} id={e} />
-                                        <Label className='text-white' htmlFor={e}>{e}</Label>
+                                        <Label className='text-white cursor-pointer' htmlFor={e}>{e}</Label>
                                     </div>
                                 );
                             })}
@@ -197,7 +199,17 @@ const Quiz:React.FC<any> = (props :any) => {
             {quizEnded === true && (
                 <div className='w-full flex flex-col gap-4'>
                     <h1>Your Score: {score}/{Totalquestions}</h1>
-                    <Button onClick={(e )=> setCurrArea(-1) } className="bg-white mt-5 hover:bg-gray-100 text-gray-800 font-semibold py-2 px-10 border border-gray-400 rounded shadow max-w-[200px]">Close it</Button>
+                    <Button onClick={(e )=> {
+                        setCurrArea(-1)
+                        setQuizEnded(true)
+                        setMCQs([])
+                        setAnswer("")
+                        setScore(0)
+                        setQuizStarted(false)
+                        setTopic("")
+                        setTotalquestions(5)
+                        setTopicReceived(false)
+                    } } className="bg-white mt-5 hover:bg-gray-100 text-gray-800 font-semibold py-2 px-10 border border-gray-400 rounded shadow max-w-[200px]">Close it</Button>
                 </div>
             )}
         </section>

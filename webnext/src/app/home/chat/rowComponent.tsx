@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal, BotMessageSquare, SquareArrowOutUpRight } from 'lucide-react'
+import { MoreHorizontal, BotMessageSquare, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 
 const RowComponent: React.FC<any> = (props) => {
@@ -57,6 +57,9 @@ const RowComponent: React.FC<any> = (props) => {
                             </DropdownMenuItem>
                             <DropdownMenuItem className='flex items-center py-2.5 mb-1 px-3 gap-3 text-white'>
                                 <ShareChat loader={false} ChatHomeRow={true} videoMeta={otherData} user={user} chats={chats} extractedText={extractedText} />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className='flex items-center py-2.5  mb-1 px-3  text-white'>
+                                <div className='flex items-center gap-3 text-white'><Trash2 size={22} /> Delete Chat </div>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

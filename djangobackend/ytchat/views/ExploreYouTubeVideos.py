@@ -4,13 +4,14 @@ from rest_framework.views import APIView
 from ytchat.serializers.ExploreYouTubeVideos import ExploreYouTubeVideosSerializers
 
 class ExploreYouTubeVideos(APIView):
+    serializer_class = ExploreYouTubeVideosSerializers
     def get(self, request):
         """
         Handle GET requests.
         """
         try:
             data = {"q":request.GET.get('q')}
-            serializer = ExploreYouTubeVideosSerializers(data=data)
+            serializer = self.serializer_class(data=data)
             if not serializer.is_valid():
                 error_messages = [str(error) for error in serializer.errors['q']]
                 return JsonResponse({'Error':  error_messages[0]}, status=404)

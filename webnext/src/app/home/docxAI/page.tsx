@@ -33,7 +33,7 @@ import {
 import SessionNotFoundComp from '@/components/sessionNotFound'
 import { Loader2 } from "lucide-react"
 import { v4 as uuidv4 } from 'uuid';
-import { AddVideoInSupabase } from '@/api'
+import { AddVideoInSupabase, uploadPdfFile } from '@/api'
 
 
 type FileState = Blob | null;
@@ -65,11 +65,11 @@ const Translate = () => {
 
 
     useEffect(() => {
-        getAllInvoicefunciton()
+        sessionChecks()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const getAllInvoicefunciton = async () => {
+    const sessionChecks = async () => {
         const res: any = await checkUserAuthClient()
         if (res.error !== null) {
             router.push('/')
@@ -184,51 +184,54 @@ const Translate = () => {
     };
 
 
+    // const API = async () => {
+    //     setrequest(true);
+    //     if (selectedFile) {
+
+    //         // onUploadStart(); // Notify parent component that upload has started
+    //         // const formData = new FormData();
+    //         // formData.append('pdf_file', selectedFile);
+    //         try {
+    //             // const response = await uploadPdfFile(selectedFile)
+    //             // if(response.success===true){
+    //             //     console.log(response)
+    //             await storeBlobInSessionStorage()
+    //             // }
+    //             // onUploadSuccess(success); // Notify parent component about the upload success status
+    //         } catch (error) {
+    //             console.error('Error sending PDF to server:', error);
+    //             setrequest(false);
+    //             // onUploadSuccess(false); // Assume failure on catch
+    //         } finally {
+    //             setrequest(false);
+    //         }
+    //     }
+    // };
+
+
     const API = async () => {
-        setrequest(true);
-        if (selectedFile) {
-            // onUploadStart(); // Notify parent component that upload has started
-            const formData = new FormData();
-            formData.append('pdf_file', selectedFile);
-            try {
-                const response = await fetch('http://localhost:8000/getpdf', {
-                    method: 'POST',
-                    body: formData,
-                });
-                if (response.ok) {
-                    console.log('PDF successfully sent to server');
-                } else {
-                    console.error('Failed to send PDF to server');
-                }
-                const success = response.ok;
-                console.log(success)
+        try {
+            setrequest(true);
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = async (event: ProgressEvent<FileReader>) => {
+                    if (event.target?.result) {
+                        const base64String = (event.target.result as string).split(",")[1];
+                        localStorage.setItem("StudyHubPDF", base64String);
+                        const uuid = generateUUID()
+                        await AddVideoInSupabase(uuid, selectedFile, user.id)
+                        router.push(`/home/docxAI/${uuid}`)
+                    }
+                };
+                reader.readAsDataURL(selectedFile);
+            } else {
+                console.error("No Blob data available to store.");
                 setrequest(false);
-                storeBlobInSessionStorage()
-                // onUploadSuccess(success); // Notify parent component about the upload success status
-            } catch (error) {
-                console.error('Error sending PDF to server:', error);
-                setrequest(false);
-                // onUploadSuccess(false); // Assume failure on catch
             }
-        }
-    };
-
-
-    const storeBlobInSessionStorage = () => {
-        if (selectedFile) {
-            const reader = new FileReader();
-            reader.onload = (event: ProgressEvent<FileReader>) => {
-                if (event.target?.result) {
-                    const base64String = (event.target.result as string).split(",")[1];
-                    localStorage.setItem("StudyHubPDF", base64String);
-                    const uuid = generateUUID()
-                    AddVideoInSupabase(uuid, selectedFile, user.id)
-                    router.push(`/home/docxAI/${uuid}`)
-                }
-            };
-            reader.readAsDataURL(selectedFile);
-        } else {
-            console.error("No Blob data available to store.");
+        } catch (err) {
+            console.error('Error sending PDF to server:', err);
+            setrequest(false);
+            // onUploadSuccess(false); // Assume failure on catch
         }
     };
 
@@ -258,7 +261,7 @@ const Translate = () => {
 
 
     return (
-        <div className="w-[min(90vw,1100px)] h-auto min-h-[100px] flex flex-col justify-start items-center mb-[8rem] transDiv">
+        <div className="base:w-[100%] bl:w-[min(90vw,1100px)] h-auto min-h-[100px] overflow-hidden flex flex-col justify-start items-start mb-[8rem] transDiv">
             <AlertDialog>
                 <AlertDialogTrigger asChild className='w-0 h-0 opacity-0 appearance-none'>
                     <div className='w-0 h-0 opacity-0 translateloginalertbox'>Show Dialog</div>
@@ -279,9 +282,9 @@ const Translate = () => {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-            <div className="font-pop w-[80%] mt-8 flex justify-center py-4 flex-col gap-4">
+            <div className="font-pop w-auto max-w-[80%] mt-8 flex justify-center py-4 flex-col gap-4 pl-16">
                 <h1 className="text-[1.37rem] font-[500]">DocxAI - Unlock Insights from Your Documents</h1>
-                <p className="base:hidden bl:flex text-[0.8rem] w-[85%] text-muted-foreground">
+                <p className="base:hidden bl:flex text-[0.8rem] break-words bl:max-w-[80%] text-muted-foreground">
                     Our app allows you to upload documents for a variety of purposes including summarization, multiple-choice question and answer (MCQA) generation, insights extraction, and referencing Udemy courses.
                     <br />
                     We recommend using DOCX and PPTX formats to ensure the best results. Other file formats may cause formatting issues.
@@ -292,10 +295,10 @@ const Translate = () => {
             </div>
 
             <div
-                className="base:w-[300px] bl:w-full h-auto flex items-center justify-center base:flex-col md:flex-row 
-      base:gap-20 md:gap-30 base:mt-10 bl:mt-20"
+                className="base:w-auto bl:w-auto h-auto flex items-start justify-start base:flex-col md:flex-row 
+      base:gap-20 md:gap-30 base:mt-5 bl:mt-10 pl-16"
             >
-                <div className="dark:bg-[transparent] border-dashed border-[2px] border-[ #c9cbe5] flex items-center rounded-md justify-start flex-col dark:border-[rgba(252,252,252,0.2)] base:mb-10 bl:mb-0 base:w-[300px] bl:w-[330px] max-w-[480px] bl:h-[300px] roundebox">
+                <div className="dark:bg-[transparent] border-dashed border-[2px] border-[ #c9cbe5] flex items-center rounded-md justify-start flex-col dark:border-[rgba(252,252,252,0.2)] base:mb-10 bl:mb-0 base:w-[330px] bl:w-[330px] max-w-[480px] bl:h-[300px] roundebox">
                     <input
                         type="file"
                         hidden
@@ -316,7 +319,7 @@ const Translate = () => {
                             }
                         }}
                     >
-                        <h1 className={`${selectedFile===null ? 'inline-block' : 'hidden' }  z-1 py-5 w-[96%] text-center text-[#0082C8] font-[640] text-[0.82rem] tracking-wider leading-6`}>
+                        <h1 className={`${selectedFile === null ? 'inline-block' : 'hidden'}  z-1 py-5 w-[96%] text-center text-[#0082C8] font-[640] text-[0.82rem] tracking-wider leading-6`}>
                             Drop and Drop file PDF/DOCX (recommended) <br /> or <br />
                             Enter the{" "}
                             <span

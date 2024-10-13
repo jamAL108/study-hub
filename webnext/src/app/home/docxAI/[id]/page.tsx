@@ -26,9 +26,9 @@ import {
 } from "@/components/ui/tooltip"
 import { FormatVideoViews, geminiModel, extractEmailInputPrefix } from '@/utils'
 import { Progress } from "@/components/ui/progress"
-import { UpdateTheVideoChatContent } from '@/api'
+import { UpdateTheVideoChatContent , getChatResponse } from '@/api'
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { updatePDFChat } from '@/api'
+import { updatePDFChat , resetPinecone , getRawPdfFromSupabase , uploadPdfFile, getSummarizedData } from '@/api'
 import { Input } from "@/components/ui/input"
 import {
     Select,
@@ -77,7 +77,7 @@ const Page = ({ params }: {
     const [Totalquestions, setTotalquestions] = useState<number>(5)
 
     ///
-    const [summarizedtext, setSummarizedText] = useState<string>('')
+    const [summarizedtext, setSummarizedText] = useState<any>(null)
     const [summarySearch, setSummarySearch] = useState<string>('')
     const [summaryLoad, setSummaryLoad] = useState<boolean>(false)
 
@@ -106,8 +106,7 @@ const Page = ({ params }: {
         }
         const userData: any = res.data.session.user
         setPdfLink(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
-        const ress: any = await GetVideoFromSupabase(id, userData.id)
-        console.log(ress)
+        const ress: any = await GetVideoFromSupabase(id,userData.id)
         if (ress.success === true && res.data !== null && Details !== null) {
             console.log(ress.data)
             setDetails(ress.data)
@@ -126,9 +125,8 @@ const Page = ({ params }: {
 
     const API = async (url: string) => {
         if (url) {
-            const resp = await fetch('http://localhost:8000/resetpinecone')
-            console.log(await resp.json());
-            if (!resp.ok) {
+            let res = await resetPinecone()
+            if (res.success===false) {
                 toast({
                     title: "Some Error in Server",
                     description: "Error in server , try again later",
@@ -136,27 +134,24 @@ const Page = ({ params }: {
                 })
                 return
             }
-            const response = await fetch(url);
-            console.log(url)
-            const blob = await response.blob();
-            const file = new File([blob], 'your-pdf-file.pdf', { type: 'application/pdf' });
-            console.log(file)
-            setPdfFile(file);
-
+            res = await getRawPdfFromSupabase(url);
+            if(res.success===false){
+                toast({
+                    title: "Some Error in Server",
+                    description: "Error in server , try again later",
+                    variant: 'destructive'
+                })
+                return
+            }
+            setPdfFile(res.file);
             const formData = new FormData();
-            formData.append('pdf_file', file);
+            formData.append('file', res.file);
             try {
-                const response = await fetch('http://localhost:8000/getpdf', {
-                    method: 'POST',
-                    body: formData,
-                });
-                if (response.ok) {
-                    console.log('PDF successfully sent to server');
-                } else {
-                    console.error('Failed to send PDF to server');
+                const response = await uploadPdfFile(res.file)
+                if(response.success===true){
+                    console.log(response)
                 }
-                const success = response.ok;
-                console.log(success)
+                console.log(response)
                 setLoader(false);
             } catch (error) {
                 console.error('Error sending PDF to server:', error);
@@ -173,38 +168,37 @@ const Page = ({ params }: {
         setChats([...newChats]);
         setMessage("");
         console.log(newChats);
+        const recentChats:any = newChats.slice(-5);
+        console.log(recentChats)
 
-        const formData = new FormData();
-        formData.append("text", message);
-        formData.append("language", 'English');
 
         try {
             setIsTyping(true);
-            const response = await fetch("http://localhost:8000/gettext", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (response.ok) {
-                const jsonResponse = await response.json();
-                if (jsonResponse.success) {
-                    // Work with the updated newChats array
-                    let updatedChats = [...newChats]; // Make a copy of newChats
-                    // Remove the last chat, update it, and push it back
-                    let removedLastChat = updatedChats.pop();
-                    let updatedLastChat = { ...removedLastChat, server: jsonResponse.text };
-                    updatedChats.push(updatedLastChat);
-                    console.log(updatedChats);
-                    setChats([...updatedChats]);
-                    await updatePDFChat(updatedChats, id)
-                } else {
-                    console.error("Server processed request, but returned an error");
-                }
+            const response:any = await getChatResponse(message,'English',recentChats)
+            if (response.success===true) {
+                console.log(response)
+                // Work with the updated newChats array
+                let updatedChats = [...newChats]; // Make a copy of newChats
+                // Remove the last chat, update it, and push it back
+                let removedLastChat = updatedChats.pop();
+                let updatedLastChat = { ...removedLastChat, server: response.text };
+                updatedChats.push(updatedLastChat);
+                console.log(updatedChats);
+                await updatePDFChat(updatedChats, id)
+                setChats([...updatedChats]);
             } else {
-                console.error("Failed to send data to server");
+                toast({
+                    title: "Error sending data to server:",
+                    description: response.error,
+                    variant: 'destructive'
+                })
             }
         } catch (error) {
-            console.error("Error sending data to server:", error);
+            toast({
+                title: "Error sending data to server:",
+                description: "Error in server , try again later",
+                variant: 'destructive'
+            })
         } finally {
             setIsTyping(false);
         }
@@ -220,32 +214,30 @@ const Page = ({ params }: {
     };
 
     const GetSummarizedData = async () => {
+        setSummarizedText(null)
         setSummaryLoad(true)
-        const formData = new FormData();
-        formData.append('topic', summarySearch);
-
         try {
-            const response = await fetch('http://localhost:8000/getsummary/', {
-                method: 'POST',
-                // Remove the 'Content-Type': 'application/json', header
-                body: formData, // Send the FormData
-            });
-
-            if (!response.ok) {
-                throw new Error('Something went wrong'); // Throw an error if response is not ok
+            const response:any = await getSummarizedData(summarySearch)
+            console.log(response)
+            if(response.success===false){
+                toast({
+                    title: "Some Error in Server",
+                    description: response.error,
+                    variant: 'destructive'
+                })
+                setSummaryLoad(false)
+                return
             }
-
-            const data = await response.json(); // Parse JSON response
-            console.log(data)
-            if (data) {
-                setSummarizedText(data);
+            if(response.text) {
+                setSummarizedText(response.text);
                 setSummaryLoad(false) // Update state with fetched data
-            } else {
-                alert(data.message || 'Failed to fetch data');
-                setSummaryLoad(false) // Set error message if success is false
             }
         } catch (error: any) {
-            alert(error.message);
+            toast({
+                title: "Some Error in Server",
+                description: "Error in server , try again later",
+                variant: 'destructive'
+            })
             setSummaryLoad(false) // Catch and set any errors that occur during fetch
         }
     }
@@ -260,10 +252,14 @@ const Page = ({ params }: {
 
 
     return (
-        <div className='flex-1 flex justify-center py-6 px-8'>
+        <div className='flex-1 flex justify-center pt-6 px-8 overflow-x-hidden'>
             <Card className={`w-full p-5 border-none ${currArea !== -1 ? 'w-[50%]' : 'w-full'} `}>
                 <CardHeader>
-                    <CardTitle>DocxAI Features</CardTitle>
+                    <CardTitle>
+                    {/* className='flex items-center gap-2' */}
+                        {/* <Image src='/images/flash.png' width={50} height={50} alt='sdv' /> */}
+                        DocxAI Features
+                        </CardTitle>
                     <CardDescription>A list of Features provided for Documents.</CardDescription>
                 </CardHeader>
                 {loader === false && (
@@ -297,7 +293,9 @@ const Page = ({ params }: {
                                         ●
                                     </p>
                                 )}
-                                <Image src='/images/book.svg' alt='dccf' width={55} height={55} />
+                                <div className='flex justify-center items-center h-full'>
+                                <img src='/images/summarizer.png' alt='dccf' className='w-[60px] h-[60px]'/>
+                                </div>
                                 <div className='flex flex-col gap-2 justify-center'>
                                     <h2 className='text-xl font-bold'>Document Summarization</h2>
                                     <p className='text-sm text-muted-foreground'>Summarize the whole document aand get a quixk overview</p>
@@ -311,10 +309,12 @@ const Page = ({ params }: {
                                         ●
                                     </p>
                                 )}
-                                <Image src='/images/bulb.svg' alt='dccf' width={55} height={55} />
+                                <div className='flex justify-center items-center h-full'>
+                                <img src='/images/chat3dd.png' alt='dccf' className='w-[60px] h-[60px]'/>
+                                </div>
                                 <div className='flex flex-col gap-2 justify-center'>
                                     <h2 className='text-xl font-bold'>Chat with AI</h2>
-                                    <p className='text-sm text-muted-foreground'>Ask anything related to document to our AI.</p>
+                                    <p className='text-sm text-muted-foreground'>Ask any document-related question, and our AI will assist you.</p>
                                 </div>
                             </div>
                             <div onClick={(e) => {
@@ -325,7 +325,9 @@ const Page = ({ params }: {
                                         ●
                                     </p>
                                 )}
-                                <Image src='/images/bulb.svg' alt='dccf' width={55} height={55} />
+                                <div className='flex justify-center items-center h-full'>
+                                <img src='/images/bulbb.png' alt='dccf' className='w-[60px] h-[60px]'/>
+                                </div>
                                 <div className='flex flex-col gap-2 justify-center'>
                                     <h2 className='text-xl font-bold'>Get Mcq Quiz</h2>
                                     <p className='text-sm text-muted-foreground'>Get the MCQs related to document to test your understanding</p>
@@ -334,19 +336,21 @@ const Page = ({ params }: {
                         </div >
                     </CardContent>
                 )}
-            </Card >
-            <Card className={`${currArea == -1 ? 'hidden' : 'flex w-[50%] h-full'}`}>
-                <div className='w-full px-5 h-full overflow-hidden'>
+            </Card>
+            <Card className={`${currArea == -1 ? 'hidden' : 'flex w-[50%] h-[95%]'}`}>
+                <div className='w-full px-5 h-full overflow-x-hidden'>
                     {currArea == 1 && (
-                        <div className='w-full h-[95vh] max-h-[95vh] relative flex flex-col rounded-2xl bg-accent/60 items-center'>
+                        <div className='w-full h-[100%] relative flex flex-col rounded-2xl bg-accent/60 items-center'>
                             <ScrollArea className='w-full max-h-[calc(100%_-_140px)] overflow-y-auto px-5 py-4'>
                                 <section ref={chatContainerRef} className='w-full h-full flex flex-col gap-4 px-3 py-3'>
                                     {chats != null && chats.length !== 0
                                         && chats.map((chat: any, index: number) => (
                                             <div key={index + 'qwerty'} className='w-full flex flex-col gap-3'>
-                                                <p className={`justify-end w-full flex items-center`}>
+                                                {chat.user && (
+                                                    <p className={`justify-end w-full flex items-center`}>
                                                     <span className={`bg-primary/70 text-sm max-w-[75%] px-3 py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.user}</span>
-                                                </p>
+                                                    </p>
+                                                )}
                                                 {
                                                     chat.server && (
                                                         <p className={`justify-start w-full flex items-center`}>
@@ -451,7 +455,7 @@ const Page = ({ params }: {
                             </Card>
                         </div>
                     ) : currArea == 2 && topicReceived === true ? (
-                        <QuizSession topicReceived={topicReceived} topic={topic} Totalquestions={Totalquestions} setCurrArea={setCurrArea} />
+                        <QuizSession setTopicReceived={setTopicReceived} setTopic={setTopic} setTotalquestions={setTotalquestions} topicReceived={topicReceived} topic={topic} Totalquestions={Totalquestions} setCurrArea={setCurrArea} />
                     ) : currArea === 3 && (
                         <div className='w-full px-5 h-full overflow-hidden py-5 flex flex-col gap-2'>
                             <div className='w-full flex flex-col gap-6'>
@@ -473,7 +477,7 @@ const Page = ({ params }: {
                                     </div>
                                 </div>
                             </div>
-                            <ScrollArea className='flex w-full mt-10 !h-[calc(100vh_-_200px)] flex-col !gap-8 !overflow-y-auto'>
+                            <ScrollArea className='flex w-full mt-8 !h-[calc(100vh_-_200px)] flex-col !gap-8 !overflow-y-auto'>
                                 {
                                     summaryLoad === true ? (
                                         <div className='w-full flex flex-col gap-4'>
@@ -482,9 +486,17 @@ const Page = ({ params }: {
                                             <Skeleton className='w-[75%] h-5' />
                                             <Skeleton className='w-[80%] h-5' />
                                         </div>
-                                    ) : summarizedtext.length !== 0 && summarizedtext.split('\n').map((line, index) => (
-                                        <p className='text-md mt-3' key={index}>{line}</p>
-                                    ))
+                                    ) : summarizedtext !== null && (
+                                        Object.entries(summarizedtext).map(([sectionKey, sectionValue]:any, index:number) => (
+                                            <p key={index}>
+                                              <strong>{sectionKey.replace(/_/g, ' ')}:</strong> {sectionValue}
+                                            </p>
+                                          ))
+                                        // <div className='pr-2 flex flex-col gap-[5px]' dangerouslySetInnerHTML={{ __html: summarizedtext }} />
+                                    )
+                                    // summarizedtext.split('\n').map((line, index) => (
+                                    //     <p className='text-md mt-3' key={index}>{line}</p>
+                                    // ))
                                 }
                             </ScrollArea>
                         </div>

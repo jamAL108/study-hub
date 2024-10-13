@@ -1,11 +1,12 @@
 import clientConnectionWithSupabase from '@/lib/supabase/client'
+import { Anybody } from 'next/font/google';
 import { NextResponse } from 'next/server';
 
-// const URL = 'http://127.0.0.1:5000'
-const URL = 'https://vidchatbackend.vercel.app'
+const URL = 'http://127.0.0.1:8000'
+// const URL = 'https://vidchatbackend.vercel.app'
 export const getVideosBasedOnQuery = async (query: string) => {
     try {
-        const response = await fetch(`${URL}/searchvideo?q=${query}`)
+        const response = await fetch(`${URL}/ytchat/explore?q=${query}`)
         const data = await response.json()
         const dat = JSON.parse(data)
         return { success: true, data: dat.videos }
@@ -17,7 +18,7 @@ export const getVideosBasedOnQuery = async (query: string) => {
 
 export const getVideosBasedOnURL = async (query: string) => {
     try {
-        const response = await fetch(`${URL}/searchdirecturl?q=${query}`)
+        const response = await fetch(`${URL}/ytchat/search?q=${query}`)
         const data = await response.json()
         const dat = JSON.parse(data)
         return { success: true, data: dat.videos }
@@ -71,7 +72,7 @@ export const UpdateTheVideoChatContent = async (videoData: any) => {
 
 export const GetVideoIntoText = async (videoID: string) => {
     try {
-        const response = await fetch(`${URL}/startchatwithvideo?videoid=${videoID}`)
+        const response = await fetch(`${URL}/ytchat/start-chat?videoid=${videoID}`)
         const data = await response.json()
         if (response.status === 500) {
             return { success: false, error: "Some Issue With Server" }
@@ -159,25 +160,23 @@ export const AddVideoInSupabase = async (uuid: any, selectedFile: any, userId: a
         const { data, error } = await supabase
             .from('studyHubPDF')
             .insert([
-                { name: selectedFile.name, id: uuid, user_id: userId },
+                { name: selectedFile.name, id: uuid, user_id: userId , chatted:false , chats:[{server:'Hello, How can i help you ?'}]},
             ])
             .select()
-        console.log(error)
         if (error === null) return { success: false }
         return { success: true }
     }
 }
 
 
-export const GetVideoFromSupabase = async (uuid: any, userId: any) => {
+export const GetVideoFromSupabase = async (id: string,user_id:string) => {
     const supabase = clientConnectionWithSupabase()
-    let { data: chat_share, error }: any = await supabase
-        .from('studyHubPDF')
-        .select("*")
-        .eq('user_id', userId)
-        .eq('id', uuid)
+    let { data: studyHubPDF, error } = await supabase
+    .from('studyHubPDF')
+    .select("*")
+    .eq('id', id)
     if (error !== null) return { success: false, error: error.message }
-    else return { success: true, data: chat_share[0] }
+    else return { success: true, data: studyHubPDF[0] }
 }
 
 
@@ -192,4 +191,83 @@ export const updatePDFChat = async (chats: any, id: any) => {
     console.log(updateError)
     if (updateError !== null) return { success: false, error: updateError.message }
     return { success: true }
+}
+
+
+export const uploadPdfFile = async(file:any)=>{
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+        const response:any = await fetch(`${URL}/docxchat/ImportPdfData`, {
+            method: 'POST',
+            body: formData,
+        });
+        console.log(response)
+        if (response.ok) {
+            console.log('PDF successfully sent to server');
+            return {success:true}
+        } else {
+            return {success:false , Error:response.Error}
+        }
+    }catch(error){
+        return {success:false , Error:"Internal Server Error"}
+    }
+}
+
+export const resetPinecone = async()=>{
+    const resp = await fetch(`${URL}/docxchat/resetpinecone`)
+    const res = await resp.json();
+    return res;
+}
+
+export const getRawPdfFromSupabase = async(url:string)=>{
+    const response = await fetch(url);
+    if(!response.ok){
+        return {"success":false}
+    }
+    const blob = await response.blob();
+    const file = new File([blob], 'your-pdf-file.pdf', { type: 'application/pdf' });
+    return {"success":true,file};
+}
+
+
+export const getSummarizedData = async(topic:string)=>{
+    const formData = new FormData();
+    formData.append('topic', topic);
+    const response = await fetch(`${URL}/docxchat/getDocSummary`, {
+        method: 'POST',
+        // Remove the 'Content-Type': 'application/json', header
+        body: formData, // Send the FormData
+    });
+    return await response.json();
+}
+
+export const getQuiz = async (topic:string , Totalquestions:any) =>{
+    // const formData = new FormData();
+    // formData.append("topic", topic); // Assuming `config.category.name` is your topic
+    // formData.append("question", Totalquestions.toString());
+    // const response = await fetch(`${URL}/docxchat/getQuiz`, {
+    //     method: "POST",
+    //     body: formData,
+    // });
+    // const res = await response.json();
+    const quizdata:any = localStorage.getItem('quiz')
+    const parsedData:any = JSON.parse(quizdata)
+    const parsedD:any =  JSON.parse(parsedData.data)
+    console.log(parsedD)
+    return { success:true , data:parsedD}
+    // return res
+}
+
+export const getChatResponse = async (message:string , language:string ,recentChats:any )=>{
+    const formData = new FormData();
+    formData.append("message", message);
+    formData.append("language", 'English');
+    const recentChatsJson = JSON.stringify(recentChats);
+    formData.append("recentChats",recentChatsJson)
+    const response = await fetch(`${URL}/docxchat/documentChat`, {
+        method: "POST",
+        body: formData,
+    });
+    return await response.json();
 }
