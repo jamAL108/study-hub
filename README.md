@@ -77,36 +77,4 @@ Backend:-
 `PINECONE_API_KEY`
 `GEMINI_API`
 
-## API Reference
 
-#### Get all items
-
-```http
-  GET /searchdirecturl
-```
-
-| Argument | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `q` | `string` | **Required**. Query video link |
-
-#### Directly access the video by providing the video link
-
-```http
-  GET /searchvideo
-```
-
-| Argument | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `q`      | `string` | **Required**. Query |
-
-#### Search through query
-
-```http
-  GET /startchatwithvideo
-```
-
-| Argument | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `videoid`      | `string` | **Required**. unique youtube video id |
-
-#### Provides the whole text corpura about the video 
