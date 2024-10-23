@@ -79,7 +79,7 @@ const Page = () => {
         const result: any = await getVideosBasedOnQuery(ytQuery)
         console.log(result)
         if (result.success === true) {
-            setYTdata(result.data)
+            setYTdata(result.data.videos)
             setApiGoing(false)
         } else {
             toast({

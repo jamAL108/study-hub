@@ -1,6 +1,7 @@
 import clientConnectionWithSupabase from '@/lib/supabase/client'
 import { Anybody } from 'next/font/google';
 import { NextResponse } from 'next/server';
+import { pairUserAssistantFunction } from '@/utils'
 
 const URL = 'http://127.0.0.1:8000'
 // const URL = 'https://vidchatbackend.vercel.app'
@@ -8,8 +9,8 @@ export const getVideosBasedOnQuery = async (query: string) => {
     try {
         const response = await fetch(`${URL}/ytchat/explore?q=${query}`)
         const data = await response.json()
-        const dat = JSON.parse(data)
-        return { success: true, data: dat.videos }
+        console.log(data)
+        return { success: true, data: data.videos }
     } catch (error) {
         console.error('Error:', error)
         return { success: false, error: "Issue in server !" }
@@ -80,6 +81,24 @@ export const GetVideoIntoText = async (videoID: string) => {
         return { success: true, text: data.text }
     } catch (error) {
         console.error('Error:', error)
+        return { success: false, error: "Issue in server !" }
+    }
+}
+
+export const getVideoChatResponse = async(message:string,chats:any) =>{
+    try {
+        const parsedChats:any = JSON.stringify(pairUserAssistantFunction(chats))
+        const formData = new FormData();
+        formData.append('message', message);
+        formData.append('recentChats',parsedChats)
+
+        const response:any = await fetch(`${URL}/ytchat/video-chat`, {
+            method: 'POST',
+            body: formData,
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('error:', error)
         return { success: false, error: "Issue in server !" }
     }
 }

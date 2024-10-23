@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from ytchat.utils import importYoutubeVideoOnQuery
 from rest_framework.views import APIView
 from ytchat.serializers.ExploreYouTubeVideos import ExploreYouTubeVideosSerializers
+import requests
+import json
 
 class ExploreYouTubeVideos(APIView):
     serializer_class = ExploreYouTubeVideosSerializers
@@ -20,7 +22,10 @@ class ExploreYouTubeVideos(APIView):
             print(valid_data.get("q"))
             if valid_data.get("q"):
                 results = importYoutubeVideoOnQuery(valid_data.get("q"),7)
-                return results
+                res = json.loads(results.content)
+                resul = json.loads(res['data'])
+                print(resul)
+                return JsonResponse({'videos':resul},status=200)
             else:
                 return JsonResponse({'error': 'Missing search terms'},status=400)
         except Exception as e:

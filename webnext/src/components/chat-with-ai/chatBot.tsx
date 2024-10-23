@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/tooltip"
 import { FormatVideoViews, geminiModel, extractEmailInputPrefix } from '@/utils'
 import { Progress } from "@/components/ui/progress"
-import { UpdateTheVideoChatContent } from '@/api'
+import { UpdateTheVideoChatContent , getVideoChatResponse } from '@/api'
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useToast } from "@/components/ui/use-toast"
 
 const ChatBot: React.FC<any> = (props) => {
+    const { toast } = useToast()
     const { extractedText, user, videoMeta, message, setMessage, setChats, chats, params } = props
     const [progress, setProgress] = useState<number>(10)
     let intervalId: any;
@@ -45,30 +47,35 @@ const ChatBot: React.FC<any> = (props) => {
         }
     }, [extractedText]);
 
-    // useEffect(() => {
-    //     if (user !== null && extractedText.length !== 0 && chats.length === 0) {
-    //         console.log(extractEmailInputPrefix(user.email), ":::auth")
-    //         if (user.email)
-    //             setChats([{ content: `Hello ${extractEmailInputPrefix(user.email)} 👋,\n I am vidChat Bot, how may I help you ?`, role: "assistant" }])
-    //         else {
-    //             setChats([{ content: `Hello 👋,\n I am Soul-Friend how may I help you ?`, role: "assistant" }])
-    //         }
-    //     }
-    // }, [user, extractedText , chats])
+    useEffect(() => {
+        if (user !== null && extractedText.length !== 0 && chats.length === 0) {
+            console.log(extractEmailInputPrefix(user.email), ":::auth")
+            if (user.email)
+                setChats([{ content: `Hello ${extractEmailInputPrefix(user.email)} 👋,\n I am vidChat Bot, how may I help you ?`, role: "assistant" }])
+            else {
+                setChats([{ content: `Hello 👋,\n I am Soul-Friend how may I help you ?`, role: "assistant" }])
+            }
+        }
+    }, [user, extractedText , chats])
 
     async function runPrompt(valueOfPrompt: string, previousChats: string[]) {
+        console.log(previousChats)
         let prompt =
             `(Pretend you are vidChat Bot - A video chatbot as a friend, don't mention your name until asked, analyze  the following text (extractedText): ${extractedText}, and give response to the text(user prompt) : '${valueOfPrompt}'. give response based on that (extractedText), and don't answer for any questions which are not related to extractedText . so im converting the youtube video into text so if the text doesnt contain the relevant answer for the (user prompt) then give response like this : ( this topic is not covered in the video)  and also this text is from youtube videos so give answer in this frame , What did the creator: ${videoMeta.channel} speak about xyz , how he/she covered xxx topics.
           These are the context, please condsider them wisely while responding\n` +
             previousChats.join("\n");
 
         console.log(prompt, "::::propmt")
-        const model = geminiModel()
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-        console.log(text);
-        return text;
+        try{
+            const model = geminiModel()
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
+            console.log(text);
+            return {success:true,text};
+        }catch(err){
+            return {success:false,Error:"ERROR HAI"}
+        }
     }
 
     const chat = async (e: any, message: any) => {
@@ -85,10 +92,20 @@ const ChatBot: React.FC<any> = (props) => {
         setMessage("");
 
         try {
-            const response = await runPrompt(message, msgs.filter((x) => x.role === "user").map((chat: any) => chat.content));
-            msgs.push({ role: "assistant", content: response });
-            setChats(msgs);
-            UpdateTheVideoChatContent({ ...videoMeta, extractedText, chat: msgs, user_id: user.id, video_id: params.url })
+            console.log(msgs)
+            const response:any = await runPrompt(message, msgs.slice(-5)); 
+            if (response.success===true){
+                console.log(response)
+                msgs.push({ role: "assistant", content: response.text });
+                setChats(msgs);
+                UpdateTheVideoChatContent({ ...videoMeta, extractedText, chat: msgs, user_id: user.id, video_id: params.url })
+            }else{
+                toast({
+                    variant: "destructive",
+                    title: response.error,
+                    description: "There was a problem with your request.",
+                })
+            }
         } catch (error) {
             console.error("Error generating response:", error);
         }

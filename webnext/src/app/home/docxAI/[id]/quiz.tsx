@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/components/ui/use-toast"
+import { CirclePlus } from 'lucide-react';
 
 const Quiz:React.FC<any> = (props :any) => {
     const {topicReceived, topic , Totalquestions , setCurrArea,setTopicReceived ,setTopic , setTotalquestions} = props
@@ -63,7 +64,8 @@ const Quiz:React.FC<any> = (props :any) => {
                     const response:any = await getQuiz(topic,Totalquestions);
                     console.log(response)
                     if (response.success===true) {
-                        let formattedResults = response.data.map((e: any) => ({
+                        const resQuestions:any = JSON.parse(response.data)
+                        let formattedResults = resQuestions.map((e: any) => ({
                             ...e,
                             answers: [e.option1, e.answer,e.option2,e.option3]
                                 .map((value) => ({ value, sort: Math.random() }))
@@ -92,7 +94,7 @@ const Quiz:React.FC<any> = (props :any) => {
         // let existingData: any = localStorage.getItem('McqQuiz-PDF')
         // const parsedData: any = JSON.parse(existingData)
         // if (parsedData !== null) setMCQs(parsedData.mcq)
-        if (topic.length !== 0) getQuestions()
+        if (topic.length !== 0  &&  MCQs.length==0) getQuestions()
     }, [topic, Totalquestions])
 
     const answerCheck = (ans: string) => {
@@ -153,12 +155,26 @@ const Quiz:React.FC<any> = (props :any) => {
                 </div>
             )}
 
+            <Button className='bg-accent/30 hover:bg-accent absolute top-5 right-5 px-3 py-3 border flex justify-center items-center gap-2' onClick={(e)=>{
+                setCurrArea(2)
+                setQuizEnded(true)
+                setMCQs([])
+                setAnswer("")
+                setScore(0)
+                setQuizStarted(false)
+                setTopic("")
+                setTotalquestions(5)
+                setTopicReceived(false)
+            }}>
+                <CirclePlus size={19} /> Try new Quiz
+            </Button>
+
             {!MCQs && <p>loading...</p>}
 
             {MCQs && MCQs.length !== 0 && quizStarted === true && (
                 <section className="my-10 pb-10 w-[100%] rounded-lg flex flex-col justify-center">
                     <h4 className="mb-4 text-md font-extrabold leading-none tracking-tight md:text-2xl lg:text-lg ">
-                        {MCQs[0].questions}
+                        {MCQs[0].question}
                     </h4>
                     <div className="flex flex-col w-full px-4 gap-3">
                         <RadioGroup onValueChange={(e) => {

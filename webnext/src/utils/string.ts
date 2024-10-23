@@ -10,6 +10,19 @@ export function shrinkText(text: string, maxLength: number) {
     return text;
 }
 
+export function pairUserAssistant(chatData:any) {
+    const result = [];
+    for (let i = 1; i < chatData.length - 1; i += 2) {
+      if (chatData[i].role === 'user' && chatData[i + 1].role === 'assistant') {
+        result.push({
+          user: chatData[i].content,
+          server: chatData[i + 1].content
+        });
+      }
+    }
+    return result;
+  }
+
 export function formatViews(viewsString: string) {
     // Extract the number part from the string and remove commas
     const viewsNumber = parseInt(viewsString.replace(/[^0-9]/g, ''));

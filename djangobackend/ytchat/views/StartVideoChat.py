@@ -53,10 +53,10 @@ class StartVideoChat(APIView):
             #     no surprise that knowing this little UI library is one of the most in demand skills for front end developers today. This has been react in 100 seconds. If you want to see more short videos like this, make sure to 
             #     like and subscribe and check out more advanced react content on Fireship IO. And if you're curious how I make these videos, make sure to check out my new personal channel and video on that topic. Thanks for watching and I will see you in the next one.
             #     """
-            return JsonResponse({'text':extractedText},status=200)
+            return JsonResponse({'success':True,'text':extractedText},status=200)
         except Exception as e:
             print("Error:", str(e))
-            return JsonResponse({'error':str(e)},status=500)
+            return JsonResponse({'success':False,'error':str(e)},status=500)
         finally:
             if os.path.exists(video_path):
                 os.remove(video_path)
