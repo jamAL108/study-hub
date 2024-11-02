@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import Image from 'next/image'
 import checkUserAuthClient from '@/auth/getUserSession'
+// @ts-ignore
 import { useRouter } from 'next/navigation'
 import SessionNotFoundComp from '@/components/sessionNotFound'
 import { GetVideoFromSupabase } from '@/api/index'
@@ -119,7 +120,7 @@ const Page = ({ params }: {
             })
             return
         }
-        API(`https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
+        API(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
         setUser(res.data.session.user)
     }
 

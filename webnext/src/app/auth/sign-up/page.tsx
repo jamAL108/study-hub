@@ -19,6 +19,7 @@ import { validateEmailInput } from '@/utils'
 import { SignupWithSupabase, googleAuthWithSupabase } from '@/auth'
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
+// @ts-ignore
 import { useRouter } from 'next/navigation';
 const SignUpComponent = () => {
     const { toast } = useToast()

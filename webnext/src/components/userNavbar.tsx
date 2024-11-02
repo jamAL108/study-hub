@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Button } from './ui/button'
 import { Router, Star } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"
+// @ts-ignore
 import { useRouter } from 'next/navigation';
 import {
     Popover,

@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import checkUserAuthClient from '@/auth/getUserSession'
+// @ts-ignore
 import { useRouter } from 'next/navigation'
 import SessionNotFoundComp from '@/components/sessionNotFound'
 import { Button } from '@/components/ui/button'
@@ -45,8 +46,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import RowComponent from './rowComponent'
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import DocuementRow from './documentRowComp'
+import { useToast } from "@/components/ui/use-toast"
 
 const Dashboard = () => {
+    const { toast } = useToast();
     const router = useRouter()
     const [loader, setLoader] = useState<boolean>(true)
     const [sessionNotFound, setSessionNotFound] = useState<boolean>(false)
@@ -212,7 +215,7 @@ const Dashboard = () => {
                                     )}
                                     {
                                         loader === false && chats.map((chatData: any, idx: number) => (
-                                            <RowComponent key={idx} user={user} extractedText={chatData.extractedText} chats={chatData.chat} videoMeta={chatData} />
+                                            <RowComponent key={idx} AllChats={chats} setChats={setChats} toast={toast} user={user} extractedText={chatData.extractedText} chats={chatData.chat} videoMeta={chatData} />
                                         ))}
                                 </TableBody>
                             </Table>
@@ -297,7 +300,7 @@ const Dashboard = () => {
                                     )}
                                     {
                                         loader === false && documents.map((chatData: any, idx: number) => (
-                                            <DocuementRow key={idx} user={user} Document={chatData} />
+                                            <DocuementRow key={idx} toast={toast} AllDocument={documents} setDocuments={setDocuments} user={user} Document={chatData} />
                                         ))}
                                 </TableBody>
                             </Table>

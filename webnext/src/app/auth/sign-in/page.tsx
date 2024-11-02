@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator"
 import { validateEmailInput } from '@/utils'
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
+// @ts-ignore
 import { useRouter } from 'next/navigation';
 import { SigninWithSupabase , googleAuthWithSupabase } from '@/auth'
 

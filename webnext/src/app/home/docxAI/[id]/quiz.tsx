@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import Image from 'next/image'
 import checkUserAuthClient from '@/auth/getUserSession'
+// @ts-ignore
 import { useRouter } from 'next/navigation'
 import SessionNotFoundComp from '@/components/sessionNotFound'
 import { GetVideoFromSupabase } from '@/api/index'

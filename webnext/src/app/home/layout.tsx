@@ -12,8 +12,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Image from 'next/image'
 import { MdOutlineExplore } from "react-icons/md";
+// @ts-ignore
 import { usePathname } from 'next/navigation'
 import checkUserAuthClient from '@/auth/getUserSession'
+// @ts-ignore
 import { useRouter } from 'next/navigation'
 import {
     Popover,
@@ -23,7 +25,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { FaRegUser } from "react-icons/fa";
 import { Trash2 } from 'lucide-react';
-import { MessageCircleQuestion } from 'lucide-react';
+import { MessageCircleQuestion, Text  } from 'lucide-react';
 import { FiLogOut } from "react-icons/fi";
 import { FaQuestion } from "react-icons/fa6";
 import {
@@ -39,7 +41,12 @@ import { Loader2 } from "lucide-react"
 import { SignOutWithSupabase } from '@/auth'
 import { ShrinkTitle } from '@/utils'
 import { Fullscreen } from 'lucide-react';
-
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion"
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
@@ -93,29 +100,46 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                 DocsAI{" "}
                             </Link>
                             <Link
-                                href="/home/Quiz"
-                                className={`flex items-center gap-3 ${pathname ? pathname.includes('Quiz') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
-                            >
-                                <MessageCircleQuestion className="h-4 w-4" />
-                                Quiz
-                            </Link>
-                            <Link
                                 href="/explore"
                                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                             >
                                 <MdOutlineExplore className="h-4 w-4" />
                                 Explore
                             </Link>
+                            <Link
+                                href="/home/NoteNest"
+                                className={`flex items-center gap-3 ${pathname ? pathname.includes('NoteNest') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                            >
+                                <Text className="h-4 w-4" />
+                                NoteNest
+                            </Link> 
+                            <Accordion type="single" collapsible>
+                            <AccordionItem value="item-1" className='border-b-none'>
+                                <AccordionTrigger 
+                                className={`flex items-center gap-3  !no-underline text-muted-foreground bg-transparent rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                >Other Features</AccordionTrigger>
+                                <AccordionContent className=' pl-2'>
+                                    <Link
+                                        href="/home/Quiz"
+                                        className={`flex items-center gap-3 ${pathname ? pathname.includes('Quiz') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                    >
+                                        <MessageCircleQuestion className="h-4 w-4" />
+                                        Quiz
+                                    </Link>
+                                    <Link
+                                    href="/home/image-textify"
+                                    className={`flex items-center gap-3 ${pathname ? pathname.includes('image-textify') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                >
+                                    <Fullscreen className="h-4 w-4" />
+                                    Image Textify
+                                </Link>
+                                </AccordionContent>
+                            </AccordionItem>
+                            </Accordion>
                         </nav>
                     </div>
                     <div className='flex flex-col absolute bottom-6 justify-center w-full  gap-6'>
-                        <Link
-                            href="/home/image-textify"
-                            className={`flex items-center gap-3 ${pathname ? pathname.includes('image-textify') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg mx-4 px-3 py-2.5  transition-all hover:text-primary text-sm font-medium `}
-                        >
-                            <Fullscreen className="h-4 w-4" />
-                            Image Textify
-                        </Link>
+                        
                         {loader ? (
                             <div className="flex items-center space-x-4 px-6 ">
                                 <Skeleton className="h-10 w-10 rounded-full" />

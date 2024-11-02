@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import checkUserAuthClient from '@/auth/getUserSession'
+// @ts-ignore
 import { useRouter } from 'next/navigation'
 import SessionNotFoundComp from '@/components/sessionNotFound'
 import { Button } from '@/components/ui/button'

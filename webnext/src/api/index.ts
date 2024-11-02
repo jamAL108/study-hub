@@ -179,11 +179,38 @@ export const AddVideoInSupabase = async (uuid: any, selectedFile: any, userId: a
         const { data, error } = await supabase
             .from('studyHubPDF')
             .insert([
-                { name: selectedFile.name, id: uuid, user_id: userId , chatted:false , chats:[{server:'Hello, How can i help you ?'}]},
+                { name: selectedFile.name, id: uuid, user_id: userId , chatted:false ,filesize:selectedFile.size, chats:[{server:'Hello, How can i help you ?'}]},
             ])
             .select()
         if (error === null) return { success: false }
         return { success: true }
+    }
+}
+
+export const DeleteVideoChatFromSupabase = async (uuid:any) =>{
+    const supabase = clientConnectionWithSupabase()
+    const { error } = await supabase
+    .from('vidChat-Chats')
+    .delete()
+    .eq('video_id', uuid)
+    if(error==null){
+        return {success:true}
+    }else{
+        return {success:false,error:"Issue in server"}
+    }
+}
+
+export const DeleteDocChatFromSupabase = async(user_id:any,uuid:any)=>{
+    const supabase = clientConnectionWithSupabase()
+    const { error } = await supabase
+        .from('studyHubPDF')
+        .delete()
+        .eq('id', uuid)
+    if(error==null){
+        const {error} = await supabase.storage.from('StudyHub_videos').remove([`${user_id}/${uuid}.pdf`])
+        return {success:true}
+    }else{
+        return {success:false,error:"Issue in server"}
     }
 }
 

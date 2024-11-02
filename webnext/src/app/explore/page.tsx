@@ -24,6 +24,7 @@ import { YtVideoComponent } from '@/components/explore'
 import { getVideosBasedOnQuery, getVideosBasedOnURL } from '@/api'
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
+// @ts-ignore
 import { useRouter } from 'next/navigation';
 import SessionNotFoundComp from '@/components/sessionNotFound'
 import checkUserAuthClient from '@/auth/getUserSession'

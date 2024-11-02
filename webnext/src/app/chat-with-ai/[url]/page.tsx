@@ -1,12 +1,14 @@
 'use client';
 import React, { useEffect, useState } from 'react'
 import Navbar from '@/components/LandingNavbar'
+// @ts-ignore
 import { useParams } from 'next/navigation'
 import { GetVideoIntoText, getVideoDataFromSupabase } from '@/api'
 import { AlertForNoDataFound, ChatNavbar, DisplayChat, ChatBotComponent } from '@/components/chat-with-ai'
 import { useToast } from "@/components/ui/use-toast"
 import SessionNotFoundComp from '@/components/sessionNotFound'
 import checkUserAuthClient from '@/auth/getUserSession'
+// @ts-ignore
 import { useRouter } from 'next/navigation';
 const Page = () => {
     const { toast } = useToast()

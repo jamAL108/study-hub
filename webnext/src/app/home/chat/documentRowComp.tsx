@@ -14,12 +14,14 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal, BotMessageSquare, SquareArrowOutUpRight } from 'lucide-react'
+import { MoreHorizontal, BotMessageSquare, SquareArrowOutUpRight,Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { DeleteDocChatFromSupabase } from '@/api'
 
 const RowComponent: React.FC<any> = (props) => {
-    const { Document, user, chats, extractedText } = props
-    const { chat: _, extractedText: __, ...otherData } = Document
+    const { toast ,  Document, user , AllDocument , setDocuments} = props
+
+    const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
     const trimPdfSuffix = (name: string): string => {
         return name.endsWith('.pdf') ? name.slice(0, -4) : name;
@@ -34,6 +36,25 @@ const RowComponent: React.FC<any> = (props) => {
         const minutes = String(date.getMinutes()).padStart(2, '0');
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
+
+    const deleteChat = async()=>{
+        const resp:any = await DeleteDocChatFromSupabase(user.id,Document.id)
+        if(resp.success===true){
+            toast({
+                title: 'Chat Deleted',
+                description: "Deleted",
+            });
+            let tempChats = [...AllDocument]
+            const newChats = tempChats.filter((chat)=>chat.id!==Document.id)
+            setDocuments(newChats)
+        }else{
+            toast({
+                variant: "destructive",
+                title: resp.error,
+                description: "Please try again after sometime",
+            });            
+        }
+   }
 
     return (
         <TableRow>
@@ -58,7 +79,10 @@ const RowComponent: React.FC<any> = (props) => {
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem className='flex items-center py-2.5  mb-1 px-3  text-white'>
-                            <Link className='flex items-center gap-3 text-white' href={`https://jvpehndoafryctlriuse.supabase.co/storage/v1/object/public/StudyHub_videos/${user.id}/${Document.id}.pdf`}> <SquareArrowOutUpRight size={22} /> View Document </Link>
+                            <Link className='flex items-center gap-3 text-white' href={`${SUPABASE_URL}/storage/v1/object/public/StudyHub_videos/${user.id}/${Document.id}.pdf`}> <SquareArrowOutUpRight size={22} /> View Document </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e)=>deleteChat()} className='flex items-center py-2.5  mb-1 px-3  text-white'>
+                                <div className='flex items-center gap-3 text-white'><Trash2 size={22} /> Delete Chat </div>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

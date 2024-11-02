@@ -1,11 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { cn } from "@/lib/utils";
+// @ts-ignore
 import { useSearchParams } from 'next/navigation'
 import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from '@/components/ui/button'
+// @ts-ignore
 import { useRouter } from 'next/navigation';
 import {
     Breadcrumb,
