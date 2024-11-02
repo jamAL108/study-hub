@@ -168,6 +168,17 @@ export const getAllDocuments = async (user_id: string) => {
     return { success: true, data: DocxChats }
 }
 
+export const getAllNotes = async (user_id: string) => {
+    const supabase = clientConnectionWithSupabase()
+    let { data: Notes, error } = await supabase
+        .from('studyHubNotes')
+        .select("*")
+        .eq('user_id', user_id)
+    console.log(error)
+    if (error !== null) return { success: false }
+    return { success: true, data: Notes }
+}
+
 
 
 export const AddVideoInSupabase = async (uuid: any, selectedFile: any, userId: any) => {

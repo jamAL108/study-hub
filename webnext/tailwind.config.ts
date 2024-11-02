@@ -29,7 +29,7 @@ const config = {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',
-			slaate: 'var(--slaate)',
+  			slaate: 'var(--slaate)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			primary: {
@@ -98,12 +98,11 @@ const config = {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
-		  backgroundImage: {
-			'radialCC': 'radial-gradient(circle, rgba(78,69,228,0.9360994397759104) 0%, rgba(78,69,228,1) 35%, rgba(51,45,151,1) 100%)',
-			"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-			"gradient-conic":
-			  "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-		  }
+  		backgroundImage: {
+  			radialCC: 'radial-gradient(circle, rgba(78,69,228,0.9360994397759104) 0%, rgba(78,69,228,1) 35%, rgba(51,45,151,1) 100%)',
+  			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+  			'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
+  		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
