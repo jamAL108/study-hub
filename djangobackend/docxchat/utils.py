@@ -50,7 +50,12 @@ def get_text_chunks(text):
 
 
 def get_vector_store(texts):
-    index_name = ExternalConnections.get_index_name()
-    # embedding = embeddings.ollama.OllamaEmbeddings(model='nomic-embed-text'),
-    # embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model="text-embedding-ada-002")
-    Pinecone.from_texts([t.page_content for t in texts], embedding=embeddings.OllamaEmbeddings(model='nomic-embed-text'), index_name=index_name)
+    try:
+        print("HEELEO")
+        index_name = ExternalConnections.get_index_name()
+        print(index_name)
+        # embedding = embeddings.ollama.OllamaEmbeddings(model='nomic-embed-text'),
+        # embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model="text-embedding-ada-002")
+        Pinecone.from_texts([t.page_content for t in texts], embedding=embeddings.OllamaEmbeddings(model='nomic-embed-text'), index_name=index_name)
+    except Exception as e:
+        print(e)

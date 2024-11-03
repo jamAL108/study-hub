@@ -11,6 +11,7 @@ class resetpinecone(APIView):
         """
         try:
             pinecone = ExternalConnections.get_pinecone_client()
+            print(pinecone)
             index_name = ExternalConnections.get_index_name()
             if pinecone.Index(index_name):
                 pinecone.delete_index(index_name)
