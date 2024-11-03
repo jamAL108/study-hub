@@ -11,6 +11,9 @@ import { SectionTwo } from '@/components/minimal-tiptap/components/section/two'
 import { SectionThree } from '@/components/minimal-tiptap/components/section/three'
 import { SectionFour } from '@/components/minimal-tiptap/components/section/four'
 import { SectionFive } from '@/components/minimal-tiptap/components/section/five'
+import { SectionSix } from '@/components/minimal-tiptap/components/section/table'
+import { Formatting } from '@/components/minimal-tiptap/components/section/formatting'
+
 import { LinkBubbleMenu } from '@/components/minimal-tiptap/components/bubble-menu/link-bubble-menu'
 import { useMinimalTiptapEditor } from '@/components/minimal-tiptap/hooks/use-minimal-tiptap'
 import { MeasuredContainer } from '../minimal-tiptap/components/measured-container'
@@ -23,18 +26,15 @@ export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, 'o
 }
 
 const Toolbar = ({ editor }: { editor: Editor }) => (
-  <div className="shrink-0 w-full overflow-x-auto border-b border-border p-2 flex gap-1 items-center">
+    <div className="shrink-0 w-full overflow-x-auto border-b border-border p-2 flex gap-1 bg-[#000000] items-center sticky top-0 z-[1000000]">
     <div>
       <img src="/images/logo.png" alt="sdv"  className='w-[40px] h-[40px]'/>
     </div>
-   <div className='w-auto py-2 flex flex-col gap-2 justify-center'>
-      <div className='w-full '>
-      Jamal document
-      </div>
-      <div className="flex w-max items-center gap-px">
+   <div className='w-full py-2 flex gap-2 justify-between items-center'>
+      <div className="flex w-max items-center bg-[#292929] rounded-xl h-[50px] px-4">
         <SectionOne editor={editor} activeLevels={[1, 2, 3]} variant="outline" />
   
-        <Separator orientation="vertical" className="mx-2 h-7" />
+        <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
   
         <SectionTwo
           editor={editor}
@@ -43,11 +43,18 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
           variant="outline"
         />
   
-        <Separator orientation="vertical" className="mx-2 h-7" />
+        <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
+
+        <Formatting editor={editor}
+          activeActions={['left' , 'center' ,'right' , 'justify']}
+          mainActionCount={4}
+          variant="outline" />
+
+        <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
   
         <SectionThree editor={editor} variant="outline" />
   
-        <Separator orientation="vertical" className="mx-2 h-7" />
+        <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
   
         <SectionFour
           editor={editor}
@@ -56,7 +63,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
           variant="outline"
         />
   
-        <Separator orientation="vertical" className="mx-2 h-7" />
+        <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
   
         <SectionFive
           editor={editor}
@@ -64,6 +71,16 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
           mainActionCount={3}
           variant="outline"
         />
+
+        <SectionSix
+            editor={editor}
+            activeActions={['Table']}
+            mainActionCount={1}
+            variant="outline"
+        />
+      </div>
+      <div className='px-5 py-5'>
+      Jamal document
       </div>
    </div>
   </div>
@@ -92,7 +109,7 @@ export const MinimalTiptapThree = React.forwardRef<HTMLDivElement, MinimalTiptap
         )}
       >
         <Toolbar editor={editor} />
-        <div className='w-[810px] mt-10 p-[96px] border border-[#8c8c8c] rounded-sm bg-[#262626] '>
+        <div className='mt-14'>
           <EditorContent editor={editor} className={cn('minimal-tiptap-editor', editorContentClassName)} />
         </div>
         <LinkBubbleMenu editor={editor} />

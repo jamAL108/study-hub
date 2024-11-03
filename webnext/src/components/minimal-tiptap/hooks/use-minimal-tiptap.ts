@@ -24,7 +24,16 @@ import { useThrottle } from '../hooks/use-throttle'
 import { toast } from 'sonner'
 
 
-import { Pagination } from '../pagination';
+import Table from '@tiptap/extension-table'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TableRow from '@tiptap/extension-table-row'
+import Gapcursor from '@tiptap/extension-gapcursor'
+
+import Highlight from '@tiptap/extension-highlight'
+import TextAlign from '@tiptap/extension-text-align'
+
+import { PaginationExtension , PageNode} from '../pagination';
 
 export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   value?: Content
@@ -48,11 +57,24 @@ const createExtensions = (placeholder: string) => [
     code: { HTMLAttributes: { class: 'inline', spellcheck: 'false' } },
     dropcursor: { width: 2, class: 'ProseMirror-dropcursor border' }
   }),
-    Pagination.configure({
-      pageHeight: 1056, // default height of the page
-      pageWidth: 816,   // default width of the page
-      pageMargin: 96,   // default margin of the page
-    }),
+  PaginationExtension,
+  PageNode,
+  Table.configure({
+    resizable: true,
+  }),
+  TableRow,
+  TableHeader,
+  TableCell,
+  Gapcursor,
+  TextAlign.configure({
+    types: ['heading', 'paragraph'],
+  }),
+  Highlight,
+    // Pagination.configure({
+    //   pageHeight: 1056, // default height of the page
+    //   pageWidth: 816,   // default width of the page
+    //   pageMargin: 96,   // default margin of the page
+    // }),
     // other extensions
   Link,
   Underline,
