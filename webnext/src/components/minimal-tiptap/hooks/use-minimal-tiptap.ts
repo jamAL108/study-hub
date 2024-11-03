@@ -24,7 +24,7 @@ import { useThrottle } from '../hooks/use-throttle'
 import { toast } from 'sonner'
 
 
-import { Pagination } from 'tiptap-pagination-breaks';
+import { Pagination } from '../pagination';
 
 export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   value?: Content
