@@ -162,10 +162,10 @@ const Page = () => {
                                         [0, 0].map((item, qw) => (
                                             <TableRow key={qw}>
                                                 <TableCell className="hidden sm:table-cell">
-                                                    <Skeleton className='w-[120px] h-16 rounded-xl' />
+                                                    <Skeleton className='w-[100px] h-16 rounded-xl' />
                                                 </TableCell>
                                                 <TableCell className="font-medium">
-                                                    <Skeleton className='w-[150px] h-6 rounded-xl' />
+                                                    <Skeleton className='w-[160px] h-6 rounded-xl' />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Skeleton className='w-[80px] h-6 rounded-xl' />

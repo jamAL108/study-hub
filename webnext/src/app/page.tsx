@@ -7,6 +7,9 @@ import Flex1 from '@/components/Flex1'
 import Flex2 from '@/components/Flex2'
 import Footer from '@/components/Footer'
 import HeroVideoDialog from "@/components/ui/hero-video-dialog";
+import { ArrowUpRight } from 'lucide-react';
+
+import Ripple from "@/components/ui/ripple";
 
 export default function Home() {
   return (
@@ -137,6 +140,52 @@ export default function Home() {
       </div>
       <div className="base:w-[90vw] bl:w-[min(90vw,1400px)] my-12  flex flex-col relative items-center">
         <Flex2 />
+      </div>
+
+      <div className="base:w-[90vw] bl:w-[min(90vw,1300px)] my-12 py-10 flex relative items-center justify-center gap-[7rem]">
+        <div className=" flex justify-center items-center bg-accent  rounded-xl p-20 px-16">
+          <img src="/images/docsAi.jpg" alt="wvr" className="w-[360px] h-[460px] rounded-xl" />
+        </div>
+
+        <div className="flex justify-center items-center flex-col">
+           <div className="flex flex-col justify-center  gap-6">
+           <h1 className="text-primary text-4xl font-[600]">Introducing DocsAI</h1>
+           <p className="max-w-[400px] text-md ">
+           DocsAI is a versatile tool that enhances document management with automated summaries, interactive quizzes,
+            and an AI chat interface for personalized assistance, improving user engagement and productivity.</p>
+            <Link href='/auth/signup' className="text-primary font-bold flex items-center gap-2">
+            Checkout Feature 
+            <div className="bg-primary rounded-full p-1">
+              <ArrowUpRight className="text-white h-4 w-4"/>
+            </div>
+            </Link>
+           </div>
+        </div>
+
+        <Ripple/>
+      </div>
+
+      <div className="base:w-[90vw] bl:w-[min(90vw,1300px)] my-12 py-10 flex relative items-center justify-center gap-[7rem]">
+        <div className="flex justify-center items-center flex-col">
+           <div className="flex flex-col justify-center  gap-6">
+           <h1 className="text-primary text-4xl font-[600]">Prompt Suggestions</h1>
+           <p className="max-w-[400px] text-md ">
+           The suggested prompts feature provides users with tailored guidance,
+            helping them formulate queries and maximize their interactions with the platform for more effective outcomes.</p>
+            <Link href='/auth/signup' className="text-primary font-bold flex items-center gap-2">
+            Checkout Feature 
+            <div className="bg-primary rounded-full p-1">
+              <ArrowUpRight className="text-white h-4 w-4"/>
+            </div>
+            </Link>
+           </div>
+        </div>
+
+        <div className=" flex justify-center items-center bg-accent  rounded-xl p-20 px-16">
+          <img src="/images/video.jpg" alt="wvr" className="w-[360px] h-[460px] rounded-xl" />
+        </div>
+
+        <Ripple/>
       </div>
 
       <div className="relative section-8 overflow-hidden w-[100%] py-[10rem] flex flex-col items-center justify-center gap-6 mt-16">

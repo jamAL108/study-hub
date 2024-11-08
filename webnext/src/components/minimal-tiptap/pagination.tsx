@@ -92,6 +92,7 @@ export const PaginationExtension = Extension.create({
   },
 });
 
+
 export const PaginationPlugin = new Plugin({
   key: new PluginKey('pagination'),
   view() {
@@ -112,7 +113,7 @@ export const PaginationPlugin = new Plugin({
         }
 
         const docChanged = !view.state.doc.eq(prevState.doc);
-        console.log('view.state.doc: ', view.state.doc);
+        // console.log('view.state.doc: ', view.state.doc);
         const initialLoad = prevState.doc.content.size === 0 && state.doc.content.size > 0;
 
         let hasPageNodes = false;
@@ -260,3 +261,145 @@ export const PaginationPlugin = new Plugin({
     };
   },
 });
+
+
+// export const PaginationPlugin = new Plugin({
+//   key: new PluginKey('pagination'),
+//   view() {
+//     let isPaginating = false;
+
+//     return {
+//       update(view: EditorView, prevState) {
+//         if (isPaginating) return;
+
+//         const { state } = view;
+//         const { schema } = state;
+//         const pageType = schema.nodes.page;
+
+//         if (!pageType) return;
+
+//         const docChanged = !view.state.doc.eq(prevState.doc);
+//         const initialLoad = prevState.doc.content.size === 0 && state.doc.content.size > 0;
+
+//         let hasPageNodes = false;
+//         state.doc.forEach((node) => {
+//           if (node.type === pageType) {
+//             hasPageNodes = true;
+//           }
+//         });
+
+//         // Trigger pagination on initial load or doc change
+//         if ((!docChanged && hasPageNodes && !initialLoad) || isPaginating) return;
+
+//         isPaginating = true;
+
+//         // Collect content nodes and their old positions
+//         const contentNodes: { node: PMNode; pos: number }[] = [];
+//         state.doc.forEach((node, offset) => {
+//           if (node.type === pageType) {
+//             node.forEach((child, childOffset) => {
+//               contentNodes.push({ node: child, pos: offset + childOffset + 1 });
+//             });
+//           } else {
+//             contentNodes.push({ node, pos: offset + 1 });
+//           }
+//         });
+
+//         // Measure node heights
+//         const MIN_PARAGRAPH_HEIGHT = 20;
+//         const nodeHeights = contentNodes.map(({ pos, node }) => {
+//           const dom = view.nodeDOM(pos);
+//           return dom instanceof HTMLElement
+//             ? dom.getBoundingClientRect().height || MIN_PARAGRAPH_HEIGHT
+//             : MIN_PARAGRAPH_HEIGHT;
+//         });
+
+//         // Record old cursor position
+//         const { selection } = view.state;
+//         const oldCursorPos = selection.from;
+
+//         // Rebuild document
+//         const pages = [];
+//         let currentPageContent: PMNode[] = [];
+//         let currentHeight = 0;
+//         const pageHeight = ((297 - 25.4 * 2) / 25.4) * 96;
+
+//         const oldToNewPosMap: { [key: number]: number } = {};
+//         let cumulativeNewDocPos = 0;
+
+//         for (let i = 0; i < contentNodes.length; i++) {
+//           const { node, pos: oldPos } = contentNodes[i];
+//           const nodeHeight = nodeHeights[i];
+
+//           if (currentHeight + nodeHeight > pageHeight && currentPageContent.length > 0) {
+//             const pageNode = pageType.create({}, currentPageContent);
+//             pages.push(pageNode);
+//             cumulativeNewDocPos += pageNode.nodeSize;
+//             currentPageContent = [];
+//             currentHeight = 0;
+//           }
+
+//           if (currentPageContent.length === 0) cumulativeNewDocPos += 1;
+
+//           const nodeStartPosInNewDoc =
+//             cumulativeNewDocPos + currentPageContent.reduce((sum, n) => sum + n.nodeSize, 0);
+//           oldToNewPosMap[oldPos] = nodeStartPosInNewDoc;
+
+//           currentPageContent.push(node);
+//           currentHeight += Math.max(nodeHeight, MIN_PARAGRAPH_HEIGHT);
+//         }
+
+//         if (currentPageContent.length > 0) {
+//           const pageNode = pageType.create({}, currentPageContent);
+//           pages.push(pageNode);
+//         }
+
+//         const newDoc = schema.topNodeType.create(null, pages);
+
+//         if (newDoc.content.eq(state.doc.content)) {
+//           isPaginating = false;
+//           return;
+//         }
+
+//         const tr = state.tr.replaceWith(0, state.doc.content.size, newDoc.content);
+//         tr.setMeta('pagination', true);
+
+//         let newCursorPos = null;
+//         for (let i = 0; i < contentNodes.length; i++) {
+//           const { node, pos: oldNodePos } = contentNodes[i];
+//           const nodeSize = node.nodeSize;
+
+//           if (oldNodePos <= oldCursorPos && oldCursorPos <= oldNodePos + nodeSize) {
+//             const offsetInNode = oldCursorPos - oldNodePos;
+//             const newNodePos = oldToNewPosMap[oldNodePos];
+//             newCursorPos = newNodePos + offsetInNode;
+//             break;
+//           }
+//         }
+
+//         if (newCursorPos !== null) {
+//           const $pos = tr.doc.resolve(newCursorPos);
+//           let selection;
+
+//           if ($pos.parent.isTextblock) {
+//             selection = Selection.near($pos);
+//           } else if ($pos.nodeAfter && $pos.nodeAfter.isTextblock) {
+//             selection = Selection.near(tr.doc.resolve($pos.pos + 1));
+//           } else if ($pos.nodeBefore && $pos.nodeBefore.isTextblock) {
+//             selection = Selection.near(tr.doc.resolve($pos.pos - 1), -1);
+//           } else {
+//             selection = Selection.findFrom($pos, 1, true) || Selection.findFrom($pos, -1, true);
+//           }
+
+//           if (selection) tr.setSelection(selection);
+//           else tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
+//         } else {
+//           tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
+//         }
+
+//         view.dispatch(tr);
+//         isPaginating = false;
+//       },
+//     };
+//   },
+// });

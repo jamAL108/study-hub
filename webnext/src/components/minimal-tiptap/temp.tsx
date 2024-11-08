@@ -1,131 +1,262 @@
-import { Attribute, Extension } from '@tiptap/core';
-import { Plugin, PluginKey } from 'prosemirror-state';
-import { Decoration, DecorationSet } from 'prosemirror-view';
-import { Node } from 'prosemirror-model';
+import { Extension } from '@tiptap/core';
+import { Node, mergeAttributes } from '@tiptap/core';
+import { keymap } from '@tiptap/pm/keymap';
+import { Node as PMNode } from '@tiptap/pm/model';
+import { Plugin, PluginKey, Selection, TextSelection } from '@tiptap/pm/state';
+import { EditorView } from '@tiptap/pm/view';
 
-export interface PaginationOptions {
-  pageHeight: number;
-  pageWidth: number;
-  pageMargin: number;
-}
+export const PageNode = Node.create({
+  name: 'page',
+  group: 'block',
+  content: 'block*',
+  defining: true,
+  isolating: false,
 
-declare module '@tiptap/core' {
-  interface Commands<ReturnType> {
-    pagination: {
-      /**
-       * Set pagination options
-       */
-      setPaginationOptions: (options: Partial<PaginationOptions>) => ReturnType;
-    };
-  }
-}
-
-export const Pagination = Extension.create<PaginationOptions>({
-  name: 'pagination',
-
-  addOptions() {
-    return {
-      pageHeight: 1056,
-      pageWidth: 816,
-      pageMargin: 96,
-    };
-  },
-
-  addCommands() {
-    return {
-      setPaginationOptions:
-        (options: Partial<PaginationOptions>) =>
-        ({ tr, dispatch }) => {
-          if (dispatch) {
-            tr.setMeta('paginationOptions', options);
-          }
-          return true;
-        },
-    };
-  },
-
-  addProseMirrorPlugins() {
-    const pluginKey = new PluginKey('pagination');
-
-    return [
-      new Plugin({
-        key: pluginKey,
-        state: {
-          init: () => ({ ...this.options }),
-          apply: (tr, value) => {
-            const newOptions = tr.getMeta('paginationOptions');
-            if (newOptions) {
-              return { ...value, ...newOptions };
-            }
-            return value;
-          },
-        },
-        props: {
-          decorations: (state) => {
-            const { doc } = state;
-            const decorations: Decoration[] = [];
-            let currentHeight = 0;
-
-            const options = pluginKey.getState(state);
-            // console.log('Current Document:', doc.toJSON());
-
-            doc.descendants((node: Node, pos: number) => {
-              const { pageHeight, pageMargin } = options;
-              const domNode = this.editor.view.nodeDOM(pos) as HTMLElement;
-
-              // Log the position and node information
-              console.log(`Processing node at position: ${pos}, type: ${node.type.name}`);
-
-              // Check if the DOM node exists
-              if (domNode) {
-                const nodeHeight = node.isBlock ? domNode.offsetHeight : 0;
-
-                if (currentHeight + nodeHeight > pageHeight - 2 * pageMargin) {
-                  decorations.push(
-                    Decoration.widget(pos, () => {
-                      const pageBreak = document.createElement('div');
-                      pageBreak.className = 'page-break';
-                      pageBreak.style.height = '20px';
-                      pageBreak.style.width = '100%';
-                      pageBreak.style.borderTop = '1px dashed #ccc';
-                      pageBreak.style.marginTop = '10px';
-                      pageBreak.style.marginBottom = '10px';
-                      return pageBreak;
-                    })
-                  );
-                  currentHeight = 0; // Reset the height for the new page
-                }
-
-                currentHeight += nodeHeight;
-              } else {
-                console.warn(`No DOM node found for position: ${pos}, node type: ${node.type.name}`);
-              }
-            });
-
-            return DecorationSet.create(doc, decorations);
-          },
-        },
-      }),
-    ];
-  },
-
-  addGlobalAttributes() {
+  parseHTML() {
     return [
       {
-        types: ['textStyle'],
-        attributes: {
-          class: {
-            default: null,
-            parseHTML: (element: HTMLElement) => element.getAttribute('class'),
-            renderHTML: (attributes: Record<string, any>) => {
-              if (!attributes.class) {
-                return {};
-              }
-              return { class: attributes.class };
-            },
-          } as Attribute,
-        },
+        tag: 'div[data-page]',
       },
     ];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-page': true, class: 'page' }), 0];
+  },
+
+  addNodeView() {
+    return () => {
+      const dom = document.createElement('div');
+      dom.setAttribute('data-page', 'true');
+      dom.classList.add('page');
+      dom.style.height = '297mm'; // A4 height in mm
+      dom.style.width = '210mm'; // A4 width in mm
+      dom.style.padding = '25.4mm'; // 1 inch padding
+      dom.style.border = '1px solid #ccc';
+      dom.style.background = '#262626';
+      dom.style.overflow = 'hidden';
+      dom.style.position = 'relative';
+
+      const contentDOM = document.createElement('div');
+      dom.appendChild(contentDOM);
+
+      return {
+        dom,
+        contentDOM,
+      };
+    };
+  },
+});
+
+export const PaginationExtension = Extension.create({
+  name: 'pagination',
+  addProseMirrorPlugins() {
+    return [
+      keymap({
+        Enter: (state, dispatch) => {
+          const { from, to } = state.selection;
+
+          // Proceed only if dispatch is provided and we're working with a valid range
+          if (dispatch && from === to) {
+            const tr = state.tr;
+
+            // Get the resolved position in the document
+            const $pos = state.doc.resolve(from);
+
+            // Ensure that the position is within a valid block (paragraph)
+            if ($pos.parent.type.name === 'paragraph') {
+              // Create a new empty paragraph node
+              const paragraph = state.schema.nodes.paragraph.create();
+
+              // Insert the empty paragraph at the cursor's current position
+              tr.insert(from, paragraph);
+
+              // Find the nearest valid cursor position inside the new paragraph
+              const newSelection = Selection.near(tr.doc.resolve(from + 1), 1);
+
+              // Set the selection to be inside the new paragraph
+              tr.setSelection(newSelection);
+
+              // Dispatch the transaction properly
+              dispatch(tr);
+
+              return true;
+            }
+          }
+
+          return false;
+        },
+      }),
+      PaginationPlugin,
+    ];
+  },
+});
+
+export const PaginationPlugin = new Plugin({
+  key: new PluginKey('pagination'),
+  view() {
+    let isPaginating = false;
+
+    return {
+      update(view: EditorView, prevState) {
+        if (isPaginating) {
+          return;
+        }
+
+        const { state } = view;
+        const { schema } = state;
+        const pageType = schema.nodes.page;
+
+        if (!pageType) {
+          return;
+        }
+
+        const docChanged = !view.state.doc.eq(prevState.doc);
+        console.log('view.state.doc: ', view.state.doc);
+        const initialLoad = prevState.doc.content.size === 0 && state.doc.content.size > 0;
+
+        let hasPageNodes = false;
+        state.doc.forEach((node) => {
+          if (node.type === pageType) {
+            hasPageNodes = true;
+          }
+        });
+
+        if (!docChanged && hasPageNodes && !initialLoad) {
+          return;
+        }
+
+        isPaginating = true;
+
+        // Collect content nodes and their old positions
+        const contentNodes: { node: PMNode; pos: number }[] = [];
+        state.doc.forEach((node, offset) => {
+          if (node.type === pageType) {
+            node.forEach((child, childOffset) => {
+              contentNodes.push({ node: child, pos: offset + childOffset + 1 });
+            });
+          } else {
+            contentNodes.push({ node, pos: offset + 1 });
+          }
+        });
+
+        // Measure node heights
+        const MIN_PARAGRAPH_HEIGHT = 20; // Adjust as needed for your styling
+        const nodeHeights = contentNodes.map(({ pos, node }) => {
+          const dom = view.nodeDOM(pos);
+          if (dom instanceof HTMLElement) {
+            let height = dom.getBoundingClientRect().height;
+            if (height === 0) {
+              if (node.type.name === 'paragraph' || node.isTextblock) {
+                // Assign a minimum height to empty paragraphs or textblocks
+                height = MIN_PARAGRAPH_HEIGHT;
+              }
+            }
+            return height;
+          }
+          return MIN_PARAGRAPH_HEIGHT; // Default to minimum height if DOM element is not found
+        });
+
+        // Record the cursor's old position
+        const { selection } = view.state;
+        const oldCursorPos = selection.from;
+
+        // Build the new document and keep track of new positions
+        const pages = [];
+        let currentPageContent: PMNode[] = [];
+        let currentHeight = 0;
+        const pageHeight = ((297 - 25.4 * 2) / 25.4) * 96;
+
+        const oldToNewPosMap: { [key: number]: number } = {};
+        let cumulativeNewDocPos = 0;
+
+        for (let i = 0; i < contentNodes.length; i++) {
+          const { node, pos: oldPos } = contentNodes[i];
+          const nodeHeight = nodeHeights[i];
+
+          if (currentHeight + nodeHeight > pageHeight && currentPageContent.length > 0) {
+            const pageNode = pageType.create({}, currentPageContent);
+            pages.push(pageNode);
+            cumulativeNewDocPos += pageNode.nodeSize;
+            currentPageContent = [];
+            currentHeight = 0;
+          }
+
+          if (currentPageContent.length === 0) {
+            cumulativeNewDocPos += 1; // Start of the page node
+          }
+
+          // Record the mapping from old position to new position
+          const nodeStartPosInNewDoc =
+            cumulativeNewDocPos + currentPageContent.reduce((sum, n) => sum + n.nodeSize, 0);
+          oldToNewPosMap[oldPos] = nodeStartPosInNewDoc;
+
+          currentPageContent.push(node);
+          currentHeight += Math.max(nodeHeight, MIN_PARAGRAPH_HEIGHT);
+        }
+
+        if (currentPageContent.length > 0) {
+          const pageNode = pageType.create({}, currentPageContent);
+          pages.push(pageNode);
+        }
+
+        const newDoc = schema.topNodeType.create(null, pages);
+
+        // Compare the content of the documents
+        if (newDoc.content.eq(state.doc.content)) {
+          isPaginating = false;
+          return;
+        }
+
+        const tr = state.tr.replaceWith(0, state.doc.content.size, newDoc.content);
+        tr.setMeta('pagination', true);
+
+        // Map the cursor position
+        let newCursorPos = null;
+        for (let i = 0; i < contentNodes.length; i++) {
+          const { node, pos: oldNodePos } = contentNodes[i];
+          const nodeSize = node.nodeSize;
+
+          if (oldNodePos <= oldCursorPos && oldCursorPos <= oldNodePos + nodeSize) {
+            const offsetInNode = oldCursorPos - oldNodePos;
+            const newNodePos = oldToNewPosMap[oldNodePos];
+            newCursorPos = newNodePos + offsetInNode;
+            break;
+          }
+        }
+
+        if (newCursorPos !== null) {
+          const $pos = tr.doc.resolve(newCursorPos);
+          let selection;
+
+          if ($pos.parent.isTextblock) {
+            // The position is valid for a TextSelection
+            selection = Selection.near($pos);
+          } else if ($pos.nodeAfter && $pos.nodeAfter.isTextblock) {
+            // Move into the next textblock
+            selection = Selection.near(tr.doc.resolve($pos.pos + 1));
+          } else if ($pos.nodeBefore && $pos.nodeBefore.isTextblock) {
+            // Move into the previous textblock
+            selection = Selection.near(tr.doc.resolve($pos.pos - 1), -1);
+          } else {
+            // Find the nearest valid cursor position
+            selection = Selection.findFrom($pos, 1, true) || Selection.findFrom($pos, -1, true);
+          }
+
+          if (selection) {
+            tr.setSelection(selection);
+          } else {
+            // Fallback to a safe selection at the end of the document
+            tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
+          }
+        } else {
+          tr.setSelection(TextSelection.create(tr.doc, tr.doc.content.size));
+        }
+
+        view.dispatch(tr);
+
+        isPaginating = false;
+      },
+    };
   },
 });

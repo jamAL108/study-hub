@@ -24,16 +24,22 @@ export function pairUserAssistant(chatData:any) {
   }
 
 export function formatViews(viewsString: string) {
-    // Extract the number part from the string and remove commas
-    const viewsNumber = parseInt(viewsString.replace(/[^0-9]/g, ''));
+    return viewsString
+    // // Extract the number part from the string and remove commas
+    // const viewsNumber = parseInt(viewsString.replace(/[^0-9]/g, ''));
 
-    // Convert the number into a shortened format
-    // Convert the number into a shortened format
-    const suffixes = ["", "k", "M", "B"];
-    const suffixNum = Math.floor(Math.log10(viewsNumber) / 3);
-    const shortValue = (viewsNumber / Math.pow(10, suffixNum * 3)).toPrecision(3);
-    return shortValue + suffixes[suffixNum] + " views";
+    // // Convert the number into a shortened format
+    // // Convert the number into a shortened format
+    // const suffixes = ["", "k", "M", "B"];
+    // const suffixNum = Math.floor(Math.log10(viewsNumber) / 3);
+    // const shortValue = (viewsNumber / Math.pow(10, suffixNum * 3)).toPrecision(3);
+    // return shortValue + suffixes[suffixNum] + " views";
 }
+
+export const areObjectsEqual = (obj1: any, obj2: any): boolean => {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+  };
+  
 
 
 export const validateEmail = (email: string): boolean => {

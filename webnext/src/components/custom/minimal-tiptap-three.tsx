@@ -1,4 +1,6 @@
+'use client'
 import * as React from 'react'
+import { useState , useEffect } from 'react';
 import '@/components/minimal-tiptap/styles/index.css'
 import { Pagination } from 'tiptap-pagination-breaks';
 import type { Content, Editor } from '@tiptap/react'
@@ -18,53 +20,70 @@ import { LinkBubbleMenu } from '@/components/minimal-tiptap/components/bubble-me
 import { useMinimalTiptapEditor } from '@/components/minimal-tiptap/hooks/use-minimal-tiptap'
 import { MeasuredContainer } from '../minimal-tiptap/components/measured-container'
 
+import Fileoption from './fileoption';
+import { IoCloudDoneOutline } from "react-icons/io5";
+import { LuSave } from "react-icons/lu";
+
+
+
 export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, 'onUpdate'> {
   value?: Content
   onChange?: (value: Content) => void
   className?: string
   editorContentClassName?: string
+  Datafield?:any
+  scale?:number
 }
 
-const Toolbar = ({ editor }: { editor: Editor }) => (
-    <div className="shrink-0 w-full overflow-x-auto border-b border-border p-2 flex gap-1 bg-[#000000] items-center sticky top-0 z-[1000000]">
+const Toolbar = ({ editor , Datafield }: { editor: Editor , Datafield:any}) => (
+  <div className="shrink-0 w-full overflow-x-auto border-b-[3px] border-border p-2 flex gap-1 bg-[#000000] items-center sticky top-0 z-[1000000]">
     <div>
-      <img src="/images/logo.png" alt="sdv"  className='w-[40px] h-[40px]'/>
+      <img src="/images/logo.png" alt="sdv" className='w-[40px] h-[40px]' />
     </div>
-   <div className='w-full py-2 flex gap-2 justify-between items-center'>
+    <div className='w-full py-2 flex gap-2 justify-start items-center'>
+
+      <div className='px-4 flex flex-col gap-1 py-1 justify-center '>
+        <div className='flex items-center gap-6'>
+          <h3 className='text-sm'>{Datafield.name}</h3>
+          {/* <IoCloudDoneOutline className='h-5 w-5'/> */}
+        </div>
+        <Fileoption/>
+      </div>
+
       <div className="flex w-max items-center bg-[#292929] rounded-xl h-[50px] px-4">
         <SectionOne editor={editor} activeLevels={[1, 2, 3]} variant="outline" />
-  
+
         <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
-  
+
         <SectionTwo
           editor={editor}
           activeActions={['italic', 'bold', 'underline', 'code', 'strikethrough', 'clearFormatting']}
           mainActionCount={5}
           variant="outline"
         />
-  
+
         <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
 
         <Formatting editor={editor}
-          activeActions={['left' , 'center' ,'right' , 'justify']}
+          activeActions={['left', 'center', 'right', 'justify']}
           mainActionCount={4}
           variant="outline" />
 
         <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
-  
+
         <SectionThree editor={editor} variant="outline" />
-  
+
         <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
-  
+
         <SectionFour
           editor={editor}
           activeActions={['bulletList', 'orderedList']}
           mainActionCount={2}
           variant="outline"
         />
-  
+
         <Separator orientation="vertical" className="mx-2 h-7 bg-[#ccc]" />
-  
+
         <SectionFive
           editor={editor}
           activeActions={['blockquote', 'codeBlock', 'horizontalRule']}
@@ -73,21 +92,18 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
         />
 
         <SectionSix
-            editor={editor}
-            activeActions={['Table']}
-            mainActionCount={1}
-            variant="outline"
+          editor={editor}
+          activeActions={['Table']}
+          mainActionCount={1}
+          variant="outline"
         />
       </div>
-      <div className='px-5 py-5'>
-      Jamal document
-      </div>
-   </div>
+    </div>
   </div>
 )
 
 export const MinimalTiptapThree = React.forwardRef<HTMLDivElement, MinimalTiptapProps>(
-  ({ value, onChange, className, editorContentClassName, ...props }, ref) => {
+  ({ value,scale, onChange, className, Datafield, editorContentClassName, ...props }, ref) => {
     const editor = useMinimalTiptapEditor({
       value,
       onUpdate: onChange,
@@ -98,6 +114,7 @@ export const MinimalTiptapThree = React.forwardRef<HTMLDivElement, MinimalTiptap
       return null
     }
 
+    
     return (
       <MeasuredContainer
         as="div"
@@ -108,8 +125,8 @@ export const MinimalTiptapThree = React.forwardRef<HTMLDivElement, MinimalTiptap
           className
         )}
       >
-        <Toolbar editor={editor} />
-        <div className='mt-14'>
+        <Toolbar editor={editor} Datafield={Datafield} />
+        <div className='mt-14  transition-transform duration-200' >
           <EditorContent editor={editor} className={cn('minimal-tiptap-editor', editorContentClassName)} />
         </div>
         <LinkBubbleMenu editor={editor} />

@@ -21,7 +21,8 @@ export const getVideosBasedOnURL = async (query: string) => {
     try {
         const response = await fetch(`${URL}/ytchat/search?q=${query}`)
         const data = await response.json()
-        const dat = JSON.parse(data)
+        console.log(data)
+        const dat = JSON.parse(data.data)
         return { success: true, data: dat.videos }
     } catch (error) {
         console.error('Error:', error)
@@ -223,6 +224,51 @@ export const DeleteDocChatFromSupabase = async(user_id:any,uuid:any)=>{
     }else{
         return {success:false,error:"Issue in server"}
     }
+}
+
+
+export const GetNoteFromSupabase = async(id:any,userId:any)=>{
+    const supabase = clientConnectionWithSupabase()
+    let { data: studyHubNotes, error } = await supabase
+        .from('studyHubNotes')
+        .select("*")
+        .eq('id', id)
+        console.log(error)
+
+    if(studyHubNotes.length===0){
+        const { data, error } = await supabase
+        .from('studyHubNotes')
+        .insert([
+        { id: id, name: 'New Document', user_id:userId , size:0  },
+        ])
+        .select()
+        console.log(error)
+        if(error!==null){
+            return {success:false,error:"Error in Server"}
+        }else{
+            return {success:true,data:data[0]}
+        }
+    }else if (studyHubNotes.length!==0){
+        return {success:true,data:studyHubNotes[0]}
+    }else if(error!==null){
+        return {success:false,error:"Error in Server"}
+    }
+}
+
+
+export const saveNoteToSupabase = async (id:any,notes:any)=>{
+    console.log(notes)
+    const supabase = clientConnectionWithSupabase()
+    const { data, error } = await supabase
+    .from('studyHubNotes')
+    .update({ notes: notes })
+    .eq('id', id)
+    console.log(error)
+    if(error===null){
+        return {success:true}
+    }else{
+        return {success:false}
+    }  
 }
 
 

@@ -17,14 +17,14 @@ import { Badge } from "@/components/ui/badge"
 import { MoreHorizontal, BotMessageSquare, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { DeleteVideoChatFromSupabase } from '@/api'
+import { FaRegEdit } from "react-icons/fa";
 
 
 const Notes: React.FC<any> = (props) => {
-    const { toast,videoMeta, user, chats, extractedText, setChats , AllChats } = props
-    const { chat: _, extractedText: __, ...otherData } = videoMeta
+    const { toast,videoMeta, user, notes, extractedText, setNotes , note } = props
 
         const formatDate = (ts: string): string => {
-            console.log(videoMeta)
+            console.log(note)
             console.log("MEOW")
             const date = new Date(ts);
             const year = date.getFullYear();
@@ -38,15 +38,15 @@ const Notes: React.FC<any> = (props) => {
         };
 
         const deleteChat = async()=>{
-            const resp:any = await DeleteVideoChatFromSupabase(videoMeta.video_id)
+            const resp:any = await DeleteVideoChatFromSupabase(note.id)
             if(resp.success===true){
                 toast({
                     title: 'Chat Deleted',
                     description: "Deleted",
                 });
-                let tempChats = [...AllChats]
-                const newChats = tempChats.filter((chat)=>chat.video_id!==videoMeta.video_id)
-                setChats(newChats)
+                let tempChats = [...notes]
+                const newChats = tempChats.filter((OtherNote)=>OtherNote.id!==note.id)
+                setNotes(newChats)
             }else{
                 toast({
                     variant: "destructive",
@@ -57,29 +57,32 @@ const Notes: React.FC<any> = (props) => {
        }
 
         return (
-            <TableRow>
+            <TableRow className='py-0'>
                 <TableCell className="hidden sm:table-cell">
-                    <Image src={videoMeta.thumbnails[0]} alt='asdsvf' width={160} className='rounded-md' height={80} />
+                    <Image src={'/images/wordfile.png'} alt='asdsvf' width={40} className='rounded-md' height={40} />
                 </TableCell>
                 <TableCell className="font-medium">
-                    {videoMeta.title}
+                    {note.name}
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                    {formatDate(videoMeta.created_at)}
+                    {formatDate(note.created_at)}
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                    {formatDate(note.created_at)}
                 </TableCell>
                 <TableCell>
                     <DropdownMenu>
                         <DropdownMenuTrigger><MoreHorizontal color='white' size={20} /></DropdownMenuTrigger>
                         <DropdownMenuContent className='absolute right-[-10px] px-3 py-3 w-[200px]'>
                             <DropdownMenuItem asChild>
-                                <Link href={`/chat-with-ai/${videoMeta.video_id}`} className='flex items-center py-2.5 mb-1 px-3 gap-3 text-white'><BotMessageSquare size={22} /> Chat with AI
+                                <Link href={`/NoteNest/${note.id}`} className='flex items-center py-2.5 mb-1 px-3 gap-3 text-white'><FaRegEdit size={22} /> Edit 
                                 </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className='flex items-center py-2.5  mb-1 px-3  text-white'>
-                                <Link className='flex items-center gap-3 text-white' href={`https://www.youtube.com/${videoMeta.url_suffix}`}><SquareArrowOutUpRight size={22} /> View Video </Link>
-                            </DropdownMenuItem>
+                            {/* <DropdownMenuItem className='flex items-center py-2.5  mb-1 px-3  text-white'>
+                                {/* <Link className='flex items-center gap-3 text-white' href={`https://www.youtube.com/${videoMeta.url_suffix}`}><SquareArrowOutUpRight size={22} /> View Video </Link> */}
+                           {/* </DropdownMenuItem> */}
                             <DropdownMenuItem className='flex items-center py-2.5 mb-1 px-3 gap-3 text-white'>
-                                <ShareChat loader={false} ChatHomeRow={true} videoMeta={otherData} user={user} chats={chats} extractedText={extractedText} />
+                                {/* <ShareChat loader={false} ChatHomeRow={true}  user={user} chats={chats} extractedText={extractedText} /> */}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={(e)=>deleteChat()} className='flex items-center py-2.5  mb-1 px-3  text-white'>
                                 <div className='flex items-center gap-3 text-white'><Trash2 size={22} /> Delete Chat </div>

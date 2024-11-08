@@ -5,7 +5,7 @@ const BentoGrid = ({ children, className }: { children: ReactNode; className?: s
   return <div className={cn('grid w-full auto-rows-auto grid-cols-3 gap-4', className)}>{children}</div>
 }
 
-const BentoCard = ({ name, className, background }: { name: string; className: string; background: ReactNode }) => (
+const BentoCard = ({ name, className, background  }: { name: string; className: string; background: ReactNode }) => (
   <div
     key={name}
     className={cn(
