@@ -113,6 +113,7 @@ const Page = () => {
         },
       })
         .then(response => {
+          console.log(response)
           if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
           }

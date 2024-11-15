@@ -10,7 +10,7 @@ import SessionNotFoundComp from '@/components/sessionNotFound'
 import { GetNoteFromSupabase , saveNoteToSupabase } from '@/api'
 import { Loader2 } from "lucide-react"
 
-const page = ({ params }: {
+const Page = ({ params }: {
   params: {
       id: string,
   }
@@ -48,10 +48,12 @@ const page = ({ params }: {
     console.log(content)
     contentRef.current = content;
     setTempContent(content)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[content])
 
   useEffect(()=>{
     DataRef.current = Datafield
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[Datafield])
 
   const getAllInvoicefunciton = async () => {
@@ -175,4 +177,4 @@ const page = ({ params }: {
   )
 }
 
-export default page
+export default Page

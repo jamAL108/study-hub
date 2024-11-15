@@ -45,6 +45,7 @@ const ChatBot: React.FC<any> = (props) => {
         if (extractedText.length !== 0) {
             clearInterval(intervalId);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [extractedText]);
 
     useEffect(() => {
@@ -56,6 +57,7 @@ const ChatBot: React.FC<any> = (props) => {
                 setChats([{ content: `Hello 👋,\n I am Soul-Friend how may I help you ?`, role: "assistant" }])
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, extractedText , chats])
 
     async function runPrompt(valueOfPrompt: string, previousChats: string[]) {

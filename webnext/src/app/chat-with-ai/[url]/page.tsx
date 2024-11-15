@@ -32,6 +32,7 @@ const Page = () => {
     useEffect(() => {
         getSession()
         getDataFromSupabase()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const getDataFromSupabase = async () => {

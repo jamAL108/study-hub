@@ -47,9 +47,8 @@ class documentChat(APIView):
                 Use the following input data for generating the response:
                 - "content": {docs}  
                 - "question": {valid_data.get('message')} 
-                - "recentChats": ${json.dumps(valid_data.get('recentChats'))}
                 
-                The sections should be logical, relevant, and aligned with the question and the context. Ensure the response is concise and well-structured for easy understanding.
+                The sections should be logical, relevant, precise , simple to understand and  aligned with the question and the context. Ensure the response is concise and well-structured for easy understanding.
             """)
             jsonParsedData = json.loads(response.text)
             print(jsonParsedData['text'])
@@ -57,3 +56,5 @@ class documentChat(APIView):
         except Exception as e:
             print(str(e))
             return JsonResponse({"sucess":False ,'Error':'Internal Server Error'},status=500)
+
+                # - "recentChats": ${json.dumps(valid_data.get('recentChats'))}

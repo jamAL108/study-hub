@@ -22,6 +22,7 @@ const Display: React.FC<any> = (props) => {
         if (extractedText.length !== 0) {
             getQuestionsFromModel()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [extractedText])
 
     const getQuestionsFromModel = async () => {

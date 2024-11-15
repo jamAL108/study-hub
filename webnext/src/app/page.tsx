@@ -88,7 +88,7 @@ export default function Home() {
 
         <div className="base:w-[90vw] bl:w-[790px] mt-3 mb-5 z-10">
           <div className="py-5  flex justify-center items-center">
-            <h1 className="text-white text-lg">Watch the tutorial video to fully understand <span className="text-[#956dc1]">StudyHub's structure and features.</span></h1>
+            <h1 className="text-white text-lg">Watch the tutorial video to fully understand <span className="text-[#956dc1]">StudyHub&apos;s structure and features.</span></h1>
           </div>
           <HeroVideoDialog
             className="dark:hidden block z-10"

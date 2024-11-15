@@ -39,7 +39,6 @@ class ExternalConnections:
                 ) 
             )
         cls.pineconeIndex = cls._pinecone_client.Index(cls.index_name) 
-        print(cls.pineconeIndex)
     
     @classmethod
     def get_vectorStore(cls):

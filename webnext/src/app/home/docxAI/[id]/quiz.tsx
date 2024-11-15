@@ -96,6 +96,7 @@ const Quiz:React.FC<any> = (props :any) => {
         // const parsedData: any = JSON.parse(existingData)
         // if (parsedData !== null) setMCQs(parsedData.mcq)
         if (topic.length !== 0  &&  MCQs.length==0) getQuestions()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [topic, Totalquestions])
 
     const answerCheck = (ans: string) => {

@@ -254,6 +254,12 @@ const Translate = () => {
     }
 
 
+    const fileUploadFunction = (e:any) =>{
+        e.preventDefault();
+        
+    }
+
+
     if (sessionNotFound) {
         return <SessionNotFoundComp />
     }
@@ -363,7 +369,8 @@ const Translate = () => {
                                             </div>
                                         </div>
                                         <DialogFooter>
-                                            <Button
+                                            <Button disabled={fileURL.length===0}
+                                                onClick={fileUploadFunction}
                                                 type="submit"
                                                 className="px-4"
                                             >
