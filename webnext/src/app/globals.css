@@ -42,6 +42,7 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --slaate: #4e3e5e;
+    --greenish:89.3 80.4% 10%;
   }
 
   .dark {
@@ -73,6 +74,7 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;    
     --slaate: #4e3e5e;
+    --greenish:89.3 80.4% 10%;
   }
 }
 
@@ -247,7 +249,10 @@
 
 
 
-
+.react-transform-component{
+  width: 100%;;
+  height: 100%;
+}
 
 
 

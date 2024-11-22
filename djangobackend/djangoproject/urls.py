@@ -30,5 +30,6 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path('docxchat/', include('docxchat.urls')),
-    path('ytchat/', include('ytchat.urls'))
+    path('ytchat/', include('ytchat.urls')),
+    path("roadmap/", include('roadmap.urls'))
 ]

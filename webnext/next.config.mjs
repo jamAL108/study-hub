@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["i9.ytimg.com","i.ytimg.com"],
+    domains: ["i9.ytimg.com","i.ytimg.com","api.microlink.io"],
   },
   reactStrictMode: false,
   experimental: {

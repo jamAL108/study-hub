@@ -25,7 +25,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { FaRegUser } from "react-icons/fa";
 import { Trash2 } from 'lucide-react';
-import { MessageCircleQuestion, Text  } from 'lucide-react';
+import { MessageCircleQuestion, Text, Youtube } from 'lucide-react';
 import { FiLogOut } from "react-icons/fi";
 import { FaQuestion } from "react-icons/fa6";
 import {
@@ -46,7 +46,9 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-  } from "@/components/ui/accordion"
+} from "@/components/ui/accordion"
+import { GoProjectRoadmap } from "react-icons/go";
+
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
@@ -86,6 +88,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     <div className="flex-1">
                         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
                             <Link
+                                href="/home/learnmap"
+                                className={`flex items-center gap-3 ${pathname ? pathname.includes('learnmap') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                            >
+                                <GoProjectRoadmap className="h-4 w-4" />
+                                Learn Map
+                            </Link>
+                            <Link
                                 href="/home/chat"
                                 className={`flex items-center gap-3 ${pathname ? pathname.includes('chat') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
                             >
@@ -103,8 +112,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                 href="/explore"
                                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                             >
-                                <MdOutlineExplore className="h-4 w-4" />
-                                Explore
+                                <Youtube className="h-4 w-4" />
+                                AskVideo
                             </Link>
                             <Link
                                 href="/home/NoteNest"
@@ -112,34 +121,34 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                             >
                                 <Text className="h-4 w-4" />
                                 NoteNest
-                            </Link> 
+                            </Link>
                             <Accordion type="single" collapsible>
-                            <AccordionItem value="item-1" className='border-b-none'>
-                                <AccordionTrigger 
-                                className={`flex items-center gap-3  !no-underline text-muted-foreground bg-transparent rounded-lg px-3 py-2  transition-all hover:text-primary`}
-                                >Other Features</AccordionTrigger>
-                                <AccordionContent className=' pl-2'>
-                                    <Link
-                                        href="/home/Quiz"
-                                        className={`flex items-center gap-3 ${pathname ? pathname.includes('Quiz') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
-                                    >
-                                        <MessageCircleQuestion className="h-4 w-4" />
-                                        Quiz
-                                    </Link>
-                                    <Link
-                                    href="/home/image-textify"
-                                    className={`flex items-center gap-3 ${pathname ? pathname.includes('image-textify') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
-                                >
-                                    <Fullscreen className="h-4 w-4" />
-                                    Image Textify
-                                </Link>
-                                </AccordionContent>
-                            </AccordionItem>
+                                <AccordionItem value="item-1" className='border-b-none'>
+                                    <AccordionTrigger
+                                        className={`flex items-center gap-3  !no-underline text-muted-foreground bg-transparent rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                    >Other Features</AccordionTrigger>
+                                    <AccordionContent className=' pl-2'>
+                                        <Link
+                                            href="/home/Quiz"
+                                            className={`flex items-center gap-3 ${pathname ? pathname.includes('Quiz') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                        >
+                                            <MessageCircleQuestion className="h-4 w-4" />
+                                            Quiz
+                                        </Link>
+                                        <Link
+                                            href="/home/image-textify"
+                                            className={`flex items-center gap-3 ${pathname ? pathname.includes('image-textify') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                        >
+                                            <Fullscreen className="h-4 w-4" />
+                                            Image Textify
+                                        </Link>
+                                    </AccordionContent>
+                                </AccordionItem>
                             </Accordion>
                         </nav>
                     </div>
                     <div className='flex flex-col absolute bottom-6 justify-center w-full  gap-6'>
-                        
+
                         {loader ? (
                             <div className="flex items-center space-x-4 px-6 ">
                                 <Skeleton className="h-10 w-10 rounded-full" />

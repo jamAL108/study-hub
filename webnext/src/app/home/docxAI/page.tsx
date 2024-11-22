@@ -267,7 +267,7 @@ const Translate = () => {
 
 
     return (
-        <div className="base:w-[100%] bl:w-[min(90vw,1100px)] h-auto min-h-[100px] overflow-hidden flex flex-col justify-start items-start mb-[8rem] transDiv">
+        <div className="base:w-[100%] h-full overflow-hidden flex justify-center items-center transDiv">
             <AlertDialog>
                 <AlertDialogTrigger asChild className='w-0 h-0 opacity-0 appearance-none'>
                     <div className='w-0 h-0 opacity-0 translateloginalertbox'>Show Dialog</div>
@@ -288,12 +288,11 @@ const Translate = () => {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-            <div className="font-pop w-auto max-w-[80%] mt-8 flex justify-center py-4 flex-col gap-4 pl-16">
+            <div className='flex flex-col justify-center items-center'>
+            <div className="font-pop flex items-center justify-center py-4 flex-col gap-4 ">
                 <h1 className="text-[1.37rem] font-[500]">DocxAI - Unlock Insights from Your Documents</h1>
-                <p className="base:hidden bl:flex text-[0.8rem] break-words bl:max-w-[80%] text-muted-foreground">
-                    Our app allows you to upload documents for a variety of purposes including summarization, multiple-choice question and answer (MCQA) generation, insights extraction, and referencing Udemy courses.
-                    <br />
-                    We recommend using DOCX and PPTX formats to ensure the best results. Other file formats may cause formatting issues.
+                <p className="base:hidden bl:flex text-[0.8rem] break-words w-[min(90vw,500px)] text-center text-muted-foreground">
+                Upload DOCX/PDF for document summarization, MCQA generation, insights extraction, and interactive chat for enhanced understanding and analysis.
                 </p>
                 <p className="base:flex bl:hidden text-[0.8rem] w-full text-muted-foreground">
                     Upload documents for summarization, MCQA generation, insights extraction, and Udemy course referencing. Use DOCX and PPTX for optimal results; other formats may have formatting issues.
@@ -302,7 +301,7 @@ const Translate = () => {
 
             <div
                 className="base:w-auto bl:w-auto h-auto flex items-start justify-start base:flex-col md:flex-row 
-      base:gap-20 md:gap-30 base:mt-5 bl:mt-10 pl-16"
+      base:gap-20 md:gap-30 base:mt-5 bl:mt-10"
             >
                 <div className="dark:bg-[transparent] border-dashed border-[2px] border-[ #c9cbe5] flex items-center rounded-md justify-start flex-col dark:border-[rgba(252,252,252,0.2)] base:mb-10 bl:mb-0 base:w-[330px] bl:w-[330px] max-w-[480px] bl:h-[300px] roundebox">
                     <input
@@ -462,6 +461,7 @@ const Translate = () => {
                         )}
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

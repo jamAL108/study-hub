@@ -32,6 +32,7 @@ const config = {
   			slaate: 'var(--slaate)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+			greenish:'hsl(var(--greenish))',
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
