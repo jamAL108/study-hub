@@ -5,17 +5,17 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./config.env" });
 import bodyParser from "body-parser";
 import apirouter from './router.js'
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(
   cors({
-    origin: "https://www.study-hub.xyz",
-    // origin:"http://localhost:3000",
+    origin: ["https://www.study-hub.xyz","https://study-hub-frontend.vercel.app","http://localhost:3000"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
 );
+
+// Your other middleware or route handlers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", apirouter);
 const port = 8000;
