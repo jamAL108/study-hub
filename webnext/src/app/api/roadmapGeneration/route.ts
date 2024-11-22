@@ -267,10 +267,13 @@ export async function POST(req: NextRequest) {
         }
 
         let docsStaged: any[] = [];
+        console.log("MEOWWW")
 
         // console.log(youtubePrerequisites)
 
         if (youtubePrerequisites.length !== 0) {
+            console.log("inside if")
+
             const URL = 'https://study-hub-express.vercel.app/'
             const resFromYoutube = await fetch(`${URL}api/getYoutubeSearch`, {
                 method: "POST",
@@ -284,6 +287,7 @@ export async function POST(req: NextRequest) {
             });
             // console.log(resFromYoutube)
             const parsedResp = await resFromYoutube.json();
+            console.log(parsedResp)
             youtubePrerequisites = parsedResp.youtubePrerequisites
             parsedData.LearningStages.stages = parsedResp.StagesLearning
             docsStaged = parsedResp.AllDocsResources
@@ -291,6 +295,8 @@ export async function POST(req: NextRequest) {
             console.log(docsStaged)
             // console.log(youtubePrerequisites)
         }
+
+        console.log("outside if")
 
 
         // /comment remove kardo
