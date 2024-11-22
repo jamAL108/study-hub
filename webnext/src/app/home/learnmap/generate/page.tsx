@@ -138,7 +138,7 @@ const Page = () => {
             })
             return;
         }
-        const URL = 'https://www.study-hub.xyz/'
+        const URL = 'https://study-hub-express.vercel.app/'
         const result: any = await fetch(`${URL}api/roadmapGeneration`, {
             method: "POST",
             headers: {
