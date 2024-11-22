@@ -271,7 +271,8 @@ export async function POST(req: NextRequest) {
         // console.log(youtubePrerequisites)
 
         if (youtubePrerequisites.length !== 0) {
-            const resFromYoutube = await fetch("http://localhost:8000/api/getYoutubeSearch", {
+            const URL = 'https://study-hub-express.vercel.app/'
+            const resFromYoutube = await fetch(`${URL}api/getYoutubeSearch`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
