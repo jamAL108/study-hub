@@ -46,6 +46,7 @@ import {
 import { Loader2 } from "lucide-react"
 import { SignOutWithSupabase } from '@/auth'
 import { ShrinkTitle } from '@/utils'
+import { GoProjectRoadmap } from "react-icons/go";
 
 const Navbar: React.FC<any> = (props) => {
     const pathname = usePathname()
@@ -75,6 +76,14 @@ const Navbar: React.FC<any> = (props) => {
                         </Link>
                     </div>
                     <nav className="grid items-start text-sm font-medium gap-1">
+                        <Link
+                            onClick={(e) => setSheetOpen(false)}
+                            href="/home/learnmap"
+                            className={`flex items-center gap-3 ${pathname ? pathname.includes('learnmap') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                        >
+                            <GoProjectRoadmap className="h-4 w-4" />
+                            Learn Map
+                        </Link>
                         <Link
                             onClick={(e) => setSheetOpen(false)}
                             href="/home/chat"
