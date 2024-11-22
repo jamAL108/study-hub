@@ -66,17 +66,32 @@ export const AddRoadmapToSupabase = async (roadmap: any, name: any, mermaid_scri
     }
 }
 
+
+export const getAllRoadmaps = async (id: any) => {
+    const supabase = clientConnectionWithSupabase()
+    let { data: studyHubRoadmap, error } = await supabase
+        .from('studyHubRoadmap')
+        .select("*")
+        .eq('user_id', id)
+    console.log(studyHubRoadmap)
+    if (error === null) {
+        return { success: true , data:studyHubRoadmap }
+    } else {
+        return { success: false }
+    }
+}
+
 export const deleteRoadmap = async (id: any) => {
     const supabase = clientConnectionWithSupabase()
     const { error } = await supabase
         .from('studyHubRoadmap')
         .delete()
         .eq('id', id)
-        console.log(error)
-        if(error===null){
-            return {success:true}
-        }
-        return {success:false}
+    console.log(error)
+    if (error === null) {
+        return { success: true }
+    }
+    return { success: false }
 }
 
 

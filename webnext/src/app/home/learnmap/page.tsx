@@ -1,12 +1,72 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 import { Book, Code, Brain, Database, ChevronRight, Clock, CheckCircle, Circle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
+import { useRouter } from "next/navigation";
+import checkUserAuthClient from '@/auth/getUserSession'
+import { getAllRoadmaps } from '@/api'
+import SessionNotFoundComp from '@/components/sessionNotFound'
+
 
 const Page = () => {
     const [activeRoadmap, setActiveRoadmap] = useState(null);
+
+    const [query, setQuery] = useState<string>("")
+    const router = useRouter();
+
+    const [loader, setLoader] = useState<boolean>(true)
+    const [sessionNotFound, setSessionNotFound] = useState<boolean>(false)
+    const [user, setUser] = useState<any>({})
+
+    const [generatingResult, setGeneratingResult] = useState<boolean>(false)
+    const [nextClicked, setNextClicked] = useState<boolean>(false)
+
+    const [level, setLevel] = useState<string>('beginner')
+    const [background, setBackground] = useState('')
+
+    const [roadmap, setRoadmap] = useState<any>(null)
+    const [chart, setChart] = useState<string>("")
+
+    const [alertForRemove, setAlertFOrRemove] = useState<boolean>(false)
+
+
+    const [Roadmaps, setRoadmaps] = useState([])
+
+
+    useEffect(() => {
+        sessionChecks()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const sessionChecks = async () => {
+        const res: any = await checkUserAuthClient()
+        if (res.error !== null) {
+            router.push('/')
+            return
+        }
+        if (res.data.session === null) {
+            setLoader(false)
+            setSessionNotFound(true)
+            return
+        }
+        const userData: any = res.data.session.user
+        const result: any = await getAllRoadmaps(userData.id)
+        if (result.success === false) {
+            alert("ERROR in Server")
+            setLoader(false)
+        } else {
+            setUser(userData)
+            setRoadmaps(result.data)
+            setLoader(false)
+        }
+    }
+
+
+    if (sessionNotFound) {
+        return <SessionNotFoundComp />
+    }
 
     const roadmaps = [
         {
@@ -80,15 +140,16 @@ const Page = () => {
     ];
 
     const calculateProgress = (modules: any) => {
-        const completed = modules.filter((m: any) => m.completed).length;
-        return Math.round((completed / modules.length) * 100);
+        return 50
+        // const completed = modules.filter((m: any) => m.completed).length;
+        // return Math.round((completed / modules.length) * 100);
     };
 
 
     return (
         <div className='w-full flex justify-center min-h-full overflow-y-auto '>
-            <Card className='w-full border-none px-4 py-4'>
-                <CardHeader className='w-full flex flex-row items-center justify-between '>
+            <Card className='w-full border-none base:px-0 bl:px-4 py-4'>
+                <CardHeader className='w-full flex base:flex-col bl:flex-row bl:items-center gap-3  base:justify-center bl:justify-between '>
                     <div className='flex flex-col gap-2 justify-center'>
                         <CardTitle>My Learning Roadmaps</CardTitle>
                         <CardDescription>Track your progress across different learning paths</CardDescription>
@@ -97,24 +158,24 @@ const Page = () => {
                 </CardHeader>
                 <CardContent className='py-8'>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {roadmaps.map((roadmap) => {
-                            const progress = calculateProgress(roadmap.modules);
+                        {Roadmaps.map((roadmap: any) => {
+                            const progress = calculateProgress(roadmap.roadmap);
                             return (
                                 <Card
                                     key={roadmap.id}
-                                    className={`hover:shadow-lg transition-shadow duration-300 cursor-pointer
-                  ${activeRoadmap === roadmap.id ? 'ring-2 ring-' + roadmap.color + '-500' : ''}`}
+                                //                     className={`hover:shadow-lg transition-shadow duration-300 cursor-pointer
+                                //   ${activeRoadmap === roadmap.id ? 'ring-2 ring-' + roadmap.color + '-500' : ''}`}
                                 // onClick={() => setActiveRoadmap(roadmap.id)}
                                 >
                                     <CardHeader>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center space-x-3">
-                                                {roadmap.icon}
-                                                <CardTitle className="text-xl">{roadmap.title}</CardTitle>
+                                                {/* {roadmap.icon} */}
+                                                <CardTitle className="text-xl">{roadmap.name}</CardTitle>
                                             </div>
                                             <ChevronRight className="h-5 w-5 text-gray-400" />
                                         </div>
-                                        <CardDescription className="mt-2">{roadmap.description}</CardDescription>
+                                        <CardDescription className="mt-2">{roadmap.roadmap.LearningStages.description}</CardDescription>
                                     </CardHeader>
 
                                     <CardContent>
@@ -124,12 +185,6 @@ const Page = () => {
                                                 <Clock className="h-4 w-4" />
                                                 <span>{roadmap.duration}</span>
                                             </div>
-                                            <span className={`px-2 py-1 rounded-full text-xs 
-                      ${roadmap.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
-                                                    roadmap.difficulty === 'Intermediate' ? 'bg-blue-100 text-blue-800' :
-                                                        'bg-purple-100 text-purple-800'}`}>
-                                                {roadmap.difficulty}
-                                            </span>
                                         </div>
 
                                         {/* Progress Bar */}
@@ -148,19 +203,22 @@ const Page = () => {
 
                                         {/* Modules with Completion Status */}
                                         <div className="grid grid-cols-2 gap-2">
-                                            {roadmap.modules.map((module, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    className="flex items-center space-x-2 text-sm"
-                                                >
-                                                    {module.completed ?
-                                                        <CheckCircle className="h-4 w-4 text-green-500" /> :
-                                                        <Circle className="h-4 w-4 text-gray-300" />
-                                                    }
-                                                    <span className={module.completed ? 'text-gray-700' : 'text-gray-500'}>
-                                                        {module.name}
-                                                    </span>
-                                                </div>
+                                            {roadmap.roadmap.LearningStages.stages.map((stageTopics: any, stageIndex: number) => (
+                                                stageTopics.Topics.map((topic: any, topicIndex: number) => (
+                                                    <div
+                                                        key={`${stageIndex}-${topicIndex}`}
+                                                        className="flex items-center space-x-2 text-sm"
+                                                    >
+                                                        {topic.completed ? (
+                                                            <CheckCircle className="h-4 w-4 text-green-500" />
+                                                        ) : (
+                                                            <Circle className="h-4 w-4 text-gray-300" />
+                                                        )}
+                                                        <span className={topic.completed ? 'text-gray-700' : 'text-gray-500'}>
+                                                            {topic.topicName}
+                                                        </span>
+                                                    </div>
+                                                ))
                                             ))}
                                         </div>
                                     </CardContent>

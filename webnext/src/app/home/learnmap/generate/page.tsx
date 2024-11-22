@@ -88,7 +88,7 @@ const Page = () => {
     const [alertForRemove, setAlertFOrRemove] = useState<boolean>(false)
 
 
-    const [previousRoadmap,setPreviousRoadmap] = useState([null])
+    const [previousRoadmap,setPreviousRoadmap] = useState([])
 
     useEffect(() => {
         sessionChecks()
