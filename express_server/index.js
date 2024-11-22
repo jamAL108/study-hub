@@ -8,8 +8,7 @@ import apirouter from './router.js'
 app.use(
   cors({
     origin: ["https://www.study-hub.xyz","https://study-hub-frontend.vercel.app","http://localhost:3000"],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
   })
 );
 
