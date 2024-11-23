@@ -718,13 +718,117 @@ export const TransformDataToStandard = (parsedData: any) => {
 
 
 
+
+export const roadmapPrompt = (query: any) => {
+    const aiPrompt = `
+            You are an AI assistant specialized in creating hierarchical and exhaustive learning roadmaps. 
+            The user will provide a query representing the main topic they want to study. Based on this query, 
+            generate a roadmap that follows the structure below:
+            
+            {
+                name: "Main Topic",
+                subtopics: [
+                    {
+                        name: "Subtopic 1", 
+                        subtopics: [
+                            {
+                                name: "Sub-subtopic 1.1",
+                                subtopics: [...]
+                            },
+                            {
+                                name: "Sub-subtopic 1.2",
+                                subtopics: [...]
+                            }
+                        ]
+                    },
+                    {
+                        name: "Subtopic 2",
+                        subtopics: [
+                            {
+                                name: "Sub-subtopic 2.1",
+                                subtopics: [...]
+                            },
+                            {
+                                name: "Sub-subtopic 2.2",
+                                subtopics: [...]
+                            }
+                        ]
+                    }
+                ]
+            }
+            The query :- ${query}.
+            Each "subtopic" or "sub-subtopic" should only include a name and potentially more nested subtopics. 
+            Do not include additional fields or attributes. Focus on creating a clear hierarchy that allows the user 
+            to progress from basic to advanced concepts systematically.
+            If the topic name is too long (i.e more than two words) then please add '<br/>' in between.
+        `
+    return aiPrompt
+}
+
+
+function generateId(prefix: any) {
+    return `${prefix}_${Math.random().toString(36).substr(2, 9)}`;
+}
+
+const sanitizeText = (text: string): string => {
+    if (!text) return '';
+    return text.toString().replace(/[^a-zA-Z0-9\s\(\)\[\]\|\-]/g, '');
+};
+
+export function generateMermaidDiagramWithStyles(learningData: any) {
+    let mermaidScript = 'flowchart LR\n';
+    let styleCounter = 0; // Counter for assigning styles dynamically
+    const arrowStyle = 'stroke:#636d83,stroke-width:4px;';
+    const styles = [
+        { fill: '#BEE3F8', stroke: '#2B6CB0', color: '#2C5282', fontSize: '35px' },
+        { fill: '#C6F6D5', stroke: '#2F855A', color: '#276749', fontSize: '30px' },
+        { fill: '#FEEBC8', stroke: '#C05621', color: '#8B4513', fontSize: '27px' },
+        { fill: '#E9D8FD', stroke: '#6B46C1', color: '#553C9A', fontSize: '24px' },
+        { fill: '#C6F6D5', stroke: '#2F855A', color: '#276749', fontSize: '18px' },
+        { fill: '#FEEBC8', stroke: '#C05621', color: '#8B4513', fontSize: '18px' },
+        { fill: '#E9D8FD', stroke: '#6B46C1', color: '#553C9A', fontSize: '18px' },
+    ];
+
+    function processNode(node: any, parentId: any = null, level = 0) {
+        const currentId = generateId('node');
+        const style = styles[level % styles.length];
+
+        // Add node
+        mermaidScript += `    ${currentId}["${node.name}"]\n`;
+
+        // Apply style to the node
+        mermaidScript += `    style ${currentId} fill:${style.fill},stroke:${style.stroke},color:${style.color},stroke-width:2px,rx:10,ry:10\n`;
+        mermaidScript += `    class ${currentId} level${level}\n`;
+        // Connect to parent if it exists
+        if (parentId) {
+            mermaidScript += `    ${parentId} --> ${currentId}\n`;
+        }
+
+        // Process subtopics if they exist
+        if (node.subtopics && node.subtopics.length > 0) {
+            node.subtopics.forEach((subtopic: any) => {
+                processNode(subtopic, currentId, level + 1);
+            });
+        }
+
+        return currentId;
+    }
+
+    // Start processing from the root
+    processNode(learningData);
+
+    styles.forEach((style, index) => {
+        mermaidScript += `    classDef level${index} font-size:${style.fontSize},text-align:center,fill:${style.fill},stroke:${style.stroke},color:${style.color};\n`;
+    });
+    mermaidScript += `linkStyle default ${arrowStyle}\n`;
+
+    return mermaidScript;
+}
+
+
 export function generateLearningPathMermaid(learningPathData: any): string {
     let mermaidScript = 'flowchart TD\n\n';
 
-    const sanitizeText = (text: string): string => {
-        if (!text) return '';
-        return text.toString().replace(/[^a-zA-Z0-9\s-]/g, '');
-    };
 
 
     // Global class definitions

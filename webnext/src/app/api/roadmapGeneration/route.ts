@@ -2,11 +2,12 @@ export const maxDuration = 60; // This function can run for a maximum of 5 secon
 export const dynamic = 'force-dynamic';
 import { NextRequest } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { promptGenerate, simplifyTimestamp, promptForDocs, PromptChecker, MermaidPromptGenerator, extractTopics, TransformData, generateLearningPathMermaid } from '@/utils/roadmap'
+import { promptGenerate, simplifyTimestamp, promptForDocs, PromptChecker, roadmapPrompt,generateMermaidDiagramWithStyles ,  MermaidPromptGenerator, extractTopics, TransformData, generateLearningPathMermaid } from '@/utils/roadmap'
 
 const apiKey1 = process.env.NEXT_PUBLIC_GEMINI || '';
 const apikey2 = process.env.NEXT_PUBLIC_GEM || '';
 const apikey3 = process.env.NEXT_PUBLIC_GEM_AP || '';
+const apikey4 = process.env.NEXT_PUBLIC_GEM_FOUR || '';
 
 const genAI1 = new GoogleGenerativeAI(apiKey1);
 const geminiModel1 = genAI1.getGenerativeModel({
@@ -24,6 +25,14 @@ const geminiModel2 = genAI2.getGenerativeModel({
 
 const genAI3 = new GoogleGenerativeAI(apikey3);
 const geminiModel3 = genAI3.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
+        responseMimeType: "application/json"
+    },
+});
+
+const genAI4 = new GoogleGenerativeAI(apikey4);
+const geminiModel4 = genAI4.getGenerativeModel({
     model: "gemini-1.5-flash",
     generationConfig: {
         responseMimeType: "application/json"
@@ -341,7 +350,6 @@ export async function POST(req: NextRequest) {
         console.log("outside if")
 
 
-        // /comment remove kardo
         let titles = docsPrerequisites.map((item: any) => item.title);
         titles = [...titles, ...docsStaged]
         const prompt2 = promptForDocs(titles)
@@ -402,11 +410,17 @@ export async function POST(req: NextRequest) {
             return prerequisite; // Keep as is for non-placeholder items
         });
 
-        const TransformedData: any = TransformData(parsedData)
-        const MermaidSciprt: any = generateLearningPathMermaid(TransformedData)
-        console.log(MermaidSciprt)
+        // const TransformedData: any = TransformData(parsedData)
 
-        return Response.json({ success: true, data: parsedData, chart: MermaidSciprt });
+        const prompt4 = roadmapPrompt(data.query)
+        const result4 = await geminiModel4.generateContent(prompt4);
+        const response4 = await result4.response;
+        const text4 = response4.text();
+        const RoadmapData = JSON.parse(text4)
+        const MermaidSciprt:any = generateMermaidDiagramWithStyles(RoadmapData)
+        // console.log(MermaidSciprt)
+        // const MermaidSciprt: any = generateLearningPathMermaid(TransformedData)
+        return Response.json({ success: true, data: parsedData, chart: MermaidSciprt  , sample:RoadmapData});
     } catch (err) {
         console.log(err)
         return Response.json({ success: false, error: err });
