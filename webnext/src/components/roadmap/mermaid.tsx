@@ -6,7 +6,6 @@ mermaid.initialize({
   startOnLoad: true,
   theme: "dark",
   securityLevel: "loose",
-  // fontFamily: "Fira Code"
 });
 
 export const Mermaid=({chart}:any)=>{

@@ -320,9 +320,9 @@ const RoadmapGenerated = ({ roadmap, query, chart, user, level, toast, previousR
                                 </DialogHeader>
                                 <div className="relative overflow-auto rounded-lg w-full h-[500px]">
                                     <TransformWrapper
-                                        minScale={2}
-                                        initialScale={2}
-                                        initialPositionX={-400}
+                                        minScale={1.5}
+                                        initialScale={1.5}
+                                        initialPositionX={0}
                                         initialPositionY={0}
                                     >
                                         {({ zoomIn, zoomOut, resetTransform, ...rest }) => (

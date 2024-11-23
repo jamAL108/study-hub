@@ -558,7 +558,7 @@ export const TransformData = (parsedData: any) => {
 export const TransformDataToStandard = (parsedData: any) => {
     // Add completed flag to prerequisites
     if (parsedData.Prerequisites) {
-        parsedData.Prerequisites = parsedData.Prerequisites.map((prerequisite:any) => ({
+        parsedData.Prerequisites = parsedData.Prerequisites.map((prerequisite: any) => ({
             ...prerequisite,
             completed: false
         }));
@@ -566,7 +566,7 @@ export const TransformDataToStandard = (parsedData: any) => {
 
     // Transform Learning Stages
     if (parsedData.LearningStages && parsedData.LearningStages.stages) {
-        parsedData.LearningStages.stages = parsedData.LearningStages.stages.map((stage:any) => {
+        parsedData.LearningStages.stages = parsedData.LearningStages.stages.map((stage: any) => {
             // Add completed flag to stage
             const transformedStage = {
                 ...stage,
@@ -575,7 +575,7 @@ export const TransformDataToStandard = (parsedData: any) => {
 
             // Transform Topics within stage
             if (stage.Topics) {
-                transformedStage.Topics = stage.Topics.map((topic:any) => {
+                transformedStage.Topics = stage.Topics.map((topic: any) => {
                     // Add completed and isQuizCompleted flags to topic
                     const transformedTopic = {
                         ...topic,
@@ -585,7 +585,7 @@ export const TransformDataToStandard = (parsedData: any) => {
 
                     // Transform resources within topic
                     if (topic.resources) {
-                        transformedTopic.resources = topic.resources.map((resource:any) => ({
+                        transformedTopic.resources = topic.resources.map((resource: any) => ({
                             ...resource,
                             completed: false
                         }));
@@ -603,110 +603,256 @@ export const TransformDataToStandard = (parsedData: any) => {
 }
 
 
+// export function generateLearningPathMermaid(learningPathData: any): string {
+//     let mermaidScript = 'flowchart TB\n\n';
+
+//     // Add title
+//     mermaidScript += `    title[["${learningPathData.metadata.title}"]]\n`;
+//     mermaidScript += `    style title fill:#f9f,stroke:#333,color:#000,stroke-width:4px\n\n`;
+
+//     // Start node
+//     mermaidScript += `    start((Start Journey))\n`;
+//     mermaidScript += `    style start fill:#90EE90,color:#000,stroke:#333\n\n`;
+
+//     // Function to generate a unique color for each topic
+//     const getTopicColor = (index: number): string => {
+//         const colors = ['#FFB6C1', '#98FB98', '#87CEEB', '#DDA0DD', '#F0E68C', '#E6E6FA'];
+//         return colors[index % colors.length];
+//     };
+
+//     // Main Learning Path
+//     mermaidScript += `    subgraph LearningPath["Complete Learning Path"]\n`;
+//     mermaidScript += `        direction TB\n`;
+
+//     // Process each milestone
+//     learningPathData.milestones.forEach((milestone: any, milestoneIndex: number) => {
+//         const milestoneId = `milestone${milestoneIndex + 1}`;
+
+//         // Create milestone subgraph
+//         mermaidScript += `        subgraph ${milestoneId}["${milestone.title} (${milestone.duration})"]\n`;
+//         // mermaidScript += `            direction TB\n`;
+
+//         // Process modules/topics for this milestone
+//         milestone.modules.forEach((module: any, moduleIndex: number) => {
+//             const moduleId = `${milestoneId}_mod${moduleIndex + 1}`;
+//             const topicColor = getTopicColor(moduleIndex);
+
+//             // Create module/topic subgraph
+//             mermaidScript += `            subgraph ${moduleId}["${module.title}"]\n`;
+//             // mermaidScript += `                direction LR\n`;
+
+//             // Create main topic node
+//             mermaidScript += `                ${moduleId}_main[["${module.title}"]]\n`;
+//             mermaidScript += `                style ${moduleId}_main fill:${topicColor},stroke:#333,color:#000\n`;
+
+//             // Add resources for this topic
+//             if (module.resources && module.resources.length > 0) {
+//                 module.resources.forEach((resource: any, resourceIndex: number) => {
+//                     const resourceId = `${moduleId}_res${resourceIndex + 1}`;
+//                     const resourceSymbol = getResourceSymbol(resource.type);
+//                     mermaidScript += `                ${resourceId}${resourceSymbol}${resource.title}]\n`;
+//                     mermaidScript += `                style ${resourceId} text-align:center\n`;
+//                     mermaidScript += `                ${moduleId}_main --> ${resourceId}\n`;
+//                 });
+//             }
+
+//             mermaidScript += `            end\n\n`;
+
+//             // Connect topics sequentially within milestone
+//             if (moduleIndex > 0) {
+//                 const prevModuleId = `${milestoneId}_mod${moduleIndex}`;
+//                 mermaidScript += `            ${prevModuleId}_main --> ${moduleId}_main\n`;
+//             }
+//         });
+
+//         mermaidScript += `        end\n\n`;
+
+//         // Connect milestones sequentially
+//         if (milestoneIndex > 0) {
+//             const prevMilestoneId = `milestone${milestoneIndex}`;
+//             const lastModuleInPrevMilestone = `${prevMilestoneId}_mod${learningPathData.milestones[milestoneIndex - 1].modules.length}`;
+//             const firstModuleInCurrentMilestone = `${milestoneId}_mod1`;
+//             mermaidScript += `        ${lastModuleInPrevMilestone}_main --> ${firstModuleInCurrentMilestone}_main\n`;
+//         }
+//     });
+
+//     mermaidScript += `    end\n\n`;
+
+//     // Connect start to first topic
+//     mermaidScript += `    start --> milestone1_mod1_main\n`;
+
+//     // Add completion node
+//     mermaidScript += `    complete((Complete))\n`;
+//     mermaidScript += `    style complete fill:#98FB98,stroke:#333,stroke-width:4px\n`;
+
+//     // Connect last topic to complete
+//     const lastMilestone = learningPathData.milestones[learningPathData.milestones.length - 1];
+//     const lastModuleId = `milestone${learningPathData.milestones.length}_mod${lastMilestone.modules.length}`;
+//     mermaidScript += `    ${lastModuleId}_main --> complete\n`;
+
+//     return mermaidScript;
+// }
+
+// Helper function to get resource symbol based on type
+
+
+
+
+
+// function getResourceSymbol(resourceType: string): string {
+//     switch (resourceType.toLowerCase()) {
+//         case 'video':
+//             return '[🎥 ';
+//         case 'article':
+//             return '[📄 ';
+//         case 'exercise':
+//             return '[⚡ ';
+//         case 'tutorial':
+//             return '[👨‍💻 ';
+//         case 'documentation':
+//             return '[📚 ';
+//         default:
+//             return '[📌 ';
+//     }
+// }
+
+
+
 export function generateLearningPathMermaid(learningPathData: any): string {
-    let mermaidScript = 'flowchart TB\n\n';
+    let mermaidScript = 'flowchart TD\n\n';
 
-    // Add title
-    mermaidScript += `    title[["${learningPathData.metadata.title}"]]\n`;
-    mermaidScript += `    style title fill:#f9f,stroke:#333,color:#000,stroke-width:4px\n\n`;
-
-    // Start node
-    mermaidScript += `    start((Start Journey))\n`;
-    mermaidScript += `    style start fill:#90EE90,color:#000,stroke:#333\n\n`;
-
-    // Function to generate a unique color for each topic
-    const getTopicColor = (index: number): string => {
-        const colors = ['#FFB6C1', '#98FB98', '#87CEEB', '#DDA0DD', '#F0E68C', '#E6E6FA'];
-        return colors[index % colors.length];
+    const sanitizeText = (text: string): string => {
+        if (!text) return '';
+        return text.toString().replace(/[^a-zA-Z0-9\s-]/g, '');
     };
 
-    // Main Learning Path
-    mermaidScript += `    subgraph LearningPath["Complete Learning Path"]\n`;
-    mermaidScript += `        direction TB\n`;
+
+    // Global class definitions
+    mermaidScript += `    %% Global styles
+    classDef milestone fill:#f2f7ff,stroke:#2B6CB0,stroke-width:2px,rx:10,ry:10,text-align:center
+    classDef module fill:#fff5f5,stroke:#C53030,stroke-width:2px,rx:8,ry:8,text-align:center
+    classDef resource fill:#FEEBC8,stroke:#C05621,color:#8B4513,stroke-width:2px,rx:10,ry:10,text-align:center
+    classDef decision fill:#FFF5F7,stroke:#702459,stroke-width:2px,rx:12,ry:12,text-align:center
+    classDef checkpoint fill:#FAF5FF,stroke:#553C9A,stroke-width:2px,rx:10,ry:10,text-align:center\n\n`;
+
+    // Title and start
+    mermaidScript += `    title[["${sanitizeText(learningPathData.metadata.title)}"]]\n`;
+    mermaidScript += `    style title fill:#E8F4F9,stroke:#2B6CB0,color:#2B6CB0,stroke-width:4px,rx:15,ry:15,text-align:center\n\n`;
+
+    mermaidScript += `    start((Start Journey))\n`;
+    mermaidScript += `    style start fill:#48BB78,color:#FFFFFF,stroke:#2F855A,stroke-width:2px,rx:20,ry:20,text-align:center\n\n`;
+
+    // Prerequisites check
+    mermaidScript += `    start --> preReqCheck{"Prerequisites Check"}\n`;
+    mermaidScript += `    class preReqCheck decision\n\n`;
+
+    const prerequisites: any = learningPathData.prerequisites.map((pre: any) => pre.title);
+
+    mermaidScript += `preReqCheck -->|"Missing"| prerequisites["Complete Prerequisites:<br/>- ${prerequisites.map(
+        (pre: any) => pre).join('<br/>- ')
+        }"]\n`;
+    mermaidScript += `     preReqCheck -->|"Ready"| milestone1\n\n`
+
+    mermaidScript += `     prerequisites --> milestone1\n`
 
     // Process each milestone
     learningPathData.milestones.forEach((milestone: any, milestoneIndex: number) => {
         const milestoneId = `milestone${milestoneIndex + 1}`;
 
-        // Create milestone subgraph
-        mermaidScript += `        subgraph ${milestoneId}["${milestone.title} (${milestone.duration})"]\n`;
-        // mermaidScript += `            direction TB\n`;
+        mermaidScript += `    subgraph ${milestoneId} ["Milestone ${milestoneIndex + 1}: ${milestone.title}"]\n`;
+        mermaidScript += `        direction TB\n\n`;
 
-        // Process modules/topics for this milestone
+        // Process modules with assessments and resources
         milestone.modules.forEach((module: any, moduleIndex: number) => {
             const moduleId = `${milestoneId}_mod${moduleIndex + 1}`;
-            const topicColor = getTopicColor(moduleIndex);
+            const checkpointId = `${moduleId}_check`;
 
-            // Create module/topic subgraph
-            mermaidScript += `            subgraph ${moduleId}["${module.title}"]\n`;
-            // mermaidScript += `                direction LR\n`;
+            // Module main node([
+            mermaidScript += `        ${moduleId}(["${sanitizeText(module.title)} :- ${sanitizeText(module.duration)}"])\n`;
+            mermaidScript += `        style ${moduleId} fill:#C6F6D5,stroke:#2F855A,color:#276749,stroke-width:2px,text-align:center\n`;
 
-            // Create main topic node
-            mermaidScript += `                ${moduleId}_main[["${module.title}"]]\n`;
-            mermaidScript += `                style ${moduleId}_main fill:${topicColor},stroke:#333,color:#000\n`;
+            // Assessment checkpoint
+            mermaidScript += `        ${checkpointId}{{"${sanitizeText(module.title)} Assessment"}}\n`;
+            mermaidScript += `        class ${checkpointId} decision\n\n`;
 
-            // Add resources for this topic
+            // Resources subgraph
             if (module.resources && module.resources.length > 0) {
+                mermaidScript += `        subgraph ${moduleId}_resources ["${sanitizeText(module.title)} Resources"]\n`;
+                mermaidScript += `            direction TB\n`;
+
                 module.resources.forEach((resource: any, resourceIndex: number) => {
                     const resourceId = `${moduleId}_res${resourceIndex + 1}`;
-                    const resourceSymbol = getResourceSymbol(resource.type);
-                    mermaidScript += `                ${resourceId}${resourceSymbol}${resource.title}]\n`;
-                    mermaidScript += `                style ${resourceId} text-align:center\n`;
-                    mermaidScript += `                ${moduleId}_main --> ${resourceId}\n`;
+                    const icon = getResourceIcon(resource.type);
+                    mermaidScript += `            ${resourceId}["${icon} ${sanitizeText(resource.title)}"]\n`;
+                    mermaidScript += `            style ${resourceId} fill:#FEEBC8,stroke:#C05621,color:#8B4513,stroke-width:2px,rx:10,ry:10,text-align:center\n`;
                 });
+
+                mermaidScript += `        end\n\n`;
             }
 
-            mermaidScript += `            end\n\n`;
+            // Connect module components
+            mermaidScript += `        ${moduleId} --> ${moduleId}_resources\n`;
+            mermaidScript += `        ${moduleId}_resources --> ${checkpointId}\n`;
+            mermaidScript += `        ${checkpointId} -->|"Needs Practice"| ${moduleId}_resources:::needsPractice\n`;
 
-            // Connect topics sequentially within milestone
-            if (moduleIndex > 0) {
-                const prevModuleId = `${milestoneId}_mod${moduleIndex}`;
-                mermaidScript += `            ${prevModuleId}_main --> ${moduleId}_main\n`;
+            // Connect to next module if available
+            if (moduleIndex < milestone.modules.length - 1) {
+                const nextModuleId = `${milestoneId}_mod${moduleIndex + 2}`;
+                mermaidScript += `        ${checkpointId} -->|"Passed"| ${nextModuleId}\n`;
             }
         });
 
-        mermaidScript += `        end\n\n`;
+        mermaidScript += `    end\n\n`;
 
-        // Connect milestones sequentially
-        if (milestoneIndex > 0) {
-            const prevMilestoneId = `milestone${milestoneIndex}`;
-            const lastModuleInPrevMilestone = `${prevMilestoneId}_mod${learningPathData.milestones[milestoneIndex - 1].modules.length}`;
-            const firstModuleInCurrentMilestone = `${milestoneId}_mod1`;
-            mermaidScript += `        ${lastModuleInPrevMilestone}_main --> ${firstModuleInCurrentMilestone}_main\n`;
+        // Connect milestones
+        if (milestoneIndex < learningPathData.milestones.length - 1) {
+            const lastModuleCheck = `${milestoneId}_mod${milestone.modules.length}_check`;
+            const nextMilestoneFirstMod = `milestone${milestoneIndex + 2}_mod1`;
+            mermaidScript += `    ${lastModuleCheck} -->|"Passed"| ${nextMilestoneFirstMod}\n`;
         }
     });
 
-    mermaidScript += `    end\n\n`;
+    // Final completion
+    mermaidScript += `    complete((Successfully Completed!))\n`;
+    mermaidScript += `    style complete fill:#68D391,color:#FFFFFF,stroke:#38A169,stroke-width:3px,rx:20,ry:20,text-align:center\n\n`;
 
-    // Connect start to first topic
-    mermaidScript += `    start --> milestone1_mod1_main\n`;
-
-    // Add completion node
-    mermaidScript += `    complete((Complete))\n`;
-    mermaidScript += `    style complete fill:#98FB98,stroke:#333,stroke-width:4px\n`;
-
-    // Connect last topic to complete
+    // Connect last checkpoint to completion
     const lastMilestone = learningPathData.milestones[learningPathData.milestones.length - 1];
-    const lastModuleId = `milestone${learningPathData.milestones.length}_mod${lastMilestone.modules.length}`;
-    mermaidScript += `    ${lastModuleId}_main --> complete\n`;
+    const lastModuleCheck = `milestone${learningPathData.milestones.length}_mod${lastMilestone.modules.length}_check`;
+    mermaidScript += `    ${lastModuleCheck} -->|"Passed"| complete\n`;
+
+    mermaidScript += `    style preReqCheck fill:#BEE3F8,stroke:#2B6CB0,color:#2C5282,stroke-width:2px,rx:10,ry:10,text-align:center\n`;
+
+    mermaidScript += `    style cssBasics fill:#C6F6D5,stroke:#2F855A,color:#276749,stroke-width:2px,rx:10,ry:10\n`;
+    mermaidScript += `    style jsBasics fill:#FEEBC8,stroke:#C05621,color:#8B4513,stroke-width:2px,rx:10,ry:10\n`;
+    mermaidScript += `    style needsPractice fill:#E9D8FD,stroke:#6B46C1,color:#553C9A,stroke-width:2px,rx:5,ry:5,font-weight:bold,text-align:center\n`;
+
+    mermaidScript += `    style html1 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style html2 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style html3 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style css1 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style css2 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style css3 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style js1 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style js2 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style js3 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style js4 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style adv1 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style adv2 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style adv3 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+    mermaidScript += `    style adv4 fill:#F7FAFC,color:#2D3748,stroke:#4A5568,rx:5,ry:5\n`;
+
 
     return mermaidScript;
 }
 
-// Helper function to get resource symbol based on type
-function getResourceSymbol(resourceType: string): string {
-    switch (resourceType.toLowerCase()) {
-        case 'video':
-            return '[🎥 ';
-        case 'article':
-            return '[📄 ';
-        case 'exercise':
-            return '[⚡ ';
-        case 'tutorial':
-            return '[👨‍💻 ';
-        case 'documentation':
-            return '[📚 ';
-        default:
-            return '[📌 ';
+function getResourceIcon(type: string): string {
+    switch (type?.toLowerCase()) {
+        case 'video': return '🎥';
+        case 'article': return '📄';
+        case 'exercise': return '⚡';
+        case 'quiz': return '❓';
+        case 'project': return '🏗️';
+        default: return '📚';
     }
 }

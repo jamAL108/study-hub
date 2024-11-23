@@ -138,7 +138,7 @@ const Page = () => {
             })
             return;
         }
-        const URL = 'https://www.study-hub.xyz/'
+        const URL = process.env.NEXT_PUBLIC_NEXT_SERVER
         const result: any = await fetch(`${URL}api/roadmapGeneration`, {
             method: "POST",
             headers: {

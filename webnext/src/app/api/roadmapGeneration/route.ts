@@ -215,6 +215,47 @@ export async function POST(req: NextRequest) {
     //                     },
     //                 ]
     //             },
+    //             {
+    //                 name: "Foundation",
+    //                 focus: "Building core concepts",
+    //                 duration: "2 weeks",
+    //                 Topics: [
+    //                     {
+    //                         topicName: "Introduction to Programming",
+    //                         resources: [
+    //                             {
+    //                                 title: "Programming Basics for Beginners",
+    //                                 url: "https://youtube.com/example1",
+    //                                 channelName: "CodeAcademy",
+    //                                 duration: "15 mins",
+    //                                 type: "video"
+    //                             },
+    //                             {
+    //                                 title: "React Crash Course",
+    //                                 url: "https://react-icons.github.io/react-icons/",
+    //                                 type: "docs"
+    //                             },
+    //                         ],
+    //                     },
+    //                     {
+    //                         topicName: "Introduction to Programming",
+    //                         resources: [
+    //                             {
+    //                                 title: "Programming Basics for Beginners",
+    //                                 url: "https://youtube.com/example1",
+    //                                 channelName: "CodeAcademy",
+    //                                 duration: "15 mins",
+    //                                 type: "video"
+    //                             },
+    //                             {
+    //                                 title: "React Crash Course",
+    //                                 url: "https://react-icons.github.io/react-icons/",
+    //                                 type: "docs"
+    //                             },
+    //                         ],
+    //                     },
+    //                 ]
+    //             },
     //         ],
     //     },
     // };
@@ -235,7 +276,7 @@ export async function POST(req: NextRequest) {
             return Response.json({ success: false, error: parsedResult.issue });
         }
 
-        
+
 
         const prompt = promptGenerate(data.query, data.level, data.background)
         const result = await geminiModel1.generateContent(prompt);
@@ -275,7 +316,7 @@ export async function POST(req: NextRequest) {
         if (youtubePrerequisites.length !== 0) {
             console.log("inside if")
 
-            const URL = 'https://study-hub-express.vercel.app/'
+            const URL = process.env.NEXT_PUBLIC_NODE_SERVER
             const resFromYoutube = await fetch(`${URL}api/getYoutubeSearch`, {
                 method: "POST",
                 headers: {
@@ -364,7 +405,7 @@ export async function POST(req: NextRequest) {
         const TransformedData: any = TransformData(parsedData)
         const MermaidSciprt: any = generateLearningPathMermaid(TransformedData)
         console.log(MermaidSciprt)
-        
+
         return Response.json({ success: true, data: parsedData, chart: MermaidSciprt });
     } catch (err) {
         console.log(err)
