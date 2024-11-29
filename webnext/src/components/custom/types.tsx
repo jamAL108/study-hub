@@ -20,7 +20,7 @@ export function BentoMinimalTiptap({content , setContent , Datafield, setDataFie
           output="json"
           onChange={value => {
             const newValue = value
-            console.log(newValue)
+            // console.log(newValue)
             setContent(newValue)
           }}
           placeholder="This is your placeholder..."

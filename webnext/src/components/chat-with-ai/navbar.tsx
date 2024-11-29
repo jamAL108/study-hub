@@ -49,7 +49,7 @@ const Navbar: React.FC<any> = (props) => {
                 console.error('Chat array is not in the expected format at index:', i);
             }
         }
-        console.log(objectData)
+        // console.log(objectData)
         const DataToBeSent = {
             details: {
                 chats: objectData,
@@ -57,7 +57,7 @@ const Navbar: React.FC<any> = (props) => {
             }
         }
         const res:any =  await downloadPDF(DataToBeSent)
-        console.log(res)
+        // console.log(res)
         // if(parsedData.success===true) setExporting(false)
     }
 

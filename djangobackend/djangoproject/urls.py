@@ -31,5 +31,4 @@ urlpatterns = [
     ),
     path('docxchat/', include('docxchat.urls')),
     path('ytchat/', include('ytchat.urls')),
-    path("roadmap/", include('roadmap.urls'))
 ]

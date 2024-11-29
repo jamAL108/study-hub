@@ -7,7 +7,7 @@ const URL = 'http://127.0.0.1:8000'
 // const URL = 'https://vidchatbackend.vercel.app'
 
 export const getUserDetails = async (id: any) => {
-    console.log(id)
+    // console.log(id)
     const supabase = clientConnectionWithSupabase()
     let { data: user, error } = await supabase
         .from('vidchatUser')
@@ -18,7 +18,7 @@ export const getUserDetails = async (id: any) => {
             .from('studyHubRoadmap')
             .select("id,name,duration")
             .eq('user_id', id)
-        console.log(studyHubRoadmap)
+        // console.log(studyHubRoadmap)
         return { success: true, user: user[0], existingRoadmap: studyHubRoadmap }
     } else {
         return { success: false }
@@ -29,7 +29,7 @@ export const getUdemyCourseRecom = async (query: string) => {
     try {
         const response = await fetch(`${URL}/roadmap/getCourseRecom?q=${query}`)
         const data = await response.json()
-        console.log(data)
+        // console.log(data)
         return { success: true, data: data.courses }
     } catch (error) {
         console.error('Error:', error)
@@ -46,7 +46,7 @@ export const updateCountOfRequest = async (id: any, currentValue: any) => {
         .update({ total_pending_counts: currentValue - 1 })
         .eq('id', id)
         .select()
-    console.log(error)
+    // console.log(error)
     if (error !== null) return { success: false, error: error.message }
     else return { success: true, data: data[0] }
 }
@@ -73,10 +73,11 @@ export const getAllRoadmaps = async (id: any) => {
         .from('studyHubRoadmap')
         .select("*")
         .eq('user_id', id)
-    console.log(studyHubRoadmap)
+    // console.log(studyHubRoadmap)
     if (error === null) {
         return { success: true , data:studyHubRoadmap }
     } else {
+        console.log(error)
         return { success: false }
     }
 }
@@ -87,10 +88,10 @@ export const deleteRoadmap = async (id: any) => {
         .from('studyHubRoadmap')
         .delete()
         .eq('id', id)
-    console.log(error)
     if (error === null) {
         return { success: true }
     }
+    console.log(error)
     return { success: false }
 }
 
@@ -101,11 +102,10 @@ export const GetRoadmapFromSupabase = async (user_id: any) => {
         .from('studyHubRoadmap')
         .select("id", "name", "duration")
         .eq('user_id', user_id)
-    console.log(studyHubRoadmap)
-    console.log(error)
     if (error === null) {
         return { success: true, data: studyHubRoadmap }
     } else {
+        console.log(error)
         return { success: false }
     }
 }
@@ -115,7 +115,6 @@ export const getVideosBasedOnQuery = async (query: string) => {
     try {
         const response = await fetch(`${URL}/ytchat/explore?q=${query}`)
         const data = await response.json()
-        console.log(data)
         return { success: true, data: data.videos }
     } catch (error) {
         console.error('Error:', error)
@@ -127,7 +126,6 @@ export const getVideosBasedOnURL = async (query: string) => {
     try {
         const response = await fetch(`${URL}/ytchat/search?q=${query}`)
         const data = await response.json()
-        console.log(data)
         const dat = JSON.parse(data.data)
         return { success: true, data: dat.videos }
     } catch (error) {
@@ -142,7 +140,6 @@ export const getVideoDataFromSupabase = async (id: string) => {
         .from('vidChat-Chats')
         .select("*")
         .eq('video_id', id)
-    console.log(error)
     if (error !== null) return { success: false, error: error.message }
     else return { success: true, data: data }
 }
@@ -154,7 +151,7 @@ export const UpdateTheVideoChatContent = async (videoData: any) => {
         .select("*")
         .eq('video_id', videoData.video_id)
     if (error !== null) {
-        console.log(error)
+        // console.log(error)
         return { success: false, error: error.message }
     } else if (doesRowExits.length === 0) {
         const { data: insertData, error: insertError }: any = await supabase
@@ -163,7 +160,7 @@ export const UpdateTheVideoChatContent = async (videoData: any) => {
                 { video_id: videoData.video_id, chat: videoData.chat, duration: videoData.duration, title: videoData.title, user_id: videoData.user_id, url_suffix: videoData.url_suffix, thumbnails: videoData.thumbnails, views: videoData.views, channel: videoData.channel, extractedText: videoData.extractedText },
             ])
             .select()
-        console.log(insertError)
+        // console.log(insertError)
         if (insertError !== null) return { success: false, error: insertError.message }
         return
     } else {
@@ -172,7 +169,7 @@ export const UpdateTheVideoChatContent = async (videoData: any) => {
             .update({ chat: videoData.chat })
             .eq('video_id', videoData.video_id)
             .select()
-        console.log(updateError)
+        // console.log(updateError)
         if (error !== null) return { success: false, error: updateError.message }
         return
     }
@@ -227,7 +224,6 @@ export const publishShareData = async (chatData: any) => {
         .from('chat_share')
         .select("*")
         .eq('video_id', chatData.video_id)
-    console.log(error)
     if (error !== null) return { success: false }
     if (chat_share.length === 0) {
         const { data, error: IError }: any = await supabase
@@ -236,7 +232,6 @@ export const publishShareData = async (chatData: any) => {
                 { ...chatData },
             ])
             .select()
-        console.log(Error)
         if (IError !== null) return { success: false }
         return { success: true }
     } else {
@@ -245,7 +240,6 @@ export const publishShareData = async (chatData: any) => {
             .update({ chat: chatData.chat })
             .eq('video_id', chatData.video_id)
             .select()
-        console.log(AError)
         if (AError !== null) return { success: false }
         return { success: true }
     }
@@ -259,7 +253,6 @@ export const getAllchats = async (user_id: string) => {
         .from('vidChat-Chats')
         .select("*")
         .eq('user_id', user_id)
-    console.log(error)
     if (error !== null) return { success: false }
     return { success: true, data: vidChat }
 }
@@ -270,10 +263,25 @@ export const getAllDocuments = async (user_id: string) => {
         .from('studyHubPDF')
         .select("*")
         .eq('user_id', user_id)
-    console.log(error)
     if (error !== null) return { success: false }
     return { success: true, data: DocxChats }
 }
+
+export const changeNameOfDoc = async (id:string , name:string)=>{
+    const supabase = clientConnectionWithSupabase()   
+    const { data, error } = await supabase
+    .from('studyHubPDF')
+    .update({ name: name })
+    .eq('id', id)
+    .select()        
+    if(error===null){
+        return {success:true}
+    }else{
+        return {success:false}
+    }
+}
+
+
 
 export const getAllNotes = async (user_id: string) => {
     const supabase = clientConnectionWithSupabase()
@@ -281,7 +289,6 @@ export const getAllNotes = async (user_id: string) => {
         .from('studyHubNotes')
         .select("*")
         .eq('user_id', user_id)
-    console.log(error)
     if (error !== null) return { success: false }
     return { success: true, data: Notes }
 }
@@ -339,7 +346,6 @@ export const GetNoteFromSupabase = async (id: any, userId: any) => {
         .from('studyHubNotes')
         .select("*")
         .eq('id', id)
-    console.log(error)
 
     if (studyHubNotes.length === 0) {
         const { data, error } = await supabase
@@ -348,7 +354,6 @@ export const GetNoteFromSupabase = async (id: any, userId: any) => {
                 { id: id, name: 'New Document', user_id: userId, size: 0 },
             ])
             .select()
-        console.log(error)
         if (error !== null) {
             return { success: false, error: "Error in Server" }
         } else {
@@ -363,13 +368,11 @@ export const GetNoteFromSupabase = async (id: any, userId: any) => {
 
 
 export const saveNoteToSupabase = async (id: any, notes: any) => {
-    console.log(notes)
     const supabase = clientConnectionWithSupabase()
     const { data, error } = await supabase
         .from('studyHubNotes')
         .update({ notes: notes })
         .eq('id', id)
-    console.log(error)
     if (error === null) {
         return { success: true }
     } else {
@@ -397,7 +400,6 @@ export const updatePDFChat = async (chats: any, id: any) => {
         .update({ chats: chats })
         .eq('id', id)
         .select()
-    console.log(updateError)
     if (updateError !== null) return { success: false, error: updateError.message }
     return { success: true }
 }
@@ -411,9 +413,7 @@ export const uploadPdfFile = async (file: any) => {
             method: 'POST',
             body: formData,
         });
-        console.log(response)
         if (response.ok) {
-            console.log('PDF successfully sent to server');
             return { success: true }
         } else {
             return { success: false, Error: response.Error }

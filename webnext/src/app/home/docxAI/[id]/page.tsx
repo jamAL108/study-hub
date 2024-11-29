@@ -14,7 +14,7 @@ import checkUserAuthClient from '@/auth/getUserSession'
 // @ts-ignore
 import { useRouter } from 'next/navigation'
 import SessionNotFoundComp from '@/components/sessionNotFound'
-import { GetVideoFromSupabase } from '@/api/index'
+import { changeNameOfDoc, GetVideoFromSupabase } from '@/api/index'
 import { cn } from "@/lib/utils";
 import { CornerDownLeft, Mic, Paperclip } from "lucide-react"
 import { Label } from "@/components/ui/label"
@@ -27,9 +27,9 @@ import {
 } from "@/components/ui/tooltip"
 import { FormatVideoViews, geminiModel, extractEmailInputPrefix } from '@/utils'
 import { Progress } from "@/components/ui/progress"
-import { UpdateTheVideoChatContent , getChatResponse } from '@/api'
+import { UpdateTheVideoChatContent, getChatResponse } from '@/api'
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { updatePDFChat , resetPinecone , getRawPdfFromSupabase , uploadPdfFile, getSummarizedData } from '@/api'
+import { updatePDFChat, resetPinecone, getRawPdfFromSupabase, uploadPdfFile, getSummarizedData , DeleteDocChatFromSupabase } from '@/api'
 import { Input } from "@/components/ui/input"
 import {
     Select,
@@ -45,6 +45,26 @@ import { useToast } from "@/components/ui/use-toast"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Skeleton } from '@/components/ui/skeleton'
 import QuizSession from './quiz'
+import { Copy, RotateCcw, ThumbsDown, ThumbsUp, PencilLine, Trash, Undo, Save } from 'lucide-react'
+import { HiOutlineArrowUp } from "react-icons/hi";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { ColorRing } from 'react-loader-spinner'
+
 
 const Page = ({ params }: {
     params: {
@@ -86,6 +106,13 @@ const Page = ({ params }: {
     //// 
     const [message, setMessage] = useState<string>('')
 
+    const [popoverBool, setPopoverBool] = useState<boolean>(false)
+
+    const [docName, setDocName] = useState<string>("")
+
+    const [deleteAlert, setDeleteAlert] = useState<boolean>(false)
+    const [deleteLoader, setDeleteLoader] = useState<boolean>(false)
+
 
     useEffect(() => {
         getAllInvoicefunciton()
@@ -107,10 +134,11 @@ const Page = ({ params }: {
         }
         const userData: any = res.data.session.user
         setPdfLink(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/StudyHub_videos/${userData.id}/${id}.pdf`)
-        const ress: any = await GetVideoFromSupabase(id,userData.id)
+        const ress: any = await GetVideoFromSupabase(id, userData.id)
         if (ress.success === true && res.data !== null && Details !== null) {
-            console.log(ress.data)
+            // console.log(ress.data)
             setDetails(ress.data)
+            setDocName(ress.data.name)
             setChats(ress.data.chats)
         } else {
             toast({
@@ -127,7 +155,7 @@ const Page = ({ params }: {
     const API = async (url: string) => {
         if (url) {
             let res = await resetPinecone()
-            if (res.success===false) {
+            if (res.success === false) {
                 toast({
                     title: "Some Error in Server",
                     description: "Error in server , try again later",
@@ -136,7 +164,7 @@ const Page = ({ params }: {
                 return
             }
             res = await getRawPdfFromSupabase(url);
-            if(res.success===false){
+            if (res.success === false) {
                 toast({
                     title: "Some Error in Server",
                     description: "Error in server , try again later",
@@ -144,15 +172,13 @@ const Page = ({ params }: {
                 })
                 return
             }
+            // console.log(res)
             setPdfFile(res.file);
             const formData = new FormData();
             formData.append('file', res.file);
             try {
                 const response = await uploadPdfFile(res.file)
-                if(response.success===true){
-                    console.log(response)
-                }
-                console.log(response)
+                // console.log(response)
                 setLoader(false);
             } catch (error) {
                 console.error('Error sending PDF to server:', error);
@@ -162,29 +188,29 @@ const Page = ({ params }: {
     };
 
     const sendTextInputToServer = async () => {
-        console.log(Details);
+        // console.log(Details);
 
         // Create a new chat array with the new message added
         let newChats = [...chats, { user: message }];
         setChats([...newChats]);
         setMessage("");
-        console.log(newChats);
-        const recentChats:any = newChats.slice(-5);
-        console.log(recentChats)
+        // console.log(newChats);
+        const recentChats: any = newChats.slice(-5);
+        // console.log(recentChats)
 
 
         try {
             setIsTyping(true);
-            const response:any = await getChatResponse(message,'English',recentChats)
-            if (response.success===true) {
-                console.log(response)
+            const response: any = await getChatResponse(message, 'English', recentChats)
+            if (response.success === true) {
+                // console.log(response)
                 // Work with the updated newChats array
                 let updatedChats = [...newChats]; // Make a copy of newChats
                 // Remove the last chat, update it, and push it back
                 let removedLastChat = updatedChats.pop();
                 let updatedLastChat = { ...removedLastChat, server: response.text };
                 updatedChats.push(updatedLastChat);
-                console.log(updatedChats);
+                // console.log(updatedChats);
                 await updatePDFChat(updatedChats, id)
                 setChats([...updatedChats]);
             } else {
@@ -218,9 +244,9 @@ const Page = ({ params }: {
         setSummarizedText(null)
         setSummaryLoad(true)
         try {
-            const response:any = await getSummarizedData(summarySearch)
-            console.log(response)
-            if(response.success===false){
+            const response: any = await getSummarizedData(summarySearch)
+            // console.log(response)
+            if (response.success === false) {
                 toast({
                     title: "Some Error in Server",
                     description: response.error,
@@ -229,7 +255,7 @@ const Page = ({ params }: {
                 setSummaryLoad(false)
                 return
             }
-            if(response.text) {
+            if (response.text) {
                 setSummarizedText(response.text);
                 setSummaryLoad(false) // Update state with fetched data
             }
@@ -244,7 +270,45 @@ const Page = ({ params }: {
     }
 
 
+    const changeNameFunction = async () => {
+        const res: any = await changeNameOfDoc(Details.id, docName)
+        if (res.success === true) {
+            setDetails({ ...Details, name: docName })
+            toast({
+                duration: 2000,
+                title: "Changed Name",
+            })
+            setPopoverBool(false)
+        } else {
+            toast({
+                duration: 2000,
+                title: "Error changing the name",
+                variant: 'destructive'
+            })
+            setPopoverBool(false)
+        }
+    }
 
+
+    const deleteFunction =  async () =>{
+        setDeleteLoader(true)
+        const res:any = await DeleteDocChatFromSupabase(user.id,Details.id)
+        if(res.success===false){
+            toast({
+                duration: 2000,
+                title: "Error changing the name",
+                variant: 'destructive'
+            })
+            setDeleteLoader(false)
+        }else{
+            router.push('/home/docxAI')
+            toast({
+                duration: 2000,
+                title: "Decument Data Deleted",
+                variant: 'saved'
+            })
+        }
+    }
 
 
     if (sessionNotFound) {
@@ -257,19 +321,79 @@ const Page = ({ params }: {
             <Card className={`w-full p-5 border-none ${currArea !== -1 ? 'w-[50%]' : 'w-full'} `}>
                 <CardHeader>
                     <CardTitle>
-                    {/* className='flex items-center gap-2' */}
+                        {/* className='flex items-center gap-2' */}
                         {/* <Image src='/images/flash.png' width={50} height={50} alt='sdv' /> */}
                         DocxAI Features
-                        </CardTitle>
+                    </CardTitle>
                     <CardDescription>A list of Features provided for Documents.</CardDescription>
                 </CardHeader>
                 {loader === false && (
                     <div className='w-full flex items-center px-5'>
                         <div className='flex gap-4'>
                             <Image src='/images/pdflogo.png' alt='sadc' width={40} height={40} />
-                            <div className='flex flex-col justify-center'>
-                                <h1 className='text-bold'>{Details?.name ? Details.name : "NA"}</h1>
-                                <p className='text-muted-foreground  text-sm'>{pdfFile ? `${(Number(pdfFile.size) / 1024).toFixed(2)} kb` : "NA"}</p>
+                            <div className='group flex-1 flex justify-between items-center gap-10'>
+                                <div className='flex flex-col justify-center'>
+                                    <h1 className='text-bold'>{Details?.name ? Details.name : "NA"}</h1>
+                                    <p className='text-muted-foreground  text-sm'>{pdfFile ? `${(Number(pdfFile.size) / 1024).toFixed(2)} kb` : "NA"}</p>
+                                </div>
+                                <div className='flex items-center'>
+                                    <Popover open={popoverBool} onOpenChange={(e) => {
+                                        setPopoverBool(e)
+                                    }}>
+                                        <PopoverTrigger>
+                                            <Button size={'icon'} className={`${popoverBool === true ? 'opacity-1' : 'opacity-0'} group-hover:opacity-[1]  transition-opacity text-lg text-muted-foreground hover:text-white rounded-r-none`} variant={'secondary'}><PencilLine /></Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className='group'>
+                                            <Input
+                                                id="name"
+                                                value={docName}
+                                                onChange={(e) => setDocName(e.target.value)}
+                                                className="col-span-2 h-8 focus-visible:ring-0 focus-within:ring-0"
+                                            />
+                                            <div className='mt-4 flex items-center gap-3'>
+                                                <Button onClick={(e) => {
+                                                    e.preventDefault()
+                                                    changeNameFunction()
+                                                }} size={'sm'} variant={'secondary'} className='text-xs min-h-0 h-auto py-1 px-2'><Save /> Save</Button>
+                                                <Button onClick={(e) => {
+                                                    setDocName(Details.name)
+                                                    setPopoverBool(false)
+                                                }} size={'sm'} variant={'secondary'} className='text-xs min-h-0 h-auto py-1 px-2'><Undo /> Undo</Button>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                    <AlertDialog open={deleteAlert} onOpenChange={setDeleteAlert}>
+                                        <AlertDialogTrigger>
+                                            <Button size={'icon'} className={`${popoverBool === true ? 'opacity-1' : 'opacity-0'} group-hover:opacity-[1]  transition-opacity text-lg text-muted-foreground hover:text-white rounded-l-none`} variant={'secondary'}><Trash /></Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent className='base:w-[90vw] tv:w-[400px] base:rounded-[10px] pb-[28px] !pt-[23px]'>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Confirm deletion</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Are you sure you want to delete this task
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter className='base:flex-row tv:flex-row base:justify-end base:gap-[10px]'>
+                                                <button className='border-[2px] hover:bg-accent tracking-wide text-[0.8rem] font-[450] px-[10px] py-[2px] rounded-[4px] ' onClick={(e) => setDeleteAlert(false)}>Cancel</button>
+                                                <button disabled={deleteLoader} style={deleteLoader === true ? { opacity: 0.67 } : { opacity: 1 }}
+
+                                                    className={`${deleteLoader === true ? "bg-[#e5484d] text-white hover:text-white hover:bg-[#e5484d]" : "bg-background text-[#e5484d] hover:text-white hover:bg-[#e5484d]"} text-[0.8rem] tracking-wide font-[450] px-[10px] py-[2px] flex justify-center items-center gap-1 rounded-[4px]   border-[#e5484d] border`} onClick={(e) => {
+                                                        deleteFunction()
+                                                    }}>
+                                                    <ColorRing
+                                                        visible={deleteLoader}
+                                                        height="20"
+                                                        width="20"
+                                                        ariaLabel="color-ring-loading"
+                                                        wrapperStyle={{}}
+                                                        wrapperClass="color-ring-wrapper"
+                                                        colors={['#fff', '#fff', '#fff', '#fff', '#fff']}
+                                                    />
+                                                    Delete</button>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -295,7 +419,7 @@ const Page = ({ params }: {
                                     </p>
                                 )}
                                 <div className='flex justify-center items-center h-full'>
-                                <img src='/images/summarizer.png' alt='dccf' className='w-[60px] h-[60px]'/>
+                                    <img src='/images/summarizer.png' alt='dccf' className='w-[60px] h-[60px]' />
                                 </div>
                                 <div className='flex flex-col gap-2 justify-center'>
                                     <h2 className='text-xl font-bold'>Document Summarization</h2>
@@ -311,7 +435,7 @@ const Page = ({ params }: {
                                     </p>
                                 )}
                                 <div className='flex justify-center items-center h-full'>
-                                <img src='/images/chat3dd.png' alt='dccf' className='w-[60px] h-[60px]'/>
+                                    <img src='/images/chat3dd.png' alt='dccf' className='w-[60px] h-[60px]' />
                                 </div>
                                 <div className='flex flex-col gap-2 justify-center'>
                                     <h2 className='text-xl font-bold'>Chat with AI</h2>
@@ -327,7 +451,7 @@ const Page = ({ params }: {
                                     </p>
                                 )}
                                 <div className='flex justify-center items-center h-full'>
-                                <img src='/images/bulbb.png' alt='dccf' className='w-[60px] h-[60px]'/>
+                                    <img src='/images/bulbb.png' alt='dccf' className='w-[60px] h-[60px]' />
                                 </div>
                                 <div className='flex flex-col gap-2 justify-center'>
                                     <h2 className='text-xl font-bold'>Get Mcq Quiz</h2>
@@ -338,37 +462,59 @@ const Page = ({ params }: {
                     </CardContent>
                 )}
             </Card>
-            <Card className={`${currArea == -1 ? 'hidden' : 'flex w-[50%] h-[95%]'}`}>
-                <div className='w-full px-5 h-full overflow-x-hidden'>
+            <Card className={`border-none ${currArea == -1 ? 'hidden' : 'flex w-[50%] h-[95%]'}`}>
+                <div className='w-full border-none h-full overflow-x-hidden'>
                     {currArea == 1 && (
-                        <div className='w-full h-[100%] relative flex flex-col rounded-2xl bg-accent/60 items-center'>
-                            <ScrollArea className='w-full max-h-[calc(100%_-_140px)] overflow-y-auto px-5 py-4'>
-                                <section ref={chatContainerRef} className='w-full h-full flex flex-col gap-4 px-3 py-3'>
+                        <div className='w-full h-[100%] relative flex flex-col rounded-2xl items-center'>
+                            <ScrollArea className='w-full max-h-[calc(100%_-_140px)] overflow-y-auto px-1 py-4'>
+                                <section ref={chatContainerRef} className='w-full h-full flex flex-col gap-1  py-3'>
                                     {chats != null && chats.length !== 0
                                         && chats.map((chat: any, index: number) => (
-                                            <div key={index + 'qwerty'} className='w-full flex flex-col gap-3'>
+                                            <div key={index + 'qwerty'} className='w-full flex flex-col gap-0 pb-2'>
                                                 {chat.user && (
-                                                    <p className={`justify-end w-full flex items-center`}>
-                                                    <span className={`bg-primary/70 text-sm max-w-[75%] px-3 py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.user}</span>
-                                                    </p>
+                                                    <div className='flex items-center gap-2'>
+                                                        <div className='iconsuser w-7 h-7 flex justify-center items-center capitalize'>
+                                                            {user ? user.email[0] : 'U'}
+                                                        </div>
+                                                        <p className={`justify-start w-full flex items-center !text-xl`}>
+                                                            <span className={`text-[0.95rem] max-w-[95%]  py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.user}</span>
+                                                        </p>
+                                                    </div>
                                                 )}
                                                 {
                                                     chat.server && (
-                                                        <p className={`justify-start w-full flex items-center`}>
-                                                            <span className={`bg-background/70 text-sm max-w-[75%] px-3 py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.server && chat.server}</span>
-                                                        </p>
+                                                        <div className='flex flex-col gap-3 pb-2 '>
+                                                            <div className='flex items-start gap-2'>
+                                                                <img src="/images/hubsolo.png" className='my-3 w-7 h-7' alt="" />
+                                                                <p className={`justify-start w-full flex items-center`}>
+                                                                    <span className={`bg-background/70 text-sm max-w-[90%]  py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.server && chat.server}</span>
+                                                                </p>
+                                                            </div>
+                                                            {index !== 0 && <div className='flex items-center gap-2 text-xs px-10' >
+                                                                <Button size={'sm'} variant={'secondary'} className='text-xs min-h-0 h-auto py-1 px-2'><Copy /> Copy</Button>
+                                                                <Button size={'sm'} variant={'secondary'} className='text-xs min-h-0 h-auto px-2 py-1'><RotateCcw /> Retry</Button>
+                                                                <Button size={'sm'} variant={'secondary'} className='text-xs min-h-0 h-auto px-2 py-1'><ThumbsDown /></Button>
+                                                                <Button size={'sm'} variant={'secondary'} className='text-xs min-h-0 h-auto px-2 py-1'><ThumbsUp /></Button>
+                                                            </div>}
+                                                        </div>
+
                                                     )
                                                 }
                                             </div>
                                         ))
                                     }
-                                    {isTyping && <p className='w-full flex items-center'>
-                                        <i className='text-sm max-w-[60%] px-3 py-3 text-lefts rounded-md bg-background'>{isTyping ? "Typing" : ""}</i>
-                                    </p>}
+                                    {isTyping &&
+                                        <div className='flex items-center gap-2'>
+                                            <img src="/images/hubsolo.png" className=' w-7 h-7' alt="" />
+                                            <p className='justify-start w-full flex items-center'>
+                                                <i className='bg-background/70 text-muted-foreground text-sm max-w-[75%]  py-3 rounded-md'>{isTyping ? "is thinking..." : ""}</i>
+                                            </p>
+                                        </div>
+                                    }
                                 </section>
                             </ScrollArea>
                             <form
-                                className="absolute bottom-4 w-[95%] overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
+                                className="absolute bottom-4 w-full overflow-hidden rounded-xl border-[2px] bg-background"
                             >
                                 <Label htmlFor="message" className="sr-only">
                                     Message
@@ -379,7 +525,7 @@ const Page = ({ params }: {
                                     onKeyDown={handleKeyDown}
                                     disabled={isTyping}
                                     placeholder="Type your message here..."
-                                    className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+                                    className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0 focus-within:ring-0"
                                     autoComplete="off"
                                     onChange={(e) => setMessage(e.target.value)}
                                 />
@@ -395,12 +541,11 @@ const Page = ({ params }: {
                                             <TooltipContent side="top">Use Microphone</TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-                                    <Button size="sm" onClick={(e) => {
+                                    <Button size="icon" onClick={(e) => {
                                         e.preventDefault()
                                         sendTextInputToServer()
-                                    }} className="ml-auto gap-1.5">
-                                        Send Message
-                                        <CornerDownLeft className="size-3.5" />
+                                    }} className="ml-auto">
+                                        <HiOutlineArrowUp size={6} />
                                     </Button>
                                 </div>
                             </form>
@@ -488,11 +633,11 @@ const Page = ({ params }: {
                                             <Skeleton className='w-[80%] h-5' />
                                         </div>
                                     ) : summarizedtext !== null && (
-                                        Object.entries(summarizedtext).map(([sectionKey, sectionValue]:any, index:number) => (
+                                        Object.entries(summarizedtext).map(([sectionKey, sectionValue]: any, index: number) => (
                                             <p key={index}>
-                                              <strong>{sectionKey.replace(/_/g, ' ')}:</strong> {sectionValue}
+                                                <strong>{sectionKey.replace(/_/g, ' ')}:</strong> {sectionValue}
                                             </p>
-                                          ))
+                                        ))
                                         // <div className='pr-2 flex flex-col gap-[5px]' dangerouslySetInnerHTML={{ __html: summarizedtext }} />
                                     )
                                     // summarizedtext.split('\n').map((line, index) => (

@@ -1,92 +1,102 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import Navbar from '@/components/home/navbar'
-import Link from "next/link"
+import * as React from "react"
 import {
-    Bell,
-    Home,
-    MessagesSquare,
-    FileText
-} from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import Image from 'next/image'
-import { MdOutlineExplore } from "react-icons/md";
-// @ts-ignore
-import { usePathname } from 'next/navigation'
-import checkUserAuthClient from '@/auth/getUserSession'
-// @ts-ignore
-import { useRouter } from 'next/navigation'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import { Skeleton } from "@/components/ui/skeleton"
-import { FaRegUser } from "react-icons/fa";
-import { Trash2 } from 'lucide-react';
-import { MessageCircleQuestion, Text, Youtube } from 'lucide-react';
-import { FiLogOut } from "react-icons/fi";
-import { FaQuestion } from "react-icons/fa6";
-import {
-    AlertDialog,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Loader2 } from "lucide-react"
-import { SignOutWithSupabase } from '@/auth'
-import { ShrinkTitle } from '@/utils'
-import { Fullscreen } from 'lucide-react';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
-import { GoProjectRoadmap } from "react-icons/go";
+    Sidebar,
+    SidebarContent,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarRail,
+} from "@/components/ui/sidebar"
+import { VersionSwitcher } from "@/components/ui/slide"
 
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-    const pathname = usePathname()
-    const router = useRouter()
-    const [loader, setLoader] = useState<boolean>(true)
-    const [user, setUser] = useState<any>(null)
-    const [deleteLoader, setDeleteloader] = useState<boolean>(false)
-    const [deleteAlert, setDeleteAlert] = useState<boolean>(false)
+// This is sample data.
+const data = {
+    navMain: [
+        {
+            title: "Getting Started",
+            url: "#",
+            items: [
+                {
+                    title: "Learn Map",
+                    url: "/home/learnmap",
+                    isActive: false
+                },
+                {
+                    title: "Chat History",
+                    url: "/home/chat",
+                    isActive: false
+                },
+                {
+                    title: "DocsAI",
+                    url: "/home/docxAI",
+                    isActive: false
+                },
+                {
+                    title: "NoteNest",
+                    url: "/home/NoteNest",
+                    isActive: false
+                },
+            ],
+        },
+    ],
+}
 
-    useEffect(() => {
-        getAllInvoicefunciton()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const [sidecontent, setSideContent] = React.useState(data)
 
-    const getAllInvoicefunciton = async () => {
-        const res: any = await checkUserAuthClient()
-        if (res.error !== null) {
-            router.push('/')
-            return
-        }
-        if (res.data.session === null) {
-            return
-        }
-        setUser(res.data.session.user)
-        setLoader(false)
-    }
     return (
-        <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr]">
+        <Sidebar {...props} >
+            <SidebarHeader>
+                <VersionSwitcher />
+            </SidebarHeader>
+            <SidebarContent className="!bg-accent/40">
+                {/* We create a SidebarGroup for each parent. */}
+                {sidecontent.navMain.map((item: any, ii: number) => (
+                    <SidebarGroup key={item.title}>
+                        <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {item.items.map((item: any, index: number) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton asChild isActive={item.isActive}>
+                                            <a href={item.url} onClick={(e) => {
+                                                let temp = [...sidecontent.navMain]
+                                                const updatedItems = temp.map((i: any, idx: number) => ({
+                                                    ...i,
+                                                    isActive: idx === index
+                                                }));
+                                                setSideContent({ ...sidecontent, navMain: updatedItems });
+                                            }}>{item.title}</a>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                ))}
+            </SidebarContent>
+            <SidebarRail />
+        </Sidebar>
+    )
+}
 
-            <div className="hidden border-r bg-muted/40 md:block">
+
+
+{/* <div className="hidden border-r bg-muted/40 md:block">
                 <div className="flex h-full max-h-screen flex-col gap-2 relative">
                     <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                         <Link href="/" className="flex items-center gap-2 font-semibold">
-                            <Image src='/images/logoStud.png' alt='qwerty' width={130} height={20} className='select-none' />
+                            <Image src='/images/logoStud.png' alt='qwerty' width={150} height={25} className='select-none' />
                         </Link>
                     </div>
                     <div className="flex-1">
-                        <nav className="grid items-start px-2 text-xs font-medium lg:px-4">
+                        <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
                             <Link
                                 href="/home/learnmap"
                                 className={`flex items-center gap-3 ${pathname ? pathname.includes('learnmap') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
@@ -160,17 +170,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         ) : (
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <div className='w-full cursor-pointer rounded-lg px-3 flex gap-3 items-center'>
-                                        <div className='px-2 py-2 rounded-full bg-[#43A8EE] flex justify-center items-center text-md text-white'>
+                                    <div className='w-full cursor-pointer rounded-lg px-6 flex gap-3 items-center'>
+                                        <div className='px-3 py-3 rounded-full bg-[#43A8EE] flex justify-center items-center text-md text-white'>
                                             <FaRegUser className='h-4 w-4' />
                                         </div>
                                         <div className='flex flex-col text-sm justify-center'>
                                             <p className='text-xs text-muted-foreground'>Your Account</p>
-                                            <p className='text-xs tracking-wider'>{user ? ShrinkTitle(user.email, 23) : ''}</p>
+                                            <p className='text-[0.75rem] tracking-wider'>{user ? ShrinkTitle(user.email, 23) : ''}</p>
                                         </div>
                                     </div>
                                 </PopoverTrigger>
-                                <PopoverContent className='w-[100%] mb-[10px] px-0 pb-0  border-[2px] flex flex-col  rounded-xl '>
+                                <PopoverContent className='w-[100%] mr-[40px] mb-[10px] px-0 pb-0  border-[2px] flex flex-col  rounded-xl '>
                                     <div className='w-full px-4 flex gap-3 pb-4 border-b-[2px] items-center'>
                                         <div className='userIcon w-8 h-8 flex justify-center items-center'>
                                             {user ? user.email[0] : 'U'}
@@ -221,13 +231,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         )}
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-col overflow-y-auto h-[100vh]">
-                <Navbar user={user} loader={loader} />
-                {children}
-            </div>
-        </div>
-    )
-}
-
-export default Layout
+            </div> */}

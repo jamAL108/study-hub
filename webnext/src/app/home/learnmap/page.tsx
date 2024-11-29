@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import checkUserAuthClient from '@/auth/getUserSession'
 import { getAllRoadmaps } from '@/api'
 import SessionNotFoundComp from '@/components/sessionNotFound'
+import { LuBrainCircuit } from "react-icons/lu";
 
 
 const Page = () => {
@@ -150,9 +151,12 @@ const Page = () => {
         <div className='w-full flex justify-center min-h-full overflow-y-auto '>
             <Card className='w-full border-none base:px-0 bl:px-4 py-4'>
                 <CardHeader className='w-full flex base:flex-col bl:flex-row bl:items-center gap-3  base:justify-center bl:justify-between '>
-                    <div className='flex flex-col gap-2 justify-center'>
-                        <CardTitle>My Learning Roadmaps</CardTitle>
-                        <CardDescription>Track your progress across different learning paths</CardDescription>
+                    <div className='flex  gap-3 items-center'>
+                        <LuBrainCircuit size={45} />
+                        <div className='flex flex-col gap-2 justify-center'>
+                            <CardTitle>My Learning Roadmaps</CardTitle>
+                            <CardDescription>Track your progress across different learning paths</CardDescription>
+                        </div>
                     </div>
                     <Link href="/home/learnmap/generate"><Button>Generate Roadmap</Button></Link>
                 </CardHeader>

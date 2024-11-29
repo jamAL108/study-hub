@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip"
 import { FormatVideoViews, geminiModel, extractEmailInputPrefix } from '@/utils'
 import { Progress } from "@/components/ui/progress"
-import { UpdateTheVideoChatContent , getVideoChatResponse } from '@/api'
+import { UpdateTheVideoChatContent, getVideoChatResponse } from '@/api'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/components/ui/use-toast"
 
@@ -50,7 +50,7 @@ const ChatBot: React.FC<any> = (props) => {
 
     useEffect(() => {
         if (user !== null && extractedText.length !== 0 && chats.length === 0) {
-            console.log(extractEmailInputPrefix(user.email), ":::auth")
+            // console.log(extractEmailInputPrefix(user.email), ":::auth")
             if (user.email)
                 setChats([{ content: `Hello ${extractEmailInputPrefix(user.email)} 👋,\n I am vidChat Bot, how may I help you ?`, role: "assistant" }])
             else {
@@ -58,25 +58,25 @@ const ChatBot: React.FC<any> = (props) => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, extractedText , chats])
+    }, [user, extractedText, chats])
 
     async function runPrompt(valueOfPrompt: string, previousChats: string[]) {
-        console.log(previousChats)
+        // console.log(previousChats)
         let prompt =
             `(Pretend you are vidChat Bot - A video chatbot as a friend, don't mention your name until asked, analyze  the following text (extractedText): ${extractedText}, and give response to the text(user prompt) : '${valueOfPrompt}'. give response based on that (extractedText), and don't answer for any questions which are not related to extractedText . so im converting the youtube video into text so if the text doesnt contain the relevant answer for the (user prompt) then give response like this : ( this topic is not covered in the video)  and also this text is from youtube videos so give answer in this frame , What did the creator: ${videoMeta.channel} speak about xyz , how he/she covered xxx topics.
           These are the context, please condsider them wisely while responding\n` +
             previousChats.join("\n");
 
-        console.log(prompt, "::::propmt")
-        try{
+        // console.log(prompt, "::::propmt")
+        try {
             const model = geminiModel()
             const result = await model.generateContent(prompt);
             const response = await result.response;
             const text = response.text();
-            console.log(text);
-            return {success:true,text};
-        }catch(err){
-            return {success:false,Error:"ERROR HAI"}
+            // console.log(text);
+            return { success: true, text };
+        } catch (err) {
+            return { success: false, Error: "ERROR HAI" }
         }
     }
 
@@ -94,14 +94,14 @@ const ChatBot: React.FC<any> = (props) => {
         setMessage("");
 
         try {
-            console.log(msgs)
-            const response:any = await runPrompt(message, msgs.slice(-5)); 
-            if (response.success===true){
-                console.log(response)
+            // console.log(msgs)
+            const response: any = await runPrompt(message, msgs.slice(-5));
+            if (response.success === true) {
+                // console.log(response)
                 msgs.push({ role: "assistant", content: response.text });
                 setChats(msgs);
                 UpdateTheVideoChatContent({ ...videoMeta, extractedText, chat: msgs, user_id: user.id, video_id: params.url })
-            }else{
+            } else {
                 toast({
                     variant: "destructive",
                     title: response.error,
@@ -109,7 +109,10 @@ const ChatBot: React.FC<any> = (props) => {
                 })
             }
         } catch (error) {
-            console.error("Error generating response:", error);
+            toast({
+                variant: "destructive",
+                title: "Error generating response",
+            })
         }
 
         setIsTyping(false);
@@ -123,7 +126,7 @@ const ChatBot: React.FC<any> = (props) => {
     }, [chats]);
 
     return (
-        <div className='w-[50%] h-[100%] relative flex flex-col rounded-2xl bg-accent/60 items-center'>
+        <div className='w-[50%] h-[100%] relative flex flex-col rounded-2xl items-center'>
             {extractedText.length === 0 ? (
                 <div className='w-full inset-0 z-50 bg-black/80 border rounded-2xl h-full absolute flex justify-center items-center top-0 right-0'>
                     <Progress value={progress} max={100} className="w-[60%]" />
@@ -133,9 +136,14 @@ const ChatBot: React.FC<any> = (props) => {
                     <section ref={chatContainerRef} className='w-full h-full flex flex-col gap-4 px-3 py-3'>
                         {chats && chats.length !== 0
                             ? chats.map((chat: any, index: number) => (
-                                <p key={index} className={`${chat.role === "user" ? "justify-end" : "justify-start"} w-full flex items-center`}>
-                                    <span className={`${chat.role === "user" ? "bg-primary" : "bg-background"} text-sm max-w-[60%] px-3 py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.content}</span>
-                                </p>
+                                <div className='flex items-center gap-2'>
+                                    <div className='iconsuser w-8 h-8 flex justify-center items-center'>
+                                        {user ? user.email[0] : 'U'}
+                                    </div>
+                                    <p key={index} className={`${chat.role === "user" ? "justify-start" : "justify-start"} w-full flex items-center`}>
+                                        <span className={`${chat.role === "user" ? "bg-primary" : "bg-background"} text-sm max-w-[60%] px-3 py-3 rounded-md`} style={{ textAlign: "left" }}>{chat.content}</span>
+                                    </p>
+                                </div>
                             ))
                             : ""}
                         {isTyping && <p className='w-full flex items-center'>

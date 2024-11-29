@@ -24,8 +24,8 @@ const Notes: React.FC<any> = (props) => {
     const { toast,videoMeta, user, notes, extractedText, setNotes , note } = props
 
         const formatDate = (ts: string): string => {
-            console.log(note)
-            console.log("MEOW")
+            // console.log(note)
+            // console.log("MEOW")
             const date = new Date(ts);
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based

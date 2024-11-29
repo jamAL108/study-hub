@@ -11,7 +11,7 @@ const config = {
   prefix: "",
   theme: {
   	container: {
-  		center: true,
+  		center: 'true',
   		padding: '2rem',
   		screens: {
   			'2xl': '1400px',
@@ -32,7 +32,7 @@ const config = {
   			slaate: 'var(--slaate)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
-			greenish:'hsl(var(--greenish))',
+  			greenish: 'hsl(var(--greenish))',
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
@@ -62,7 +62,7 @@ const config = {
   				foreground: 'hsl(var(--card-foreground))'
   			},
   			sidebar: {
-  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				DEFAULT: 'hsl(var(--sidebar-background))/40',
   				foreground: 'hsl(var(--sidebar-foreground))',
   				primary: 'hsl(var(--sidebar-primary))',
   				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
@@ -94,19 +94,19 @@ const config = {
   					height: '0'
   				}
   			},
-			'ripple': {
-				"0%, 100%": {
-				  transform: "translate(-50%, -50%) scale(1)",
-				},
-				"50%": {
-				  transform: "translate(-50%, -50%) scale(0.9)",
-				},
-			  },
+  			ripple: {
+  				'0%, 100%': {
+  					transform: 'translate(-50%, -50%) scale(1)'
+  				},
+  				'50%': {
+  					transform: 'translate(-50%, -50%) scale(0.9)'
+  				}
+  			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
-			'ripple': "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
+  			ripple: 'ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite'
   		},
   		backgroundImage: {
   			radialCC: 'radial-gradient(circle, rgba(78,69,228,0.9360994397759104) 0%, rgba(78,69,228,1) 35%, rgba(51,45,151,1) 100%)',

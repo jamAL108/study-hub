@@ -21,7 +21,7 @@ function simplifyTimestamp(timestamp) {
 export const getYoutubeSearch = async (req, res) => {
     try {
         const data = req.body;
-        console.log("HEEO")
+        // console.log("HEEO")
         const youtubeData ={
             url:"https://www.youtube.com/watch?v=kp3fCihUXEg",
             title:"MEOW",
@@ -33,8 +33,8 @@ export const getYoutubeSearch = async (req, res) => {
         const youtubePrerequisites = [];
         for (var i = 0; i < data.youtubePrerequisites.length; i++) {
             const prerequisite = data.youtubePrerequisites[i];
-            const r = await yts(`${prerequisite.title} in 10-20 minutes`)
-            const youtubeData = r.videos[0]
+            // const r = await yts(`${prerequisite.title} in 10-20 minutes`)
+            // const youtubeData = r.videos[0]
             // console.log(youtubeData)
             youtubePrerequisites.push({
                 ...prerequisite,
@@ -63,15 +63,15 @@ export const getYoutubeSearch = async (req, res) => {
                             return resource
                         }
                         try {
-                            // Assuming yts is an async function that searches YouTube
-                            const r = await yts(`${resource.title} in 10-20 minutes`);
 
-                            if (!r.videos || r.videos.length === 0) {
-                                console.warn(`No YouTube video found for: ${resource.title}`);
-                                return resource;
-                            }
+                            // const r = await yts(`${resource.title} in 10-20 minutes`);
 
-                            const youtubeData = r.videos[0];
+                            // if (!r.videos || r.videos.length === 0) {
+                            //     console.warn(`No YouTube video found for: ${resource.title}`);
+                            //     return resource;
+                            // }
+
+                            // const youtubeData = r.videos[0];
 
                             return {
                                 url: youtubeData.url,
@@ -94,7 +94,7 @@ export const getYoutubeSearch = async (req, res) => {
             StagesLearning[i].Topics = newTopics;
         }
         // console.log(youtubePrerequisites)
-        console.log(StagesLearning[0].Topics[0].resources)
+        // console.log(StagesLearning[0].Topics[0].resources)
         return res.status(200).send({ success: true, youtubePrerequisites, StagesLearning , AllDocsResources })
     } catch (err) {
         console.log(err)

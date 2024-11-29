@@ -159,7 +159,7 @@ const Page = () => {
                     </h4>
                     <div className="flex flex-col w-full px-4 gap-3">
                         <RadioGroup onValueChange={(e) => {
-                            console.log(e)
+                            // console.log(e)
                             if (answer.length === 0) answerCheck(e)
                         }} value={answer}>
                             {MCQs[0].answers.map((e: string, idx: number) => {

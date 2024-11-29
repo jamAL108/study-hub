@@ -20,13 +20,13 @@ import { CHROMIUM_EXECUTABLE_PATH, ENV, TAILWIND_CDN } from "@/lib/variables";
  */
 export async function generatePdfService(req: NextRequest) {
     const body: any = await req.json();
-    console.log(body)
+    // console.log(body)
     try {
         const ReactDOMServer = (await import("react-dom/server")).default;
 
         // Get the selected invoice template
         const templateId = body.details.pdfTemplate;
-        console.log(templateId)
+        // console.log(templateId)
         const InvoiceTemplate = await getInvoiceTemplate(templateId);
 
         // Read the HTML template from a React component
@@ -36,7 +36,7 @@ export async function generatePdfService(req: NextRequest) {
 
         // Create a browser instance
         let browser;
-        console.log(ENV)
+        // console.log(ENV)
         // Launch the browser in production or development mode depending on the environment
         if (ENV === "production") {
             const puppeteer = await import("puppeteer-core");
@@ -97,7 +97,6 @@ export async function generatePdfService(req: NextRequest) {
         return response;
     } catch (error) {
         console.error(error);
-
         // Return an error response
         return new NextResponse(`Error generating PDF: \n${error}`, {
             status: 500,

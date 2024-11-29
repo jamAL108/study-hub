@@ -34,7 +34,7 @@ export default function MicrophoneComponent({transcript , setTranscript , setMes
       const { transcript } = event.results[event.results.length - 1][0];
 
       // Log the recognition results and update the transcript state
-      console.log(event.results);
+      // console.log(event.results);
       setTranscript(transcript);
     };
 

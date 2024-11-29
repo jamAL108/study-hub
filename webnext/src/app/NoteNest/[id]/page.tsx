@@ -45,7 +45,7 @@ const Page = ({ params }: {
   }, [])
 
   useEffect(()=>{
-    console.log(content)
+    // console.log(content)
     contentRef.current = content;
     setTempContent(content)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,8 +88,8 @@ const Page = ({ params }: {
   
  
   const customSaveFunction = async (Newcontent:any) =>{
-    console.log(user)
-    console.log(Newcontent)
+    // console.log(user)
+    // console.log(Newcontent)
     if(!areObjectsEqualFunction(tempContent,Newcontent)){      // saveNoteToSupabase(id,)
       const res:any = await saveNoteToSupabase(DataRef.current.id,Newcontent)
       if(res.success===false){
@@ -129,10 +129,10 @@ const Page = ({ params }: {
       if ((event.ctrlKey || event.metaKey) && event.key === 's') {
         event.preventDefault(); // Prevent the default browser save
         await sleep(1000);
-        console.log(content)
-        console.log("HELLOO",tempContent)
+        // console.log(content)
+        // console.log("HELLOO",tempContent)
         const newContent = { ...contentRef.current }; // Use the ref to get the latest content
-        console.log(newContent);
+        // console.log(newContent);
         customSaveFunction(newContent);  // Call your custom save function
       }
     };

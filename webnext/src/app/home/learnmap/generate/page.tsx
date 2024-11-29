@@ -113,7 +113,7 @@ const Page = () => {
         } else {
             setUser(result.user)
             setPreviousRoadmap(result.existingRoadmap)
-            console.log(result.user)
+            // console.log(result.user)
         }
         setLoader(false)
     }
@@ -121,7 +121,7 @@ const Page = () => {
     const scroll = (Str: any) => {
         let target: any = document.querySelector(`.${Str}`);
         if (target) {
-            console.log(target);
+            // console.log(target);
             target.scrollIntoView({ behavior: "smooth" });
         }
     }

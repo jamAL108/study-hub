@@ -13,7 +13,7 @@ import { NextResponse } from "next/server";
 export const getInvoiceTemplate = async (templateId: number) => {
     // Dynamic template component name
     const componentName = `InvoiceTemplate${templateId}`;
-    console.log(componentName)
+    // console.log(componentName)
 
     try {
         const module = await import(

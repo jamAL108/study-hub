@@ -63,7 +63,7 @@ const Quiz:React.FC<any> = (props :any) => {
             if (MCQs.length === 0) {
                 try {
                     const response:any = await getQuiz(topic,Totalquestions);
-                    console.log(response)
+                    // console.log(response)
                     if (response.success===true) {
                         const resQuestions:any = JSON.parse(response.data)
                         let formattedResults = resQuestions.map((e: any) => ({
@@ -75,7 +75,7 @@ const Quiz:React.FC<any> = (props :any) => {
                             correct_answer: e.answer, // Ensure the key names match your frontend expectations
                         }));
                         // localStorage.setItem('McqQuiz-PDF', JSON.stringify(formattedResults))
-                        console.log(formattedResults)
+                        // console.log(formattedResults)
                         setMCQs(formattedResults);
                     } else {
                         throw new Error("Failed to fetch questions");
@@ -180,7 +180,7 @@ const Quiz:React.FC<any> = (props :any) => {
                     </h4>
                     <div className="flex flex-col w-full px-4 gap-3">
                         <RadioGroup onValueChange={(e) => {
-                            console.log(e)
+                            // console.log(e)
                             if (answer.length === 0) answerCheck(e)
                         }} value={answer}>
                             {MCQs[0].answers.map((e: string, idx: number) => {
