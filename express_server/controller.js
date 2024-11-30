@@ -33,8 +33,8 @@ export const getYoutubeSearch = async (req, res) => {
         const youtubePrerequisites = [];
         for (var i = 0; i < data.youtubePrerequisites.length; i++) {
             const prerequisite = data.youtubePrerequisites[i];
-            // const r = await yts(`${prerequisite.title} in 10-20 minutes`)
-            // const youtubeData = r.videos[0]
+            const r = await yts(`${prerequisite.title} in 10-20 minutes`)
+            const youtubeData = r.videos[0]
             // console.log(youtubeData)
             youtubePrerequisites.push({
                 ...prerequisite,
@@ -64,14 +64,14 @@ export const getYoutubeSearch = async (req, res) => {
                         }
                         try {
 
-                            // const r = await yts(`${resource.title} in 10-20 minutes`);
+                            const r = await yts(`${resource.title} in 10-20 minutes`);
 
-                            // if (!r.videos || r.videos.length === 0) {
-                            //     console.warn(`No YouTube video found for: ${resource.title}`);
-                            //     return resource;
-                            // }
+                            if (!r.videos || r.videos.length === 0) {
+                                console.warn(`No YouTube video found for: ${resource.title}`);
+                                return resource;
+                            }
 
-                            // const youtubeData = r.videos[0];
+                            const youtubeData = r.videos[0];
 
                             return {
                                 url: youtubeData.url,
