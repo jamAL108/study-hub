@@ -136,7 +136,7 @@ const ChatBot: React.FC<any> = (props) => {
                     <section ref={chatContainerRef} className='w-full h-full flex flex-col gap-4 px-3 py-3'>
                         {chats && chats.length !== 0
                             ? chats.map((chat: any, index: number) => (
-                                <div className='flex items-center gap-2'>
+                                <div key={index} className='flex items-center gap-2'>
                                     <div className='iconsuser w-8 h-8 flex justify-center items-center'>
                                         {user ? user.email[0] : 'U'}
                                     </div>
