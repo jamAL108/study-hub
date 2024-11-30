@@ -109,12 +109,12 @@ const Dashboard = () => {
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 h-full">
             <Tabs defaultValue="Youtube">
                 <div className='w-full flex items-center pt-5 pb-7'>
-                    <h1 className='text-2xl font-[600]'>Chat History</h1>
+                    <h1 className='text-lg font-[600]'>Chat History</h1>
                 </div>
                 <div className="flex items-center">
                     <TabsList>
-                        <TabsTrigger value="Youtube">Youtube</TabsTrigger>
-                        <TabsTrigger value="Document">Document</TabsTrigger>
+                        <TabsTrigger value="Youtube" className='text-sm'>Youtube</TabsTrigger>
+                        <TabsTrigger value="Document" className='text-sm'>Document</TabsTrigger>
                     </TabsList>
                     <div className="ml-auto flex items-center gap-2">
                         <DropdownMenu>
@@ -149,13 +149,13 @@ const Dashboard = () => {
                 <TabsContent value="Youtube">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardDescription>
+                            <CardDescription className='text-xs'>
                                 A details of all your recent chats.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
-                                <TableHeader>
+                                <TableHeader className='text-xs'>
                                     <TableRow>
                                         <TableHead className="hidden w-[120px] sm:table-cell">
                                             <span className="sr-only">Image</span>
@@ -231,13 +231,13 @@ const Dashboard = () => {
                 <TabsContent value="Document">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <CardDescription>
+                            <CardDescription className='text-xs'>
                                 A details of all your recent Document chats.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
-                                <TableHeader>
+                                <TableHeader className='text-xs'>
                                     <TableRow>
                                         <TableHead className="hidden w-[120px] sm:table-cell">
                                             <span className="sr-only">Image</span>

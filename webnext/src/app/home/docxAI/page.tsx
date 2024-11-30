@@ -324,7 +324,7 @@ const Translate = () => {
                             }
                         }}
                     >
-                        <h1 className={`${selectedFile === null ? 'inline-block' : 'hidden'}  z-1 py-5 w-[96%] text-center text-[#0082C8] font-[640] text-[0.82rem] tracking-wider leading-6`}>
+                        <h1 className={`${selectedFile === null ? 'inline-block' : 'hidden'} z-1 pt-5 pb-2 w-[96%] text-center text-[#489ddb] font-[640] text-[0.82rem] tracking-wider leading-6`}>
                             Drop and Drop file PDF/DOCX (recommended) <br /> or <br />
                             Enter the{" "}
                             <span
@@ -385,9 +385,9 @@ const Translate = () => {
                             <Image
                                 className="uploadicon base:mb-5 bl:mb-0"
                                 style={{ transition: "0.5s ease-in-out" }}
-                                width={90}
-                                height={60}
-                                src="/images/uploadlogo.png"
+                                width={130}
+                                height={75}
+                                src="/images/UPLOAD.png"
                                 alt="rve"
                             />
                         )}

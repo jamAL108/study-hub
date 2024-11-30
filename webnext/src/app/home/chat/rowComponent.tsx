@@ -57,7 +57,7 @@ const RowComponent: React.FC<any> = (props) => {
        }
 
         return (
-            <TableRow>
+            <TableRow className='text-sm'>
                 <TableCell className="hidden sm:table-cell">
                     <Image src={videoMeta.thumbnails[0]} alt='asdsvf' width={160} className='rounded-md' height={80} />
                 </TableCell>
@@ -70,19 +70,19 @@ const RowComponent: React.FC<any> = (props) => {
                 <TableCell>
                     <DropdownMenu>
                         <DropdownMenuTrigger><MoreHorizontal color='white' size={20} /></DropdownMenuTrigger>
-                        <DropdownMenuContent className='absolute right-[-10px] px-3 py-3 w-[200px]'>
+                        <DropdownMenuContent className='absolute right-[-10px] px-3 py-3 w-[200px] text-xs'>
                             <DropdownMenuItem asChild>
                                 <Link href={`/chat-with-ai/${videoMeta.video_id}`} className='flex items-center py-2.5 mb-1 px-3 gap-3 text-white'><BotMessageSquare size={22} /> Chat with AI
                                 </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className='flex items-center py-2.5  mb-1 px-3  text-white'>
+                            <DropdownMenuItem className='flex text-xs items-center py-2.5  mb-1 px-3  text-white'>
                                 <Link className='flex items-center gap-3 text-white' href={`https://www.youtube.com/${videoMeta.url_suffix}`}><SquareArrowOutUpRight size={22} /> View Video </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className='flex items-center py-2.5 mb-1 px-3 gap-3 text-white'>
+                            <DropdownMenuItem className='flex text-xs items-center py-2.5 mb-1 px-3 gap-3 text-white'>
                                 <ShareChat loader={false} ChatHomeRow={true} videoMeta={otherData} user={user} chats={chats} extractedText={extractedText} />
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={(e)=>deleteChat()} className='flex items-center py-2.5  mb-1 px-3  text-white'>
-                                <div className='flex items-center gap-3 text-white'><Trash2 size={22} /> Delete Chat </div>
+                                <div className='flex text-xs items-center gap-3 text-white'><Trash2 size={22} /> Delete Chat </div>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

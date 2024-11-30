@@ -82,7 +82,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <div className="flex h-full max-h-screen flex-col gap-2 relative">
                     <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                         <Link href="/" className="flex items-center gap-2 font-semibold">
-                            <Image src='/images/logoStud.png' alt='qwerty' width={130} height={20} className='select-none' />
+                            <Image src='/images/logoStud.png' alt='qwerty' width={120} height={20} className='select-none' />
                         </Link>
                     </div>
                     <div className="flex-1">
@@ -127,7 +127,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                     <AccordionTrigger
                                         className={`flex items-center gap-3  !no-underline text-muted-foreground bg-transparent rounded-lg px-3 py-2  transition-all hover:text-primary`}
                                     >Other Features</AccordionTrigger>
-                                    <AccordionContent className=' pl-2'>
+                                    <AccordionContent className=' pl-2 text-xs'>
                                         <Link
                                             href="/home/Quiz"
                                             className={`flex items-center gap-3 ${pathname ? pathname.includes('Quiz') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}

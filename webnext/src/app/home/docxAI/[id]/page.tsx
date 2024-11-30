@@ -25,11 +25,11 @@ import {
     TooltipTrigger,
     TooltipProvider
 } from "@/components/ui/tooltip"
-import { FormatVideoViews, geminiModel, extractEmailInputPrefix } from '@/utils'
+import { FormatVideoViews, geminiModel, extractEmailInputPrefix, ShrinkTitle } from '@/utils'
 import { Progress } from "@/components/ui/progress"
 import { UpdateTheVideoChatContent, getChatResponse } from '@/api'
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { updatePDFChat, resetPinecone, getRawPdfFromSupabase, uploadPdfFile, getSummarizedData , DeleteDocChatFromSupabase } from '@/api'
+import { updatePDFChat, resetPinecone, getRawPdfFromSupabase, uploadPdfFile, getSummarizedData, DeleteDocChatFromSupabase } from '@/api'
 import { Input } from "@/components/ui/input"
 import {
     Select,
@@ -290,17 +290,17 @@ const Page = ({ params }: {
     }
 
 
-    const deleteFunction =  async () =>{
+    const deleteFunction = async () => {
         setDeleteLoader(true)
-        const res:any = await DeleteDocChatFromSupabase(user.id,Details.id)
-        if(res.success===false){
+        const res: any = await DeleteDocChatFromSupabase(user.id, Details.id)
+        if (res.success === false) {
             toast({
                 duration: 2000,
                 title: "Error changing the name",
                 variant: 'destructive'
             })
             setDeleteLoader(false)
-        }else{
+        } else {
             router.push('/home/docxAI')
             toast({
                 duration: 2000,
@@ -320,7 +320,7 @@ const Page = ({ params }: {
         <div className='flex-1 flex justify-center pt-6 px-8 overflow-x-hidden'>
             <Card className={`w-full p-5 border-none ${currArea !== -1 ? 'w-[50%]' : 'w-full'} `}>
                 <CardHeader>
-                    <CardTitle>
+                    <CardTitle className='xl'>
                         {/* className='flex items-center gap-2' */}
                         {/* <Image src='/images/flash.png' width={50} height={50} alt='sdv' /> */}
                         DocxAI Features
@@ -329,11 +329,11 @@ const Page = ({ params }: {
                 </CardHeader>
                 {loader === false && (
                     <div className='w-full flex items-center px-5'>
-                        <div className='flex gap-4'>
-                            <Image src='/images/pdflogo.png' alt='sadc' width={40} height={40} />
+                        <div className='flex gap-1'>
+                            <Image src='/images/pdf.png' alt='sadc' width={50} height={50} />
                             <div className='group flex-1 flex justify-between items-center gap-10'>
                                 <div className='flex flex-col justify-center'>
-                                    <h1 className='text-bold'>{Details?.name ? Details.name : "NA"}</h1>
+                                    <h1 className='text-bold'>{Details?.name ? ShrinkTitle(Details.name,33) : "NA"}</h1>
                                     <p className='text-muted-foreground  text-sm'>{pdfFile ? `${(Number(pdfFile.size) / 1024).toFixed(2)} kb` : "NA"}</p>
                                 </div>
                                 <div className='flex items-center'>
@@ -412,50 +412,50 @@ const Page = ({ params }: {
                         <div className={`w-full flex flex-wrap gap-8 py-5`}>
                             <div onClick={(e) => {
                                 setCurrArea(3)
-                            }} className={`px-5 ${currArea === 3 ? 'bg-accent' : 'bg-accent/30 '} border max-w-[470px] rounded-xl py-5 flex gap-5 cursor-pointer relative`}>
+                            }} className={`px-4 ${currArea === 3 ? 'bg-accent' : 'bg-accent/30 '} border max-w-[450px] rounded-xl py-4 flex gap-5 cursor-pointer relative`}>
                                 {currArea === 3 && (
                                     <p className='min-w-8 blink min-h-8 rounded-full text-green-500  absolute top-3 right-2'>
                                         ●
                                     </p>
                                 )}
                                 <div className='flex justify-center items-center h-full'>
-                                    <img src='/images/summarizer.png' alt='dccf' className='w-[60px] h-[60px]' />
+                                    <img src='/images/summarizer.png' alt='dccf' className='w-[55px] h-[55px]' />
                                 </div>
                                 <div className='flex flex-col gap-2 justify-center'>
-                                    <h2 className='text-xl font-bold'>Document Summarization</h2>
-                                    <p className='text-sm text-muted-foreground'>Summarize the whole document aand get a quixk overview</p>
+                                    <h2 className='text-lg font-bold'>Document Summarization</h2>
+                                    <p className='text-xs text-muted-foreground'>Summarize the whole document aand get a quick overview of document</p>
                                 </div>
                             </div>
                             <div onClick={(e) => {
                                 setCurrArea(1)
-                            }} className={`px-5 ${currArea === 1 ? 'bg-accent' : 'bg-accent/30 '} border max-w-[470px] rounded-xl py-5 flex gap-5  cursor-pointer relative`}>
+                            }} className={`px-4 ${currArea === 1 ? 'bg-accent' : 'bg-accent/30 '} border max-w-[450px] rounded-xl py-4 flex gap-5  cursor-pointer relative`}>
                                 {currArea === 1 && (
                                     <p className='min-w-8 blink min-h-8 rounded-full text-green-500  absolute top-3 right-2'>
                                         ●
                                     </p>
                                 )}
                                 <div className='flex justify-center items-center h-full'>
-                                    <img src='/images/chat3dd.png' alt='dccf' className='w-[60px] h-[60px]' />
+                                    <img src='/images/chat3dd.png' alt='dccf' className='w-[55px] h-[55px]' />
                                 </div>
                                 <div className='flex flex-col gap-2 justify-center'>
-                                    <h2 className='text-xl font-bold'>Chat with AI</h2>
-                                    <p className='text-sm text-muted-foreground'>Ask any document-related question, and our AI will assist you.</p>
+                                    <h2 className='text-lg font-bold'>Chat with AI</h2>
+                                    <p className='text-xs text-muted-foreground'>Ask any document-related question, and our AI will assist you.</p>
                                 </div>
                             </div>
                             <div onClick={(e) => {
                                 setCurrArea(2)
-                            }} className={`px-5 border ${currArea === 2 ? 'bg-accent' : 'bg-accent/30 '} max-w-[470px] rounded-xl py-5 flex gap-5  cursor-pointer relative`}>
+                            }} className={`px-4 border ${currArea === 2 ? 'bg-accent' : 'bg-accent/30 '} max-w-[450px] rounded-xl py-4 flex gap-5  cursor-pointer relative`}>
                                 {currArea === 2 && (
                                     <p className='min-w-8 blink min-h-8 rounded-full text-green-500  absolute top-3 right-2'>
                                         ●
                                     </p>
                                 )}
                                 <div className='flex justify-center items-center h-full'>
-                                    <img src='/images/bulbb.png' alt='dccf' className='w-[60px] h-[60px]' />
+                                    <img src='/images/bulbb.png' alt='dccf' className='w-[55px] h-[55px]' />
                                 </div>
                                 <div className='flex flex-col gap-2 justify-center'>
-                                    <h2 className='text-xl font-bold'>Get Mcq Quiz</h2>
-                                    <p className='text-sm text-muted-foreground'>Get the MCQs related to document to test your understanding</p>
+                                    <h2 className='text-lg font-bold'>Get Mcq Quiz</h2>
+                                    <p className='text-xs text-muted-foreground'>Get the MCQs related to document to test your understanding</p>
                                 </div>
                             </div>
                         </div >
