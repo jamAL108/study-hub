@@ -440,6 +440,37 @@ div.mermaid {
 }
 
 @media screen and (max-width: 700px) {
+
+  .cards {
+    display: flex;
+    width: 100vw;
+    min-width: 0;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .cards {
+    z-index: 1
+  }
+  
+  .cards .card {
+    border: 1px solid #4e3e5e;
+    display: flex;
+    height: auto;
+    width: 90vw;
+    flex: 1 1 0%;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border-radius: 16px;
+    padding: 2.5rem
+  }
+
+
+
   .footer {
     width: 100%;
     height: 55vh;

@@ -13,7 +13,7 @@ import Ripple from "@/components/ui/ripple";
 
 export default function Home() {
   return (
-    <div className="flex-1 flex flex-col  items-center">
+    <div className="flex-1 flex flex-col  items-center base:overflow-x-hidden">
       <Navbar />
       <div className="base:w-[95vw] bl:w-[min(90vw,1400px)] base:px-6 bl:px-0 flex flex-col items-center base:py-10 bl:py-16">
 
@@ -79,16 +79,16 @@ export default function Home() {
       </div>
 
 
-      <div className="relative section-3 overflow-hidden w-[100%] py-20 flex flex-col items-center justify-center gap-4 mt-16">
+      <div className="relative section-3 overflow-hidden w-[100%] base:py-8 bl:py-20 flex flex-col items-center justify-center gap-4 mt-16">
         <div className="glow"></div>
-        <div className="flex z-10 flex-col gap-1 text-5xl font-[600] py-4 justify-center items-center">
+        <div className="flex z-10 flex-col gap-1 base:text-2xl bl:text-5xl font-[600] py-4 justify-center items-center">
           <h1>Study Hub</h1>
           <h1 className="text-[#956dc1]">Chat, Learn, and Excel</h1>
         </div>
 
-        <div className="base:w-[90vw] bl:w-[790px] mt-3 mb-5 z-10">
+        <div className="base:w-[90vw] bl:w-[790px] bl:mt-3 mb-5 z-10">
           <div className="py-5  flex justify-center items-center">
-            <h1 className="text-white text-lg">Watch the tutorial video to fully understand <span className="text-[#956dc1]">StudyHub&apos;s structure and features.</span></h1>
+            <h1 className="text-white base:text-sm bl:text-lg base:text-center">Watch the tutorial video to fully understand <span className="text-[#956dc1]">StudyHub&apos;s structure and features.</span></h1>
           </div>
           <HeroVideoDialog
             className="dark:hidden block z-10"
@@ -106,33 +106,33 @@ export default function Home() {
           />
         </div>
 
-        <div className="flex flex-col gap-3 justify-center items-center mt-16 mb-8 py-4">
-          <h1 className="text-5xl font-[600] gradient-text">Accessible, collaborative, and contextual</h1>
-          <div className="cards mt-14">
+        <div className="flex flex-col gap-3 justify-center items-center mt-40 mb-8 py-4">
+          <h1 className="px-5 base:text-2xl bl:text-5xl text-center font-[600] gradient-text">Accessible, collaborative, and contextual</h1>
+          <div className="cards base:mt-6 bl:mt-14">
             <div className="card border-card-80 bg-gradient-to-t from-card-80 to-card-80/30  bg-card-90 bg-cover">
-              <img src="/images/AI.webp" className="w-[150px] h-[150px]" alt="aiimg" />
-              <h1 className="text-2xl font-[600]">AI Models Integrations</h1>
-              <p className="text-md font-[400] text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit pariatur voluptates mollitia sunt praesentium perferendis.</p>
+              <img src="/images/AI.webp" className="base:w-[120px] base:h-[120px] bl:w-[150px] bl:h-[150px]" alt="aiimg" />
+              <h1 className="base:text-lg bl:text-2xl font-[600]">AI Models Integrations</h1>
+              <p className="text-muted-foreground base:text-sm bl:text-md font-[400] text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit pariatur voluptates mollitia sunt praesentium perferendis.</p>
               {/* <div className="glow"></div> */}
             </div>
             <div className="card">
-              <img src="/images/collaborative.webp" className="w-[160px] h-[150px]" alt="aiimg" />
-              <h1 className="text-2xl font-[600]">Always available</h1>
-              <p className="text-md font-[400] text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit pariatur voluptates mollitia sunt praesentium perferendis.</p>
+              <img src="/images/collaborative.webp" className="base:w-[140px] base:h-[120px] bl:w-[180px] bl:h-[150px]" alt="aiimg" />
+              <h1 className="base:text-lg bl:text-2xl font-[600]">Always available</h1>
+              <p className="text-muted-foreground base:text-sm bl:text-md font-[400] text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit pariatur voluptates mollitia sunt praesentium perferendis.</p>
               {/* <div className="glow"></div> */}
             </div>
             <div className="card">
-              <img src="/images/Contextual.webp" className="w-[200px] h-[150px]" alt="aiimg" />
-              <h1 className="text-2xl font-[600]">AI Models Integrations</h1>      
-              <p className="text-md font-[400] text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit pariatur voluptates mollitia sunt praesentium perferendis.</p>
+              <img src="/images/Contextual.webp" className="base:w-[140px] base:h-[120px] bl:w-[180px] bl:h-[150px]" alt="aiimg" />
+              <h1 className="base:text-lg bl:text-2xl font-[600]">AI Models Integrations</h1>      
+              <p className="text-muted-foreground base:text-sm bl:text-md font-[400] text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit pariatur voluptates mollitia sunt praesentium perferendis.</p>
               {/* <div className="glow"></div> */}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="w-full flex justify-center items-center mt-[7rem] mb-5 ">
-        <h1 className="text-6xl font-[600]"><span className="text-primary">Easy-to-use</span> and powerful</h1>
+      <div className="w-full flex justify-center items-center base:mt-12 bl:mt-[7rem] mb-5 ">
+        <h1 className="base:text-2xl bl:text-6xl font-[600]"><span className="text-primary">Easy-to-use</span> and powerful</h1>
       </div>
 
       <div className="base:w-[90vw] bl:w-[min(90vw,1400px)] my-12  flex flex-col relative items-center">
@@ -142,14 +142,14 @@ export default function Home() {
         <Flex2 />
       </div>
 
-      <div className="base:w-[90vw] bl:w-[min(90vw,1300px)] my-12 py-10 flex relative items-center justify-center gap-[7rem]">
-        <div className=" flex justify-center items-center bg-accent  rounded-xl p-20 px-16">
-          <img src="/images/docsAi.jpg" alt="wvr" className="w-[360px] h-[460px] rounded-xl" />
+      <div className="base:w-[90vw] bl:w-[min(90vw,1300px)] my-12 py-10 flex base:flex-col-reverse bl:flex-row relative items-center justify-center gap-7 bl:gap-[7rem]">
+        <div className="z-[1000000] flex justify-center items-center bg-accent  rounded-xl base:p-5 base:px-3  bl:p-20 bl:px-16">
+          <img src="/images/docsAi.jpg" alt="wvr" className="bl:w-[370px] bl:h-[460px] rounded-xl" />
         </div>
 
         <div className="flex justify-center items-center flex-col">
            <div className="flex flex-col justify-center  gap-6">
-           <h1 className="text-primary text-4xl font-[600]">Introducing DocsAI</h1>
+           <h1 className="text-primary base:text-3xl bl:text-4xl font-[600]">Introducing DocsAI</h1>
            <p className="max-w-[400px] text-md ">
            DocsAI is a versatile tool that enhances document management with automated summaries, interactive quizzes,
             and an AI chat interface for personalized assistance, improving user engagement and productivity.</p>
@@ -165,10 +165,10 @@ export default function Home() {
         <Ripple/>
       </div>
 
-      <div className="base:w-[90vw] bl:w-[min(90vw,1300px)] my-12 py-10 flex relative items-center justify-center gap-[7rem]">
+      <div className="base:w-[90vw] bl:w-[min(90vw,1300px)] my-12 py-10 flex  base:flex-col bl:flex-row  relative items-center justify-center gap-7 bl:gap-[7rem]">
         <div className="flex justify-center items-center flex-col">
            <div className="flex flex-col justify-center  gap-6">
-           <h1 className="text-primary text-4xl font-[600]">Prompt Suggestions</h1>
+           <h1 className="text-primary base:text-3xl bl:text-4xl font-[600]">Prompt Suggestions</h1>
            <p className="max-w-[400px] text-md ">
            The suggested prompts feature provides users with tailored guidance,
             helping them formulate queries and maximize their interactions with the platform for more effective outcomes.</p>
@@ -181,23 +181,21 @@ export default function Home() {
            </div>
         </div>
 
-        <div className=" flex justify-center items-center bg-accent  rounded-xl p-20 px-16">
-          <img src="/images/video.jpg" alt="wvr" className="w-[360px] h-[460px] rounded-xl" />
+        <div className="z-[1000000] flex justify-center items-center bg-accent  rounded-xl base:p-5 base:px-3  bl:p-20 bl:px-16">
+          <img src="/images/video.jpg" alt="wvr" className="base:w-full bl:w-[370px] bl:h-[460px] rounded-xl" />
         </div>
-
         <Ripple/>
       </div>
 
-      <div className="relative section-8 overflow-hidden w-[100%] py-[10rem] flex flex-col items-center justify-center gap-6 mt-16">
+      <div className="relative section-8 overflow-hidden w-[100%] base:px-10 bl:px-0 base:py-[5rem] bl:py-[10rem] flex flex-col items-center justify-center gap-6 mt-16">
         <div className="glow"></div>
-        <h1 className="text-5xl font-[600]">Get started for <span className="text-[#6d1fbf]">free</span></h1>
-        <p className="text-muted-foreground">Choose to own your data and a smarter way to work</p>
+        <h1 className="base:text-3xl bl:text-5xl font-[600]">Get started for <span className="text-[#6d1fbf]">free</span></h1>
+        <p className="text-muted-foreground text-center">Choose to own your data and a smarter way to work</p>
         <div className="w-full flex justify-center items-center gap-6">
-        <Link href={'/auth/sign-in'}><Button className="text-md px-14 py-7 rounded-xl">Get Started</Button></Link>
-        <Link href={'/auth/sign-in'}><Button variant='ghost' className=" border-[3px] text-md px-14 py-7 rounded-xl">Get Started</Button></Link>
+        <Link href={'/auth/sign-in'}><Button className="text-md base:px-6 bl:px-14 base:py-6 bl:py-7 rounded-xl">Get Started</Button></Link>
+        <Link href={'/auth/sign-in'}><Button variant='ghost' className=" border-[3px] text-md base:px-6  bl:px-14 base:py-6 bl:py-7 rounded-xl">Get Started</Button></Link>
         </div>
       </div>
-
       <Footer/>
     </div>
   );

@@ -18,7 +18,7 @@ const Ripple = React.memo(function Ripple({
   return (
     <div
       className={cn(
-        "pointer-events-none select-none absolute inset-0 [mask-image:linear-gradient(to_bottom,white,transparent)]",
+        "pointer-events-none base:hidden bl:inline-block select-none absolute inset-0 [mask-image:linear-gradient(to_bottom,white,transparent)]",
         className,
       )}
     >
@@ -37,7 +37,7 @@ const Ripple = React.memo(function Ripple({
               {
                 width: `${size}px`,
                 height: `${size}px`,
-                opacity:0.055,
+                opacity:0.075,
                 animationDelay,
                 borderStyle,
                 borderWidth: "1px",

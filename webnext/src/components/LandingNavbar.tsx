@@ -28,14 +28,14 @@ const Navbar = () => {
                 <div className='base:hidden bl:flex justify-center pl-[100px] text-sm items-center gap-10 font-[450]'>
                     <h2>Product</h2>
                     <h2>About</h2>
-                    <h2>Communtiy</h2>
+                    {/* <h2>Communtiy</h2> */}
                     <h2>Privacy</h2>
                 </div>
                 <div className='base:hidden bl:flex items-center justify-center gap-4'>
                     <Button className='text-white bg-accent border rounded-xl transition duration-300 ease-in max-h-[100px] py-5 hover:bg-background' >
                         <Star className='mr-1 h-4 w-4' />
                         Star
-                        <Badge className='ml-3 px-1 rounded-md'>24.1k</Badge>
+                        <Badge className='ml-1 px-2 rounded-md'>100</Badge>
                     </Button>
                     <Button onClick={(e: any) => {
                         router.push('/auth/sign-in')

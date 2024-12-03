@@ -48,7 +48,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { GoProjectRoadmap } from "react-icons/go";
-
+import { Rocket } from 'lucide-react';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
@@ -117,10 +117,26 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                             </Link>
                             <Link
                                 href="/home/NoteNest"
-                                className={`flex items-center gap-3 ${pathname ? pathname.includes('NoteNest') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
+                                className={`flex justify-between items-center gap-3 ${pathname ? pathname.includes('NoteNest') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
                             >
+                                <h2 className='flex items-center gap-3'>
                                 <Text className="h-4 w-4" />
                                 NoteNest
+                                </h2>
+                                <div className={`
+                                            inline-flex items-center 
+                                            rounded-sm 
+                                            bg-orange-100 text-orange-800
+                                            border border-orange-300
+                                            px-2 py-0 text-[0.55rem]
+                                            font-semibold
+                                            space-x-2
+                                            transition-all
+                                            
+                                            shadow-lg
+                                            `}>
+                                    BETA
+                                </div>
                             </Link>
                             <Accordion type="single" collapsible>
                                 <AccordionItem value="item-1" className='border-b-none'>
@@ -135,13 +151,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                             <MessageCircleQuestion className="h-4 w-4" />
                                             Quiz
                                         </Link>
-                                        <Link
+                                        {/* <Link
                                             href="/home/image-textify"
                                             className={`flex items-center gap-3 ${pathname ? pathname.includes('image-textify') === true ? 'text-primary bg-muted' : 'text-muted-foreground bg-transparent' : 'text-muted-foreground bg-transparent'} rounded-lg px-3 py-2  transition-all hover:text-primary`}
                                         >
                                             <Fullscreen className="h-4 w-4" />
                                             Image Textify
-                                        </Link>
+                                        </Link> */}
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>
